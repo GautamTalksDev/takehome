@@ -1,0 +1,91 @@
+{
+  "description": "T4127 Chapter 6 CPP basic exemption per pay period (annual $3,500 / P), truncated to the cent.",
+  "tax_year": 2026,
+  "annual_exemption": "3500.00",
+  "vectors": [
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "1" },
+      "expected": "3500.00",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "2" },
+      "expected": "1750.00",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "4" },
+      "expected": "875.00",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "10" },
+      "expected": "350.00",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "12" },
+      "expected": "291.66",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "13" },
+      "expected": "269.23",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "22" },
+      "expected": "159.09",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "24" },
+      "expected": "145.83",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "26" },
+      "expected": "134.61",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "27" },
+      "expected": "129.62",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "52" },
+      "expected": "67.30",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "53" },
+      "expected": "66.03",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "240" },
+      "expected": "14.58",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    },
+    {
+      "input": { "annual_exemption": "3500.00", "pay_periods": "2000" },
+      "expected": "1.75",
+      "source_document": "T4127 Payroll Deductions Formulas — Chapter 6 CPP basic exemption table",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html"
+    }
+  ]
+}

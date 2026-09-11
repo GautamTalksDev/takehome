@@ -1,13 +1,16 @@
 [package]
 name = "netpay-core"
-version = "0.1.0"
+version.workspace = true
 edition.workspace = true
 license.workspace = true
-publish.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Deterministic implementation of the CRA T4127 payroll deduction formulas."
 
 [dependencies]
 rust_decimal = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 thiserror = { workspace = true }
 
 [dev-dependencies]
@@ -15,3 +18,12 @@ rust_decimal_macros = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 proptest = { workspace = true }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+float_arithmetic = "deny"
+cast_possible_truncation = "deny"
+cast_precision_loss = "deny"
+cast_sign_loss = "deny"

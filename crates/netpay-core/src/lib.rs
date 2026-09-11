@@ -1,11 +1,6 @@
-//! CRA T4127 payroll deduction formulas — core library (`netpay-core`).
-//!
-//! # Determinism contract
-//!
-//! This crate is pure computation: **no I/O, no clock, no network, and no
-//! environment reads**. Outputs depend only on the values passed in. Randomness
-//! and wall-clock time are forbidden. Callers that need files, HTTP, or the
-//! system clock keep that outside this crate.
+//! netpay-core: no IO, no network, no clock, no environment access.
+//! Given a Request and a RuleSet, returns a Response. Deterministic, forever.
+#![forbid(unsafe_code)]
 #![deny(clippy::float_arithmetic)]
 
 pub mod decimal;

@@ -410,7 +410,7 @@ mod tests {
         assert_eq!(sum.to_string(), "0.30");
     }
 
-    /// Guards the f64 0.8200000000000001 bug: 41/50 must compare Equal to 0.82.
+    /// Guards the binary64 0.8200000000000001 bug: 41/50 must compare Equal to 0.82.
     #[test]
     fn compare_point_eight_two_equals_forty_one_over_fifty() {
         let m = Money::parse("0.82").unwrap();
@@ -513,7 +513,7 @@ mod tests {
         );
     }
 
-    // Compile-fail coverage for no From<f64>/From<f32>/Into<f64> lives in
+    // Compile-fail coverage for no IEEE-754 From/Into conversions lives in
     // `tests/compile_fail/no_float.rs`. Wiring it requires `trybuild` — ask
     // before adding that dependency (see Step 1). Uncomment when approved:
     //

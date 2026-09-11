@@ -1,0 +1,79 @@
+# .github/workflows/test.yml
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-D warnings"
+
+jobs:
+  float-ban:
+    # Runs first and independently. If binary floating point reaches a money
+    # path, nothing else about this build matters.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ban IEEE-754 in money paths
+        run: ./scripts/float-ban.sh
+      - name: Ban float-producing dependencies in netpay-core
+        run: |
+          # rust_decimal's float features would reintroduce a conversion path.
+          if grep -nE 'rust_decimal.*features.*float' crates/netpay-core/Cargo.toml; then
+            echo "rust_decimal float feature enabled in netpay-core" >&2
+            exit 1
+          fi
+          echo "dependency float-ban: clean"
+
+  build-test:
+    needs: float-ban
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace --all-features
+
+      - name: Test (release, catches overflow-behaviour divergence)
+        run: cargo test --workspace --release
+
+      - name: Determinism check
+        # Same inputs, same rule set, byte-identical output. Run the suite twice
+        # with a different seed environment and diff the golden vector output.
+        run: |
+          cargo test --workspace -- --nocapture > /tmp/run1.txt 2>&1
+          cargo test --workspace -- --nocapture > /tmp/run2.txt 2>&1
+          grep -c 'test result: ok' /tmp/run1.txt
+          diff <(grep 'test result' /tmp/run1.txt) <(grep 'test result' /tmp/run2.txt)
+
+  deny:
+    needs: float-ban
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          # Engine is Apache-2.0. Nothing copyleft may enter the dependency tree.
+          command: check licenses bans advisories

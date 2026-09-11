@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
-# Fail if IEEE-754 binary float types appear in netpay-core sources.
-# compile_fail fixtures are excluded (they intentionally mention f32/f64).
-# Doc/line comments are excluded so historical bug names in prose do not trip CI;
-# executable code and string literals are still scanned.
+# Fails if IEEE-754 types appear anywhere in the money path.
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-cd "$ROOT"
-
-matches="$(
-  rg -n --glob '*.rs' --glob '!**/compile_fail/**' '\bf(32|64)\b' crates/netpay-core \
-    | grep -Ev ':[0-9]+:[[:space:]]*//' \
-    | grep -Ev ':[0-9]+:[[:space:]]*/\*' \
-    || true
-)"
-
-if [[ -n "${matches}" ]]; then
-  echo "float-ban: forbidden IEEE-754 type token found:" >&2
-  echo "${matches}" >&2
+PATHS=("crates/netpay-core/src")
+PATTERN='\b(f32|f64)\b|\bas f(32|64)\b|to_f64|to_f32|from_f64|from_f32|parse::<f(32|64)>'
+FOUND=0
+for p in "${PATHS[@]}"; do
+  if grep -rInE --include='*.rs' "$PATTERN" "$p"; then
+    FOUND=1
+  fi
+done
+if [ "$FOUND" -eq 1 ]; then
+  echo "FLOAT BAN VIOLATION: binary floating point found in a money path." >&2
   exit 1
 fi
-
 echo "float-ban: clean"

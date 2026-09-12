@@ -1,0 +1,33 @@
+error[E0277]: the trait bound `Money: From<f64>` is not satisfied
+ --> tests/compile_fail/no_float.rs:9:35
+  |
+9 |     let _from_f64: Money = 1.0f64.into();
+  |                                   ^^^^ the trait `From<f64>` is not implemented for `Money`
+  |
+  = note: required for `f64` to implement `Into<Money>`
+
+error[E0277]: the trait bound `Money: From<f32>` is not satisfied
+  --> tests/compile_fail/no_float.rs:10:35
+   |
+10 |     let _from_f32: Money = 1.0f32.into();
+   |                                   ^^^^ the trait `From<f32>` is not implemented for `Money`
+   |
+   = note: required for `f32` to implement `Into<Money>`
+
+error[E0277]: the trait bound `f64: From<Money>` is not satisfied
+  --> tests/compile_fail/no_float.rs:11:56
+   |
+11 |     let _into_f64: f64 = Money::parse("1.00").unwrap().into();
+   |                                                        ^^^^ the trait `From<Money>` is not implemented for `f64`
+   |
+   = help: the following other types implement trait `From<T>`:
+             `f64` implements `From<bool>`
+             `f64` implements `From<f16>`
+             `f64` implements `From<f32>`
+             `f64` implements `From<i16>`
+             `f64` implements `From<i32>`
+             `f64` implements `From<i8>`
+             `f64` implements `From<u16>`
+             `f64` implements `From<u32>`
+             `f64` implements `From<u8>`
+   = note: required for `Money` to implement `Into<f64>`

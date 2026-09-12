@@ -6,18 +6,26 @@ license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 description = "Deterministic implementation of the CRA T4127 payroll deduction formulas."
+build = "build.rs"
 
 [dependencies]
 rust_decimal = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
+serde_path_to_error = { workspace = true }
 
 [dev-dependencies]
 rust_decimal_macros = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 proptest = { workspace = true }
+trybuild = { version = "1", optional = false }
+
+[features]
+# Gates tests/compile_fail.rs. Local `cargo test` skips trybuild (~15–25s);
+# CI runs `--all-features` so the float-ban compile-fail always executes there.
+compile-fail-tests = []
 
 [lints.rust]
 unsafe_code = "forbid"

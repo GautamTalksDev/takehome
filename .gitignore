@@ -9,3 +9,9 @@ dist/
 .cursor/
 data/sources/**/*.html
 !data/sources/.gitkeep
+crates/netpay-core/wip/
+data/pdoc-cache/**
+!data/pdoc-cache/.gitkeep
+data/pdoc-screenshots/**
+!data/pdoc-screenshots/.gitkeep
+

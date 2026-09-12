@@ -1,6 +1,6 @@
 //! Compile-fail: Money must not convert from or into IEEE-754 floats.
 //!
-//! Wired by trybuild once that dependency is approved (Step 1 asks first).
+//! Driven by `tests/compile_fail.rs` under `--features compile-fail-tests`.
 
 fn main() {
     use netpay_core::decimal::Money;

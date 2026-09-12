@@ -1,0 +1,23 @@
+{
+  "name": "@netpay/pdoc-oracle",
+  "private": true,
+  "type": "module",
+  "description": "CRA PDOC oracle harness. Never writes engine output into expected.",
+  "scripts": {
+    "check-robots": "tsx src/pdoc.ts check-robots",
+    "probe": "tsx src/pdoc.ts probe",
+    "capture": "tsx src/pdoc.ts capture",
+    "test": "tsx --test src/pdoc.test.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "playwright": "^1.49.1"
+  }
+}

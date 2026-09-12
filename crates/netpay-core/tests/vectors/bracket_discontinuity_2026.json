@@ -1,0 +1,64 @@
+{
+  "rule_set_version": "2026-01-01",
+  "source_document": "T4127 Payroll Deductions Formulas — Table 8.1 (federal) / Ontario provincial brackets",
+  "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html",
+  "note": "Jump = T3(threshold) − T3(threshold − 0.01) with published whole-dollar K and zero credits. Negative means annual tax falls when income crosses the threshold: dollar-rounding of K is not monotone. The discontinuity equals (K_exact,i − K_published,i) − (K_exact,i−1 − K_published,i−1).",
+  "thresholds": [
+    {
+      "jurisdiction": "FED",
+      "threshold": "58523.00",
+      "t3_below": "8193.22",
+      "t3_at": "8193.22",
+      "jump": "0.00"
+    },
+    {
+      "jurisdiction": "FED",
+      "threshold": "117045.00",
+      "t3_below": "20190.22",
+      "t3_at": "20190.70",
+      "jump": "0.48"
+    },
+    {
+      "jurisdiction": "FED",
+      "threshold": "181440.00",
+      "t3_below": "36933.40",
+      "t3_at": "36932.60",
+      "jump": "-0.80"
+    },
+    {
+      "jurisdiction": "FED",
+      "threshold": "258482.00",
+      "t3_below": "59274.78",
+      "t3_at": "59275.06",
+      "jump": "0.28"
+    },
+    {
+      "jurisdiction": "ON",
+      "threshold": "53891.00",
+      "t3_below": "2721.49",
+      "t3_at": "2721.03",
+      "jump": "-0.46"
+    },
+    {
+      "jurisdiction": "ON",
+      "threshold": "107785.00",
+      "t3_below": "7652.33",
+      "t3_at": "7652.81",
+      "jump": "0.48"
+    },
+    {
+      "jurisdiction": "ON",
+      "threshold": "150000.00",
+      "t3_below": "12364.00",
+      "t3_at": "12364.00",
+      "jump": "0.00"
+    },
+    {
+      "jurisdiction": "ON",
+      "threshold": "220000.00",
+      "t3_below": "20876.00",
+      "t3_at": "20876.00",
+      "jump": "0.00"
+    }
+  ]
+}

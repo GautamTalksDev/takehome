@@ -1,0 +1,219 @@
+{
+  "factors": [
+    {
+      "symbol": "A",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "Annual taxable income."
+    },
+    {
+      "symbol": "R",
+      "t4127_reference": "T4127 Chapter 8, Table 8.1",
+      "definition": "Federal tax rate that applies to the annual taxable income A."
+    },
+    {
+      "symbol": "K",
+      "t4127_reference": "T4127 Chapter 8, Table 8.1",
+      "definition": "Federal constant; the tax overcharged when applying the higher federal rates to A."
+    },
+    {
+      "symbol": "K1",
+      "t4127_reference": "T4127 Chapter 4, Step 2",
+      "definition": "Federal non-refundable personal tax credit (lowest federal tax rate × TC)."
+    },
+    {
+      "symbol": "K2",
+      "t4127_reference": "T4127 Chapter 4, Step 2",
+      "definition": "Federal tax credit for base CPP contributions and EI premiums for the year."
+    },
+    {
+      "symbol": "K4",
+      "t4127_reference": "T4127 Chapter 4, Step 2",
+      "definition": "Federal non-refundable tax credit calculated using the Canada employment amount."
+    },
+    {
+      "symbol": "T3",
+      "t4127_reference": "T4127 Chapter 4, Step 2",
+      "definition": "Annual basic federal tax."
+    },
+    {
+      "symbol": "T1",
+      "t4127_reference": "T4127 Chapter 4, Step 3",
+      "definition": "Annual federal tax deduction."
+    },
+    {
+      "symbol": "V",
+      "t4127_reference": "T4127 Chapter 8, Table 8.1",
+      "definition": "Provincial or territorial tax rate for the year."
+    },
+    {
+      "symbol": "KP",
+      "t4127_reference": "T4127 Chapter 8, Table 8.1",
+      "definition": "Provincial or territorial constant."
+    },
+    {
+      "symbol": "K1P",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial or territorial non-refundable personal tax credit (lowest provincial rate × TCP)."
+    },
+    {
+      "symbol": "K2P",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial or territorial tax credit for base CPP contributions and EI premiums for the year."
+    },
+    {
+      "symbol": "T4",
+      "t4127_reference": "T4127 Chapter 4, Step 4",
+      "definition": "Annual basic provincial or territorial tax."
+    },
+    {
+      "symbol": "V1",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial surtax calculated on the basic provincial tax (Ontario only)."
+    },
+    {
+      "symbol": "V2",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Ontario Health Premium calculated on taxable income."
+    },
+    {
+      "symbol": "S",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial tax reduction (Ontario and British Columbia)."
+    },
+    {
+      "symbol": "T2",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Annual provincial or territorial tax deduction (except Quebec)."
+    },
+    {
+      "symbol": "T",
+      "t4127_reference": "T4127 Chapter 4, Step 6",
+      "definition": "Estimated federal and provincial or territorial tax deductions for the pay period."
+    },
+    {
+      "symbol": "C",
+      "t4127_reference": "T4127 Chapter 6",
+      "definition": "Canada (or Quebec) Pension Plan contributions for the pay period."
+    },
+    {
+      "symbol": "C2",
+      "t4127_reference": "T4127 Chapter 6",
+      "definition": "Second additional Canada (or Quebec) Pension Plan contributions for the pay period."
+    },
+    {
+      "symbol": "EI",
+      "t4127_reference": "T4127 Chapter 7",
+      "definition": "Employment insurance premiums for the pay period."
+    },
+    {
+      "symbol": "F5",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "Deductions for Canada Pension Plan additional contributions for the pay period."
+    },
+    {
+      "symbol": "BPAF",
+      "t4127_reference": "T4127 Chapter 2; Table 8.2",
+      "definition": "Federal Basic Personal Amount."
+    },
+    {
+      "symbol": "K3",
+      "t4127_reference": "T4127 Chapter 4, Step 2",
+      "definition": "Other federal non-refundable tax credits authorized by a tax services office or tax centre."
+    },
+    {
+      "symbol": "K3P",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Other provincial or territorial non-refundable tax credits authorized by a tax services office or tax centre."
+    },
+    {
+      "symbol": "K4P",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Territorial non-refundable tax credit calculated using the provincial or territorial Canada employment amount."
+    },
+    {
+      "symbol": "K5P",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial supplemental non-refundable tax credit (lowest provincial tax rate)."
+    },
+    {
+      "symbol": "LCF",
+      "t4127_reference": "T4127 Chapter 4, Step 3",
+      "definition": "Federal labour-sponsored funds tax credit."
+    },
+    {
+      "symbol": "LCP",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Provincial or territorial labour-sponsored funds tax credit."
+    },
+    {
+      "symbol": "Y",
+      "t4127_reference": "T4127 Chapter 4, Step 5",
+      "definition": "Additional Ontario tax-reduction amount based on the number of eligible dependants, used in Factor S."
+    },
+    {
+      "symbol": "F5A",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "CPP additional-contribution deduction for the pay period taken from periodic income."
+    },
+    {
+      "symbol": "F5B",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "CPP additional-contribution deduction for the pay period taken from the non-periodic payment."
+    },
+    {
+      "symbol": "D",
+      "t4127_reference": "T4127 Chapter 6",
+      "definition": "Employee’s year-to-date (before the pay period) Canada Pension Plan contribution with the employer."
+    },
+    {
+      "symbol": "D1",
+      "t4127_reference": "T4127 Chapter 7",
+      "definition": "Employee’s year-to-date (before the pay period) employment insurance premium with the employer."
+    },
+    {
+      "symbol": "D2",
+      "t4127_reference": "T4127 Chapter 6",
+      "definition": "Employee’s year-to-date (before the pay period) second additional CPP contribution with the employer."
+    },
+    {
+      "symbol": "P",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "The number of pay periods in the year."
+    },
+    {
+      "symbol": "PR",
+      "t4127_reference": "T4127 Chapter 4, Step 1",
+      "definition": "The number of pay periods left in the year (including the current pay period)."
+    },
+    {
+      "symbol": "PM",
+      "t4127_reference": "T4127 Chapter 6",
+      "definition": "Total months during which CPP and/or QPP contributions are required (used to prorate the maximum contribution)."
+    },
+    {
+      "symbol": "CEA",
+      "t4127_reference": "T4127 Chapter 8, Table 8.2",
+      "definition": "Canada Employment Amount, a non-refundable tax credit used in the calculation for K4 and K4P."
+    },
+    {
+      "symbol": "TC",
+      "t4127_reference": "T4127 Chapter 2",
+      "definition": "Total claim amount reported on federal Form TD1."
+    },
+    {
+      "symbol": "TCP",
+      "t4127_reference": "T4127 Chapter 2",
+      "definition": "Total claim amount reported on the provincial or territorial Form TD1."
+    },
+    {
+      "symbol": "IE",
+      "t4127_reference": "T4127 Chapter 7",
+      "definition": "Insurable earnings for the pay period, including insurable taxable benefits, bonuses, and retroactive pay increases."
+    },
+    {
+      "symbol": "QPIP",
+      "t4127_reference": "T4127 Chapter 8, Table 8.29",
+      "definition": "Quebec Parental Insurance Plan premium for the pay period."
+    }
+  ]
+}

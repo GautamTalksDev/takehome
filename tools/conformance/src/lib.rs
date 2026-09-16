@@ -696,4 +696,69 @@ mod tests {
             snap.defined
         );
     }
+
+    fn money_cents(s: &str) -> i64 {
+        let (sign, rest) = if let Some(r) = s.strip_prefix('-') {
+            (-1, r)
+        } else {
+            (1, s)
+        };
+        let (d, c) = rest.split_once('.').expect("money has a dot");
+        assert_eq!(c.len(), 2);
+        sign * (d.parse::<i64>().unwrap() * 100 + c.parse::<i64>().unwrap())
+    }
+
+    /// Exact half-cent of annual/P: 2*annual_cents / P is an odd integer.
+    fn period_is_half_cent(annual_cents: i64, p: u16) -> bool {
+        let p = i64::from(p);
+        p != 0 && (annual_cents * 2).rem_euclid(p) == 0 && ((annual_cents * 2) / p).rem_euclid(2) == 1
+    }
+
+    /// Corpus census: every delta is ±1¢; T2/P half-cent vs not, by field class.
+    #[test]
+    fn m003_corpus_every_delta_is_one_cent_and_t2_halfcent_rate() {
+        use netpay_core::rules::loader::EMBEDDED_REGISTRY;
+        use netpay_core::{calculate, Request};
+        let snap = super::grid_pdoc_snapshot().unwrap();
+        let mut t2_half = 0u32;
+        let mut t2_not = 0u32;
+        let mut t1_half = 0u32;
+        let mut prov_n = 0u32;
+        let mut fed_n = 0u32;
+        let mut cpp_n = 0u32;
+        for d in &snap.disagreements {
+            for v in d.delta.values() {
+                let n = money_cents(v).unsigned_abs();
+                assert_eq!(n, 1, "{} delta not 1¢: {v}", d.id);
+            }
+            let req = Request::from_json(&d.request.to_string()).unwrap();
+            let resp = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            let p = req.pay_period.get();
+            let t2 = money_cents(&resp.breakdown.t2.to_string());
+            let t1 = money_cents(&resp.breakdown.t1.to_string());
+            if d.delta.contains_key("provincial_tax") {
+                prov_n += 1;
+                if period_is_half_cent(t2, p) {
+                    t2_half += 1;
+                } else {
+                    t2_not += 1;
+                }
+            }
+            if d.delta.contains_key("federal_tax") {
+                fed_n += 1;
+                if period_is_half_cent(t1, p) {
+                    t1_half += 1;
+                }
+            }
+            if d.delta.contains_key("cpp") {
+                cpp_n += 1;
+            }
+        }
+        assert_eq!(prov_n, 65);
+        assert_eq!(cpp_n, 82);
+        assert_eq!(fed_n, 19);
+        assert_eq!(t2_half, 34);
+        assert_eq!(t2_not, 31);
+        assert_eq!(t1_half, 9);
+    }
 }

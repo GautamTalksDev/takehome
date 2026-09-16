@@ -2,72 +2,93 @@
 
 **Record:** M-003 in [`CONFORMANCE.md`](../../CONFORMANCE.md).
 **Status:** open disagreement. Counts against the PDOC agreement rate.
-**PDOC version:** `2026-06-11` (JSON `/SALARY/calculate`).
+**Corpus:** July capturable queue, finished. 8,818 match / 164 disagree /
+780 step-2 non-advance (8,982 + 780 = 9,762). Tag `v0.3.0-m2`.
 
-PDOC does not consistently round exact midpoints the way T4127 Chapter 2
-says (third digit ≥ 5 increases the second). On some forms the midpoint
-goes **up** (matches the engine). On others it goes **down** (engine +1¢).
-The condition that selects the direction is **not named**. Diagnose from
-the finished 9,762-form corpus — not from another hand sample.
+Every one of the 164 live deltas is **±1¢**. They are not all the same
+class, and they are not all “PDOC rounded the midpoint down.”
 
-This is not an Alberta rule. Alberta is where midpoints are dense: 8%
-flat on round grosses manufactures exact halves. It is over-represented
-in the early queue because the queue is jurisdiction-sorted, not because
-the behaviour is provincial.
+## Field (where in the pipeline)
 
-## Observed classes (all count)
+| Tax line in the delta | n | Engine − PDOC |
+|--|--|--|
+| CPP only | 81 | always **+1¢** CPP (PDOC lower) |
+| Provincial only | 63 | **mixed**: 45 engine higher, 18 engine lower |
+| Federal only | 18 | **mixed**: 15 engine higher, 3 engine lower |
+| CPP + provincial | 1 | NB `7460.00` P=10 claim 1: CPP +1¢, provincial −1¢ |
+| Federal + provincial | 1 | ON `620.51` P=12 claim 0: federal −1¢, provincial +1¢ |
 
-Engine half-up goes up; PDOC’s corresponding line is 1¢ lower.
+CPP is one finding: PDOC’s period C is 1¢ below T4127 half-up, 82 times
+including the mixed NB row. Provincial and federal are not that clean.
+Alberta provincials are uniformly engine-higher (32). Ontario provincials
+are mostly engine-lower (7 of 8). A single “always down” rule is false.
 
-| Class | Field | Sample | Notes |
+## Are they midpoints?
+
+On the **engine’s already-cent T2**, `T2/P` is an exact half-cent for
+**34 of 65** provincial disagreements and not for **31 of 65**.
+`T1/P` is an exact half-cent for **9 of 19** federal disagreements.
+
+So: not all 164 are midpoints in our arithmetic. A second class exists —
+1¢ misses where the engine period line is not on a half-cent. Implementing
+`rounding_compat: pdoc` as “IEEE-float at the half” would not zero the
+164, and would mis-handle the 19 provincial cases where PDOC is *higher*.
+
+CPP midpoints are not visible from already-rounded period C; the 82 CPP
+rows remain consistent with a 4th-decimal-5 on unrounded C (the six AB
+examples still stand) but that is not proven for all 82.
+
+## Direction
+
+Both behaviours exist, in the published corpus, not just in the old 50-form
+probe (47/50 engine-up at discriminating half-cents).
+
+- **PDOC lower** (engine tax/CPP +1¢): all 82 CPP; 45 provincial-only; 15 federal-only.
+- **PDOC higher** (engine tax −1¢): 18 provincial-only; 3 federal-only.
+
+The discriminator is not “midpoint ⇒ down.”
+
+## Neighbour pairs (tested at scale)
+
+Every one of the 164 has a same-province / same-P / same-claims neighbour
+**1¢ of gross away**. **159** of those neighbours are **not** in the 164
+(they compared equal). Five disagreements sit next to another disagreement.
+
+The parked NL pair survives and is the type specimen:
+
+| Gross | In the 164? | PDOC provincial | PDOC CPP |
 |--|--|--|--|
-| AB provincial | `T2/P` | 11 forms, P=10 and 12, claim 0 and 1 | Inversion: T2=T4, V1=S=K5P=0. Residual is the period line. |
-| AB CPP | period C | 6 forms (`500.00`, `7460.00`, `8500.00` at P=10) | Unrounded C at a 4th-decimal-5 (`8.925`, `423.045`, `484.925`). Provincial exact. |
-| NL provincial | `T2/P` | `4333.33` P=12; `1718.39` P=26 | Neighbour `1718.40` P=26 goes **up**. |
-| NU provincial | `T2/P` | `2536.41` P=22 | Not NL, not AB. |
+| `1718.37` | no | 138.86 | 94.23 |
+| `1718.38` | no | 138.86 | 94.23 |
+| `1718.39` | **yes** | 138.86 | 94.23 |
+| `1718.40` | no | 138.87 | 94.24 |
 
-Cross-jurisdiction probes (exact engine half-cent `T2/P`, float predicts
-engine−1¢): **47/50 unique forms match engine** (up). The three down-cases
-are the NL/NU rows above. Float-as-general-PDOC-rule is falsified.
+Engine provincial on `1718.39` is 138.87. PDOC holds 138.86 for three
+consecutive cents of gross and ticks on `1718.40`. Direction tracks the
+**input step**, not “this form’s T2/P is a midpoint.” That is the
+upstream-tail hypothesis, now with 164/164 one-cent neighbours.
 
-Federal was exact on the AB provincial-down forms — the miss is not
-annual income A / F5 on those vectors. PDOC `/SALARY/calculate` has no
-annual T2/T4.
+Alberta `11704.49` (disagree) vs `11704.50` (not in the 164) is the same
+shape on the 8% flat.
 
-## What this is not
+## What this is not (still)
 
 | Hypothesis | Result |
 |--|--|
-| Alberta-specific K5P (rounded vs unrounded K1P+K2P) | **No.** Claim-code forms ⇒ K5P=0. Even claim 10 + max K2P stays under $4,896. |
-| 1¢ miss in T4 / V1 / S assembly | **No.** T2=T4, V1=S=0 on the inverted AB provincials. Unrounded T4 produces PDOC on only 2/11. |
-| General PDOC IEEE-float `T2/P` | **No.** 47/50 discriminating half-cent forms outside AB match decimal half-up. |
-| Two NL rows as a second provincial rule | **No.** Unique NL split is 12/14 up; one NU down-case besides. |
+| Alberta-specific K5P | **No.** All 13 jurisdictions appear. AB is dense, not unique. |
+| General PDOC IEEE-float `T2/P` | **No.** 31 provincial misses are not engine T2/P half-cents; 19 provincials have PDOC *higher*. |
+| One named midpoint direction | **No.** Up and down both occur. |
+| A `rounding_compat: pdoc` arm we can ship | **Not yet.** No discriminator that turns 164 into 0 without a silent float alias. |
 
 ## Open question
 
-**Under what condition does PDOC’s midpoint go down?**
-
-Hint already in the data, not yet tested: NL `1718.39` down vs neighbour
-`1718.40` up. Those two differ in the **input**, not in “being at a
-midpoint.” If direction depends on something upstream of the rounding
-step, the engine’s “exact half-cent” may be exact only in our arithmetic
-— a sub-cent tail PDOC still has. That would also explain why unrounded
-T4 does not uniquely solve back on 9 of 11 AB provincials.
-
-That is a hypothesis. Pool every midpoint (provincial, CPP, federal)
-across the finished corpus and look for what separates down from up.
-Do not construct another hand sample while the 9,762-form run is moving.
+**What holds PDOC’s displayed line one gross-cent later (or earlier) than
+T4127 half-up?** The neighbour evidence says the split is upstream of the
+rounding step we see. Engine “exact half-cent” is exact in our cents; PDOC
+may still be carrying a sub-cent tail. That is still unnamed.
 
 ## Rate discipline
 
-Every live cent delta in the classes above **counts**. M-003 is not
-exempted as methodology. M-002 (`k2_method`) had no unavoidable live
-delta under the default. Different shape — do not collapse them.
-
-## Product decision
-
-See [`ADR-003`](../ADR-003-rounding-compat.md): `rounding_compat` (`t4127`
-default). The `pdoc` arm is a typed `RoundingCompatPdocNotImplemented`
-error until this finding names the midpoint condition. A silent alias of
-`t4127` is a documented promise the engine does not keep. Do not implement
-`pdoc` as IEEE-float residue.
+All 164 count. M-003 is not exempted as methodology. Do not implement
+`rounding_compat: pdoc` as IEEE-float residue
+([ADR-003](../ADR-003-rounding-compat.md)).

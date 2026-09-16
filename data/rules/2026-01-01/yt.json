@@ -1,0 +1,35 @@
+{
+  "basic_personal_amount": {
+    "type": "same_as_federal"
+  },
+  "brackets": [
+    {
+      "constant": "0.00",
+      "rate": "0.0640",
+      "threshold": "0"
+    },
+    {
+      "constant": "1522.00",
+      "rate": "0.0900",
+      "threshold": "58523.00"
+    },
+    {
+      "constant": "3745.00",
+      "rate": "0.1090",
+      "threshold": "117045.00"
+    },
+    {
+      "constant": "7193.00",
+      "rate": "0.1280",
+      "threshold": "181440.00"
+    },
+    {
+      "constant": "18193.00",
+      "rate": "0.1500",
+      "threshold": "500000.00"
+    }
+  ],
+  "canada_employment_amount": "1501.00",
+  "index_rate": "0.020",
+  "lowest_rate": "0.0640"
+}

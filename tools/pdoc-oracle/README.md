@@ -18,16 +18,31 @@ cd tools/pdoc-oracle
 npm ci
 npm test
 npm run check-robots   # robots.txt only — no PDOC
-# npm run probe        # one PDOC entry-page identity load; do this on purpose
+npm run backfill-m1    # import M1 twenty with observedEdition
+npm run capture        # stratified 200-form smoke
+# npm run capture:queue  # full capturable July queue — only after smoke + CONFORMANCE republish
 ```
 
-`capture` is gated until Appendix P field locators land. Do not guess form ids.
+Appendix P locators: `src/appendix-p.ts` (label/`name`-based; Angular ids are
+ephemeral UUIDs). Result amounts come from `/SALARY/calculate` JSON because the
+results DOM can crash mid-render — see ops §11.2 (JSON is not the human UI;
+spot-check JSON vs rendered on a handful of cases per session).
 
 ## Cache
 
 `data/pdoc-cache/` (gitignored payloads). Key:
 `sha256(canonical_input_json || rule_set_version)`.
 
-A new run that observes a different PDOC version (or form-structure hash)
-than `pdoc-identity.json` **exits non-zero** and does not drain the queue
-(§10.2).
+Every record stores `observedEdition` (the calendar edition live PDOC was
+serving at capture). A record may only satisfy a case whose `ruleSetVersion`
+equals that edition **or** is proven identical for the case jurisdictions in
+`data/edition-identity.json` (test 18 / test 19). Otherwise: hard error /
+edition-retired.
+
+A new run that observes a different PDOC identity than `pdoc-identity.json`
+**exits non-zero** and does not drain the queue (§10.2).
+
+Queue size is the distinct capturable July form count from
+`netpay-grid-gen --queue` (ten of fourteen legal P). Uncapturable forms are
+not skipped silently under an all-14-P headline — they are a named oracle
+class in `CONFORMANCE.md`.

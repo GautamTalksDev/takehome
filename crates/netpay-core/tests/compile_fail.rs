@@ -15,3 +15,9 @@ fn k4_rejects_annual_taxable_income() {
     let t = trybuild::TestCases::new();
     t.compile_fail("tests/compile_fail/k4_rejects_annual_taxable_income.rs");
 }
+
+#[test]
+fn k4p_rejects_annual_taxable_income() {
+    let t = trybuild::TestCases::new();
+    t.compile_fail("tests/compile_fail/k4p_rejects_annual_taxable_income.rs");
+}

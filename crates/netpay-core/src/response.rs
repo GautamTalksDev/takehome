@@ -34,6 +34,7 @@ mod tests {
             employee: EmployeeAmounts {
                 federal_tax: zero(),
                 provincial_tax: zero(),
+                total_tax: zero(),
                 cpp: zero(),
                 cpp2: zero(),
                 ei: zero(),
@@ -262,12 +263,17 @@ impl Response {
 /// Per-period employee withholdings and net pay.
 ///
 /// `federal_tax` is T4127 `[(T1)/P]+L` — additional tax L is not a sibling
-/// field. `total_deductions` is tax + CPP + CPP2 + EI + QPIP + union dues.
+/// field. `total_tax` is `federal_tax + provincial_tax` (the sum of the two
+/// PDOC-displayed, separately rounded lines). That can differ by one cent
+/// from `breakdown.T`, which is T4127 Step 6 `round((T1+T2)/P)+L`. Prefer
+/// `total_tax` when comparing to a screen total a user can add up.
+/// `total_deductions` is tax + CPP + CPP2 + EI + QPIP + union dues.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EmployeeAmounts {
     pub federal_tax: Money,
     pub provincial_tax: Money,
+    pub total_tax: Money,
     pub cpp: Money,
     pub cpp2: Money,
     pub ei: Money,

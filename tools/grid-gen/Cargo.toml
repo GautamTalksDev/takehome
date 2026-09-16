@@ -1,0 +1,29 @@
+[package]
+name = "netpay-grid-gen"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Deterministic T4127 conformance grid (spec §11.2). Same seed, same grid, forever."
+build = "build.rs"
+
+[[bin]]
+name = "netpay-grid-gen"
+path = "src/main.rs"
+
+[dependencies]
+netpay-core = { path = "../../crates/netpay-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = "0.10"
+thiserror = { workspace = true }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+float_arithmetic = "deny"
+cast_possible_truncation = "deny"
+cast_precision_loss = "deny"
+cast_sign_loss = "deny"

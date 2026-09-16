@@ -5,13 +5,18 @@
 
 pub mod decimal;
 pub mod formulas;
+pub mod jurisdictions;
 pub mod request;
 pub mod response;
 pub mod rounding;
 pub mod rules;
 
 pub use decimal::{DecimalError, Money, Rate, Ratio};
-pub use request::{ClaimCode, K2Method, PayPeriod, Province, Request, RequestError};
+pub use jurisdictions::{
+    jurisdictions_json, list_jurisdictions, JurisdictionListing, JurisdictionStatus,
+    QUEBEC_UNSUPPORTED_REASON,
+};
+pub use request::{ClaimCode, K2Method, PayPeriod, Province, Request, RequestError, RoundingCompat};
 pub use response::{
     AnnualProjection, Breakdown, Citation, Count, EmployeeAmounts, EmployerAmounts, Response,
     Warning, ENGINE_BUILD_SHA256,
@@ -19,6 +24,9 @@ pub use response::{
 pub use rules::registry::{Registry, RuleError};
 
 use thiserror::Error;
+
+#[cfg(test)]
+mod jurisdiction_invariants;
 
 /// Fatal engine failure. Non-fatal notes go in [`Response::warnings`].
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -29,6 +37,13 @@ pub enum EngineError {
     Request(#[from] RequestError),
     #[error(transparent)]
     Decimal(#[from] DecimalError),
+    /// A named jurisdiction the engine will not calculate. Quebec must never
+    /// look like a successful federal-only run with T2 = 0.
+    #[error("jurisdiction {jurisdiction} is not supported. {reason}")]
+    JurisdictionNotSupported {
+        jurisdiction: String,
+        reason: String,
+    },
     #[error("{0}")]
     Message(String),
 }
@@ -38,27 +53,37 @@ fn engine_message(error: impl std::fmt::Display) -> EngineError {
 }
 
 /// Calculate Option 1 payroll deductions from the rule set effective on `req.as_of`.
+///
+/// `rounding_compat: pdoc` is a typed [`RequestError::RoundingCompatPdocNotImplemented`]
+/// until finding 002 names PDOC’s midpoint condition (ADR-003).
 pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineError> {
     use crate::formulas::annual_income::{
         annual_taxable_income, f5, f5a, f5b, AnnualTaxableIncomeInputs,
     };
     use crate::formulas::bpa::resolve_basic_personal_amount;
     use crate::formulas::cpp::{cpp2_contribution, cpp_contribution};
-    use crate::formulas::credits::{k1, k1p, k2, k4, GrossEmploymentIncome};
+    use crate::formulas::credits::{k1, k1p, k2, k4, k4p, GrossEmploymentIncome};
     use crate::formulas::ei::{ei_premium, employer_ei_premium, qpip_premium};
     use crate::formulas::federal_tax::{federal_t1, federal_t3};
-    use crate::formulas::province::ontario::{
-        ontario_s, ontario_t2, ontario_t4, ontario_v1, ontario_v2, ontario_y,
-        select_ontario_bracket,
-    };
+    use crate::formulas::province::alberta::alberta_k5p;
+    use crate::formulas::province::ontario::{ontario_t4, select_ontario_bracket};
     use crate::rounding::{round_tax_to_cent, Granularity};
-    use crate::rules::schema::{CalculationOption, JurisdictionCode};
+    use crate::rules::schema::JurisdictionCode;
 
     if req.federal_claim_code.is_some() && req.federal_tc.is_some() {
         return Err(RequestError::AmbiguousFederalClaim.into());
     }
     if req.provincial_claim_code.is_some() && req.provincial_tcp.is_some() {
         return Err(RequestError::AmbiguousProvincialClaim.into());
+    }
+    if req.province == Province::Qc {
+        return Err(EngineError::JurisdictionNotSupported {
+            jurisdiction: "QC".to_string(),
+            reason: QUEBEC_UNSUPPORTED_REASON.to_string(),
+        });
+    }
+    if req.rounding_compat == crate::request::RoundingCompat::Pdoc {
+        return Err(RequestError::RoundingCompatPdocNotImplemented.into());
     }
 
     let set = registry.resolve(req.as_of)?;
@@ -67,18 +92,16 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
         .get(&JurisdictionCode("FED".to_string()))
         .ok_or_else(|| EngineError::Message("rule set has no FED jurisdiction".to_string()))?;
     let province_code = JurisdictionCode(req.province.as_str().to_string());
-    let provincial = set.jurisdictions.get(&province_code).ok_or_else(|| {
-        EngineError::Message(format!(
-            "rule set has no {} jurisdiction",
-            req.province.as_str()
-        ))
-    })?;
+    let provincial = match req.province {
+        Province::OutsideCanada => None,
+        _ => Some(set.jurisdictions.get(&province_code).ok_or_else(|| {
+            EngineError::Message(format!(
+                "rule set has no {} jurisdiction",
+                req.province.as_str()
+            ))
+        })?),
+    };
     let option = req.calculation_option;
-    if option != CalculationOption::Option1 {
-        return Err(EngineError::Message(
-            "calculate currently supports calculation_option option1".to_string(),
-        ));
-    }
 
     let zero = Money::ZERO;
     let one = Money::parse("1")?;
@@ -156,12 +179,15 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
     let fed_bpa_definition = fed.basic_personal_amount.get(option);
     let bpaf =
         resolve_basic_personal_amount(a, fed_bpa_definition, None).map_err(engine_message)?;
-    let provincial_bpa = resolve_basic_personal_amount(
-        a,
-        provincial.basic_personal_amount.get(option),
-        Some(fed_bpa_definition),
-    )
-    .map_err(engine_message)?;
+    let provincial_bpa = match provincial {
+        Some(jurisdiction) => resolve_basic_personal_amount(
+            a,
+            jurisdiction.basic_personal_amount.get(option),
+            Some(fed_bpa_definition),
+        )
+        .map_err(engine_message)?,
+        None => zero,
+    };
     let resolve_claim = |claim: Option<ClaimCode>, direct: Option<Money>, default: Money| {
         if let Some(value) = direct {
             value
@@ -236,6 +262,7 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
             employee: EmployeeAmounts {
                 federal_tax: additional_tax,
                 provincial_tax: zero,
+                total_tax: additional_tax,
                 cpp: c,
                 cpp2: c2,
                 ei,
@@ -327,81 +354,129 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
         .map_err(engine_message)?
     };
 
-    let provincial_brackets = provincial.brackets.get(option);
-    let provincial_bracket =
-        select_ontario_bracket(a, provincial_brackets).map_err(engine_message)?;
-    let v = provincial_bracket.rate;
-    let kp = provincial_bracket.constant;
-    let k1p_value = k1p(*provincial.lowest_rate.get(option), tcp).map_err(engine_message)?;
-    let k2p_value = k2(
-        *provincial.lowest_rate.get(option),
-        req.pay_period,
-        c,
-        ytd_cpp,
-        ei,
-        ytd_ei,
-        periods_remaining,
-        req.cpp_months,
-        req.k2_method,
-        &set.cpp,
-        &set.ei,
-    )
-    .map_err(engine_message)?;
     let provincial_exempt = matches!(req.provincial_claim_code, Some(ClaimCode::E));
-    let k5p_value = zero;
-    let t4 = if provincial_exempt {
-        zero
-    } else {
-        ontario_t4(
-            a,
-            provincial_brackets,
-            k1p_value,
-            k2p_value,
-            zero,
-            zero,
-            k5p_value,
-        )
-        .map_err(engine_message)?
-    };
-    let v1 = ontario_v1(t4, provincial.surtax.as_deref().unwrap_or(&[])).map_err(engine_message)?;
-    let v2 = ontario_v2(
-        a,
-        provincial.health_premium.as_deref().ok_or_else(|| {
-            EngineError::Message("Ontario health-premium rules missing".to_string())
-        })?,
-    )
-    .map_err(engine_message)?;
-    let reduction = provincial
-        .tax_reduction
-        .as_ref()
-        .map(|value| value.get(option))
-        .ok_or_else(|| EngineError::Message("Ontario tax-reduction rules missing".to_string()))?;
-    let y = ontario_y(
-        req.dependants_disabled.unwrap_or(0),
-        req.dependants_under_19.unwrap_or(0),
-        reduction.dependant,
-    )
-    .map_err(engine_message)?;
-    let s = ontario_s(t4, v1, y, reduction).map_err(engine_message)?;
-    let t2 = ontario_t2(
+    let (
+        v,
+        kp,
+        k1p_value,
+        k2p_value,
         t4,
         v1,
         v2,
+        y,
         s,
-        req.pay_period,
-        req.lcp_purchase,
-        provincial.lcp.as_ref(),
-    )
-    .map_err(engine_message)?;
-    let lcp = match (req.lcp_purchase, provincial.lcp.as_ref()) {
-        (Some(purchase), Some(params)) => round_tax_to_cent(
-            purchase
-                .floor_at_zero()
-                .checked_mul_rate(params.rate)?
-                .min(params.max)
-                .checked_div(one)?,
-        ),
-        _ => zero,
+        t2,
+        lcp,
+        k4p_value,
+        k5p_value,
+        provincial_prorated,
+    ) = if let Some(provincial) = provincial {
+        let provincial_brackets = provincial.brackets.get(option);
+        let provincial_bracket =
+            select_ontario_bracket(a, provincial_brackets).map_err(engine_message)?;
+        let v = provincial_bracket.rate;
+        let kp = provincial_bracket.constant;
+        let k1p_value = k1p(*provincial.lowest_rate.get(option), tcp).map_err(engine_message)?;
+        let k2p_value = k2(
+            *provincial.lowest_rate.get(option),
+            req.pay_period,
+            c,
+            ytd_cpp,
+            ei,
+            ytd_ei,
+            periods_remaining,
+            req.cpp_months,
+            req.k2_method,
+            &set.cpp,
+            &set.ei,
+        )
+        .map_err(engine_message)?;
+        let k5p_value = if provincial.supplemental_credit.is_some() {
+            alberta_k5p(k1p_value, k2p_value).map_err(engine_message)?
+        } else {
+            zero
+        };
+        let provincial_cea = provincial.canada_employment_amount.unwrap_or(cea);
+        let k4p_value = if req.province == Province::Yt {
+            k4p(
+                *provincial.lowest_rate.get(option),
+                GrossEmploymentIncome::new(annual_gross),
+                provincial_cea,
+            )
+            .map_err(engine_message)?
+        } else {
+            zero
+        };
+        let t4 = if provincial_exempt {
+            zero
+        } else {
+            ontario_t4(
+                a,
+                provincial_brackets,
+                k1p_value,
+                k2p_value,
+                zero,
+                k4p_value,
+                k5p_value,
+            )
+            .map_err(engine_message)?
+        };
+        let (v1, v2, y, s, t2) = provincial_assembly(
+            req.province,
+            a,
+            t4,
+            provincial,
+            option,
+            req.pay_period,
+            req.lcp_purchase,
+            req.dependants_disabled.unwrap_or(0),
+            req.dependants_under_19.unwrap_or(0),
+        )?;
+        let lcp = match (req.lcp_purchase, provincial.lcp.as_ref()) {
+            (Some(purchase), Some(params)) => round_tax_to_cent(
+                purchase
+                    .floor_at_zero()
+                    .checked_mul_rate(params.rate)?
+                    .min(params.max)
+                    .checked_div(one)?,
+            ),
+            _ => zero,
+        };
+        let provincial_prorated =
+            jurisdiction_prorated_rules(provincial, option) || provincial_bracket.prorated;
+        (
+            v,
+            kp,
+            k1p_value,
+            k2p_value,
+            t4,
+            v1,
+            v2,
+            y,
+            s,
+            t2,
+            lcp,
+            k4p_value,
+            k5p_value,
+            provincial_prorated,
+        )
+    } else {
+        (
+            Rate::parse("0")?,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            zero,
+            false,
+        )
     };
 
     let federal_tax = formulas::per_period::per_period_tax(
@@ -413,14 +488,16 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
     )?;
     let provincial_tax =
         formulas::per_period::per_period_tax(zero, t2, req.pay_period, zero, Granularity::Cent)?;
-    let total_deductions = federal_tax
-        .checked_add(provincial_tax)?
+    // PDOC-facing total: sum of the two separately rounded lines. May differ
+    // by 1¢ from breakdown.T = round((T1+T2)/P)+L (see data/factors.json).
+    let total_tax = federal_tax.checked_add(provincial_tax)?;
+    let total_deductions = total_tax
         .checked_add(c)?
         .checked_add(c2)?
         .checked_add(ei)?
         .checked_add(qpip)?
         .checked_add(union_dues)?;
-    let warnings = if (federal_exempt || provincial_exempt) && v2 > zero {
+    let mut warnings = if (federal_exempt || provincial_exempt) && v2 > zero {
         vec![Warning {
             code: "CLAIM_CODE_E_ONTARIO_HEALTH_PREMIUM".to_string(),
             message:
@@ -430,7 +507,10 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
     } else {
         vec![]
     };
-    let prorated_rules_applied = fed_bracket.prorated || provincial_bracket.prorated;
+    if let Some(warning) = prorated_reconciliation_warning(req.province, req.as_of) {
+        warnings.push(warning);
+    }
+    let prorated_rules_applied = provincial_prorated || fed_bracket.prorated;
     let t = formulas::per_period::per_period_tax(
         t1,
         t2,
@@ -447,6 +527,7 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
         employee: EmployeeAmounts {
             federal_tax,
             provincial_tax,
+            total_tax,
             cpp: c,
             cpp2: c2,
             ei,
@@ -495,7 +576,7 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
             bpaf,
             k3: zero,
             k3p: zero,
-            k4p: zero,
+            k4p: k4p_value,
             k5p: k5p_value,
             lcf,
             lcp,
@@ -519,13 +600,151 @@ pub fn calculate(req: &Request, registry: &Registry) -> Result<Response, EngineE
     })
 }
 
+fn scoped_is_split<T>(scoped: &crate::rules::schema::OptionScoped<T>) -> bool {
+    matches!(scoped, crate::rules::schema::OptionScoped::PerOption { .. })
+}
+
+fn jurisdiction_prorated_rules(
+    jurisdiction: &crate::rules::schema::Jurisdiction,
+    option: crate::rules::schema::CalculationOption,
+) -> bool {
+    use crate::rules::schema::OptionScoped;
+    scoped_is_split(&jurisdiction.brackets)
+        || scoped_is_split(&jurisdiction.lowest_rate)
+        || scoped_is_split(&jurisdiction.basic_personal_amount)
+        || jurisdiction
+            .tax_reduction
+            .as_ref()
+            .is_some_and(|s| matches!(s, OptionScoped::PerOption { .. }))
+        || jurisdiction.brackets.get(option).iter().any(|b| b.prorated)
+}
+
+fn prorated_reconciliation_warning(
+    province: Province,
+    as_of: crate::rules::schema::CalendarDate,
+) -> Option<Warning> {
+    let h2_2026 = as_of.year == 2026 && as_of.month >= 7;
+    let changed = matches!(province, Province::Bc | Province::Nl | Province::Pe);
+    if h2_2026 && changed {
+        Some(Warning {
+            code: "PRORATED_RECONCILIATION".to_string(),
+            message: "Prorated provincial tax rules apply for the remainder of the year. Amounts withheld before 1 July 2026 may need year-end reconciliation.".to_string(),
+        })
+    } else {
+        None
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn provincial_assembly(
+    province: Province,
+    a: Money,
+    t4: Money,
+    provincial: &crate::rules::schema::Jurisdiction,
+    option: crate::rules::schema::CalculationOption,
+    pay_period: crate::request::PayPeriod,
+    lcp_purchase: Option<Money>,
+    dependants_disabled: u8,
+    dependants_under_19: u8,
+) -> Result<(Money, Money, Money, Money, Money), EngineError> {
+    use crate::formulas::province::bc::british_columbia_s;
+    use crate::formulas::province::ontario::{
+        ontario_s, ontario_t2, ontario_v1, ontario_v2, ontario_y,
+    };
+    let zero = Money::ZERO;
+    match province {
+        Province::On => {
+            let v1 = ontario_v1(t4, provincial.surtax.as_deref().unwrap_or(&[]))
+                .map_err(engine_message)?;
+            let v2 = ontario_v2(
+                a,
+                provincial.health_premium.as_deref().ok_or_else(|| {
+                    EngineError::Message("Ontario health-premium rules missing".to_string())
+                })?,
+            )
+            .map_err(engine_message)?;
+            let reduction = provincial
+                .tax_reduction
+                .as_ref()
+                .map(|value| value.get(option))
+                .ok_or_else(|| {
+                    EngineError::Message("Ontario tax-reduction rules missing".to_string())
+                })?;
+            let y = ontario_y(
+                dependants_disabled,
+                dependants_under_19,
+                reduction.dependant,
+            )
+            .map_err(engine_message)?;
+            let s = ontario_s(t4, v1, y, reduction).map_err(engine_message)?;
+            let t2 = ontario_t2(
+                t4,
+                v1,
+                v2,
+                s,
+                pay_period,
+                lcp_purchase,
+                provincial.lcp.as_ref(),
+            )
+            .map_err(engine_message)?;
+            Ok((v1, v2, y, s, t2))
+        }
+        Province::Bc => {
+            let v1 = ontario_v1(t4, provincial.surtax.as_deref().unwrap_or(&[]))
+                .map_err(engine_message)?;
+            let s = match provincial.tax_reduction.as_ref() {
+                Some(scoped) => {
+                    british_columbia_s(a, t4, scoped.get(option)).map_err(engine_message)?
+                }
+                None => zero,
+            };
+            let t2 = ontario_t2(
+                t4,
+                v1,
+                zero,
+                s,
+                pay_period,
+                lcp_purchase,
+                provincial.lcp.as_ref(),
+            )
+            .map_err(engine_message)?;
+            Ok((v1, zero, zero, s, t2))
+        }
+        _ => {
+            let v1 = ontario_v1(t4, provincial.surtax.as_deref().unwrap_or(&[]))
+                .map_err(engine_message)?;
+            let v2 = match provincial.health_premium.as_deref() {
+                Some(tiers) => ontario_v2(a, tiers).map_err(engine_message)?,
+                None => zero,
+            };
+            let t2 = ontario_t2(
+                t4,
+                v1,
+                v2,
+                zero,
+                pay_period,
+                lcp_purchase,
+                provincial.lcp.as_ref(),
+            )
+            .map_err(engine_message)?;
+            Ok((v1, v2, zero, zero, t2))
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{calculate, ClaimCode, EngineError, Money, PayPeriod, Province, Request, Response};
+    use super::{
+        calculate, list_jurisdictions, ClaimCode, EngineError, Money, PayPeriod, Province, Request,
+        Response, QUEBEC_UNSUPPORTED_REASON,
+    };
     use crate::decimal::Rate;
+    use crate::formulas::province::alberta::alberta_k5p;
     use crate::request::K2Method;
-    use crate::rules::loader::EMBEDDED_REGISTRY;
-    use crate::rules::schema::{CalculationOption, CalendarDate};
+    use crate::rules::loader::{
+        load_ruleset_2026_01_01, load_ruleset_2026_07_01, EMBEDDED_REGISTRY,
+    };
+    use crate::rules::schema::{CalculationOption, CalendarDate, JurisdictionCode};
     use proptest::prelude::*;
     use std::str::FromStr;
 
@@ -547,7 +766,8 @@ mod tests {
             federal_tc: None,
             provincial_tcp: None,
             cpp_months: 12,
-            k2_method: K2Method::Annualized,
+            k2_method: K2Method::PdocObserved,
+            rounding_compat: crate::request::RoundingCompat::T4127,
             ytd_pensionable_earnings: None,
             ytd_insurable_earnings: None,
             ytd_cpp: None,
@@ -753,7 +973,9 @@ mod tests {
         assert_eq!(a, b);
     }
 
-    /// 123. RECONCILIATION: federal+provincial tax == round((T1+T2)/P) + L from breakdown.
+    /// Headline tax is the sum of separately rounded federal and provincial
+    /// lines (`employee.total_tax`). That can differ by 1¢ from `breakdown.T`
+    /// = round((T1+T2)/P)+L; both are correct under their semantics.
     #[test]
     fn headline_tax_reconciles_to_breakdown() {
         let resp = calculate(&ontario_weekly_1000(), &EMBEDDED_REGISTRY).unwrap();
@@ -768,14 +990,30 @@ mod tests {
         );
         let l = money("0.00");
         let from_breakdown = quotient.checked_add(l).unwrap();
-        let headline = resp
-            .employee
-            .federal_tax
-            .checked_add(resp.employee.provincial_tax)
-            .unwrap();
+        assert_eq!(resp.breakdown.t, from_breakdown, "breakdown.T is Step 6");
         assert_eq!(
-            headline, from_breakdown,
-            "breakdown is decoration unless it reconciles to headline tax"
+            resp.employee.total_tax,
+            resp.employee
+                .federal_tax
+                .checked_add(resp.employee.provincial_tax)
+                .unwrap(),
+            "total_tax is the sum of the two rounded lines"
+        );
+        let gap = if resp.employee.total_tax >= from_breakdown {
+            resp.employee
+                .total_tax
+                .checked_sub(from_breakdown)
+                .unwrap()
+        } else {
+            from_breakdown
+                .checked_sub(resp.employee.total_tax)
+                .unwrap()
+        };
+        assert!(
+            gap <= money("0.01"),
+            "total_tax {} vs breakdown.T {} differs by {gap}",
+            resp.employee.total_tax,
+            from_breakdown
         );
     }
 
@@ -1036,14 +1274,450 @@ mod tests {
         }
     }
 
-
-
-
     #[test]
     fn calculate_signature_returns_engine_error_on_bad_as_of() {
         let mut req = ontario_weekly_1000();
         req.as_of = CalendarDate::from_str("1990-01-01").unwrap();
         let err = calculate(&req, &EMBEDDED_REGISTRY).unwrap_err();
         assert!(matches!(err, EngineError::Rule(_)));
+    }
+
+    fn date(s: &str) -> CalendarDate {
+        CalendarDate::from_str(s).unwrap()
+    }
+
+    fn request_at(province: Province, as_of: &str, gross: &str) -> Request {
+        let mut req = ontario_weekly_1000();
+        req.province = province;
+        req.as_of = date(as_of);
+        req.gross_pay = money(gross);
+        req
+    }
+
+    fn has_prorated_warning(resp: &Response) -> bool {
+        resp.warnings
+            .iter()
+            .any(|w| w.code == "PRORATED_RECONCILIATION")
+    }
+
+    /// Test 20 — identical BC request, as_of 2026-06-30 vs 2026-07-01.
+    #[test]
+    fn bc_june_vs_july_boundary_changes_tax_and_proration_flag() {
+        let june = calculate(
+            &request_at(Province::Bc, "2026-06-30", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        let july = calculate(
+            &request_at(Province::Bc, "2026-07-01", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        assert_ne!(june.employee.provincial_tax, july.employee.provincial_tax);
+        assert_eq!(june.rule_set_version, "2026-01-01");
+        assert_eq!(july.rule_set_version, "2026-07-01");
+        assert!(!june.prorated_rules_applied);
+        assert!(july.prorated_rules_applied);
+    }
+
+    /// Test 21 — the same as_of pair for NL and PE.
+    #[test]
+    fn nl_and_pe_june_vs_july_boundary() {
+        for (province, gross) in [(Province::Nl, "1000.00"), (Province::Pe, "8000.00")] {
+            let june = calculate(
+                &request_at(province, "2026-06-30", gross),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            let july = calculate(
+                &request_at(province, "2026-07-01", gross),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            assert_ne!(
+                june.employee.provincial_tax, july.employee.provincial_tax,
+                "{province:?} provincial tax must change at the July boundary"
+            );
+            assert_ne!(june.rule_set_version, july.rule_set_version);
+            assert!(!june.prorated_rules_applied);
+            assert!(july.prorated_rules_applied);
+        }
+    }
+
+    /// Test 22 — Ontario is unchanged across the boundary; proration must not leak.
+    #[test]
+    fn ontario_june_vs_july_is_identical_and_not_prorated() {
+        let june = calculate(
+            &request_at(Province::On, "2026-06-30", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        let july = calculate(
+            &request_at(Province::On, "2026-07-01", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        assert_eq!(june.employee, july.employee);
+        assert_eq!(june.annual_projection, july.annual_projection);
+        assert_eq!(june.breakdown, july.breakdown);
+        assert!(!june.prorated_rules_applied);
+        assert!(!july.prorated_rules_applied);
+        assert_ne!(june.rule_set_version, july.rule_set_version);
+    }
+
+    /// Test 23 — BC Option 1 vs Option 2 on 2026-08-01: different rates. If this
+    /// passes with Both, OptionScoped has been flattened.
+    #[test]
+    fn bc_option1_vs_option2_applies_distinct_rates() {
+        let mut opt1 = request_at(Province::Bc, "2026-08-01", "800.00");
+        let mut opt2 = opt1.clone();
+        opt1.calculation_option = CalculationOption::Option1;
+        opt2.calculation_option = CalculationOption::Option2;
+        let r1 = calculate(&opt1, &EMBEDDED_REGISTRY).unwrap();
+        let r2 = calculate(&opt2, &EMBEDDED_REGISTRY).unwrap();
+        assert_ne!(r1.breakdown.v, r2.breakdown.v);
+        assert_eq!(r1.breakdown.v, Rate::parse("0.0614").unwrap());
+        assert_eq!(r2.breakdown.v, Rate::parse("0.0560").unwrap());
+        assert_ne!(r1.employee.provincial_tax, r2.employee.provincial_tax);
+    }
+
+    /// Test 24 — prorated-reconciliation warning for BC/NL/PE in H2 2026 only.
+    #[test]
+    fn prorated_reconciliation_warning_only_for_changed_provinces_in_h2() {
+        for province in [Province::Bc, Province::Nl, Province::Pe] {
+            let h1 = calculate(
+                &request_at(province, "2026-06-30", "1000.00"),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            let h2 = calculate(
+                &request_at(province, "2026-07-01", "1000.00"),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            let later = calculate(
+                &request_at(province, "2026-12-31", "1000.00"),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            let next_year = calculate(
+                &request_at(province, "2027-01-01", "1000.00"),
+                &EMBEDDED_REGISTRY,
+            )
+            .unwrap();
+            assert!(!has_prorated_warning(&h1), "{province:?} H1");
+            assert!(has_prorated_warning(&h2), "{province:?} 2026-07-01");
+            assert!(has_prorated_warning(&later), "{province:?} 2026-12-31");
+            assert!(!has_prorated_warning(&next_year), "{province:?} 2027");
+        }
+        let on_h2 = calculate(
+            &request_at(Province::On, "2026-08-01", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        assert!(!has_prorated_warning(&on_h2));
+        let ab_h2 = calculate(
+            &request_at(Province::Ab, "2026-08-01", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        assert!(!has_prorated_warning(&ab_h2));
+    }
+
+    fn next_day(d: CalendarDate) -> CalendarDate {
+        if let Ok(next) = CalendarDate::new(d.year, d.month, d.day.saturating_add(1)) {
+            return next;
+        }
+        if let Ok(next) = CalendarDate::new(d.year, d.month.saturating_add(1), 1) {
+            return next;
+        }
+        CalendarDate::new(d.year.saturating_add(1), 1, 1).expect("year increment")
+    }
+
+    fn add_days(start: CalendarDate, days: u32) -> CalendarDate {
+        let mut cur = start;
+        for _ in 0..days {
+            cur = next_day(cur);
+        }
+        cur
+    }
+
+    /// Test 26 — Alberta K5P floor, just above it, and TCP default 22769.
+    #[test]
+    fn alberta_k5p_floor_just_above_and_tcp_default() {
+        let mut no_td1ab = request_at(Province::Ab, "2026-01-01", "1000.00");
+        no_td1ab.provincial_claim_code = None;
+        no_td1ab.provincial_tcp = None;
+        let floor = calculate(&no_td1ab, &EMBEDDED_REGISTRY).unwrap();
+        assert_eq!(floor.breakdown.tcp, money("22769.00"));
+        assert_eq!(floor.breakdown.k5p, money("0.00"));
+        let credits = floor
+            .breakdown
+            .k1p
+            .checked_add(floor.breakdown.k2p)
+            .unwrap();
+        assert!(
+            credits <= money("4896.00"),
+            "typical weekly $1000 is the floor case"
+        );
+
+        let mut above = request_at(Province::Ab, "2026-01-01", "1000.00");
+        above.provincial_claim_code = None;
+        above.provincial_tcp = Some(money("100000.00"));
+        let above_resp = calculate(&above, &EMBEDDED_REGISTRY).unwrap();
+        let expected = alberta_k5p(above_resp.breakdown.k1p, above_resp.breakdown.k2p).unwrap();
+        assert_eq!(above_resp.breakdown.k5p, expected);
+        assert!(above_resp.breakdown.k5p > money("0.00"));
+    }
+
+    /// Test 27 — BC S from both editions, each capped at T4.
+    #[test]
+    fn bc_s_both_editions_loaded_and_capped_at_t4() {
+        let jan = load_ruleset_2026_01_01().unwrap();
+        let july = load_ruleset_2026_07_01().unwrap();
+        let jan_bc = jan
+            .jurisdictions
+            .get(&JurisdictionCode("BC".to_string()))
+            .unwrap();
+        let july_bc = july
+            .jurisdictions
+            .get(&JurisdictionCode("BC".to_string()))
+            .unwrap();
+        let jan_red = jan_bc
+            .tax_reduction
+            .as_ref()
+            .unwrap()
+            .get(CalculationOption::Option1);
+        assert_eq!(jan_red.basic, money("575.00"));
+        assert_eq!(jan_red.dependant, money("41722.00"));
+        let july1 = july_bc
+            .tax_reduction
+            .as_ref()
+            .unwrap()
+            .get(CalculationOption::Option1);
+        assert_eq!(july1.basic, money("805.00"));
+        assert_eq!(july1.dependant, money("44952.00"));
+        let july2 = july_bc
+            .tax_reduction
+            .as_ref()
+            .unwrap()
+            .get(CalculationOption::Option2);
+        assert_eq!(july2.basic, money("690.00"));
+        assert_eq!(july2.dependant, money("44952.00"));
+
+        for (as_of, option) in [
+            ("2026-01-01", CalculationOption::Option1),
+            ("2026-07-01", CalculationOption::Option1),
+            ("2026-07-01", CalculationOption::Option2),
+        ] {
+            let mut req = request_at(Province::Bc, as_of, "400.00");
+            req.calculation_option = option;
+            let resp = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            assert!(
+                resp.breakdown.s <= resp.breakdown.t4,
+                "{as_of} {option:?}: S {} must be capped at T4 {}",
+                resp.breakdown.s,
+                resp.breakdown.t4
+            );
+        }
+    }
+
+    /// Test 28 — Yukon K4P uses GrossEmploymentIncome / CEA, same newtype as K4.
+    #[test]
+    fn yukon_k4p_uses_employment_income_and_cea() {
+        let resp = calculate(
+            &request_at(Province::Yt, "2026-01-01", "1000.00"),
+            &EMBEDDED_REGISTRY,
+        )
+        .unwrap();
+        assert_eq!(resp.breakdown.k4p, money("96.06"));
+        assert!(resp.breakdown.k4p > money("0.00"));
+    }
+
+    /// Test 29 — LCP variants plus nine jurisdictions with no LCP (None → exactly 0).
+    #[test]
+    fn lcp_variants_and_none_path_contributes_zero() {
+        let set = load_ruleset_2026_01_01().unwrap();
+        let with_lcp: &[(&str, &str, &str, Province)] = &[
+            ("MB", "0.150", "1800.00", Province::Mb),
+            ("NB", "0.200", "2000.00", Province::Nb),
+            ("NS", "0.200", "2000.00", Province::Ns),
+            ("SK", "0.175", "875.00", Province::Sk),
+        ];
+        for (code, rate, max, province) in with_lcp {
+            let j = set
+                .jurisdictions
+                .get(&JurisdictionCode((*code).to_string()))
+                .unwrap();
+            let lcp = j.lcp.as_ref().expect("{code} must have LCP");
+            assert_eq!(lcp.rate, Rate::parse(rate).unwrap(), "{code} rate");
+            assert_eq!(lcp.max, money(max), "{code} max");
+            let mut req = request_at(*province, "2026-01-01", "2000.00");
+            req.lcp_purchase = Some(money("10000.00"));
+            let with = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            req.lcp_purchase = None;
+            let without = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            assert!(
+                with.breakdown.lcp > money("0.00"),
+                "{code} purchase must credit"
+            );
+            assert_eq!(without.breakdown.lcp, money("0.00"));
+            assert!(
+                with.breakdown.t2 < without.breakdown.t2,
+                "{code} LCP reduces T2"
+            );
+        }
+
+        let none: &[(&str, Option<Province>)] = &[
+            ("FED", None),
+            ("AB", Some(Province::Ab)),
+            ("BC", Some(Province::Bc)),
+            ("NL", Some(Province::Nl)),
+            ("NT", Some(Province::Nt)),
+            ("NU", Some(Province::Nu)),
+            ("ON", Some(Province::On)),
+            ("PE", Some(Province::Pe)),
+            ("YT", Some(Province::Yt)),
+        ];
+        assert_eq!(with_lcp.len() + none.len(), 13);
+        for (code, province) in none {
+            let j = set
+                .jurisdictions
+                .get(&JurisdictionCode((*code).to_string()))
+                .unwrap();
+            assert!(j.lcp.is_none(), "{code} must have no LCP");
+            let Some(province) = province else {
+                continue;
+            };
+            let mut req = request_at(*province, "2026-01-01", "1000.00");
+            req.lcp_purchase = Some(money("10000.00"));
+            let with_purchase = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            req.lcp_purchase = None;
+            let without_purchase = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+            assert_eq!(
+                with_purchase.breakdown.lcp,
+                money("0.00"),
+                "{code} None params + purchase → LCP factor 0, not omitted/error"
+            );
+            assert_eq!(with_purchase.breakdown.t2, without_purchase.breakdown.t2);
+            assert_eq!(
+                with_purchase.employee.provincial_tax,
+                without_purchase.employee.provincial_tax
+            );
+        }
+    }
+
+    /// Test 30 — OutsideCanada full response shape: provincial zeros, 48% surtax, T = (T1/P)+L.
+    #[test]
+    fn outside_canada_full_response_shape() {
+        let mut req = request_at(Province::OutsideCanada, "2026-01-01", "1000.00");
+        req.additional_tax_requested = Some(money("10.00"));
+        let resp = calculate(&req, &EMBEDDED_REGISTRY).unwrap();
+        let b = &resp.breakdown;
+        assert_eq!(b.v, Rate::parse("0").unwrap());
+        assert_eq!(b.v1, money("0.00"));
+        assert_eq!(b.v2, money("0.00"));
+        assert_eq!(b.s, money("0.00"));
+        assert_eq!(b.lcp, money("0.00"));
+        assert_eq!(b.t2, money("0.00"));
+        assert_eq!(b.t4, money("0.00"));
+        assert_eq!(b.k1p, money("0.00"));
+        assert_eq!(b.k2p, money("0.00"));
+        assert_eq!(resp.employee.provincial_tax, money("0.00"));
+        assert_eq!(resp.annual_projection.provincial_tax, money("0.00"));
+        let surtax = b.t3.checked_mul_rate(Rate::parse("0.48").unwrap()).unwrap();
+        let expected_t1 = crate::rounding::round_tax_to_cent(
+            b.t3.checked_add(surtax)
+                .unwrap()
+                .checked_div(money("1"))
+                .unwrap(),
+        );
+        assert_eq!(b.t1, expected_t1);
+        assert!(b.t1 > b.t3, "48% surtax must raise T1 above T3");
+        let expected_t = crate::formulas::per_period::per_period_tax(
+            b.t1,
+            money("0.00"),
+            req.pay_period,
+            money("10.00"),
+            crate::rounding::Granularity::Cent,
+        )
+        .unwrap();
+        assert_eq!(b.t, expected_t);
+        assert_eq!(resp.employee.federal_tax, expected_t);
+        assert_eq!(resp.annual_projection.federal_tax, b.t1);
+        assert_eq!(fed_surtax_flat(), Rate::parse("0.48").unwrap());
+    }
+
+    fn fed_surtax_flat() -> Rate {
+        load_ruleset_2026_01_01()
+            .unwrap()
+            .jurisdictions
+            .get(&JurisdictionCode("FED".to_string()))
+            .unwrap()
+            .surtax_flat
+            .expect("FED must carry Table 8.2 Outside Canada surtax")
+    }
+
+    /// Test 31 — Quebec is a typed refusal, never a successful federal-only T2 = 0.
+    #[test]
+    fn quebec_is_jurisdiction_not_supported_not_federal_only() {
+        let req = request_at(Province::Qc, "2026-01-01", "1000.00");
+        let result = calculate(&req, &EMBEDDED_REGISTRY);
+        assert!(
+            result.is_err(),
+            "Quebec must not succeed; a T2=0 federal-only Ok is the dangerous failure mode"
+        );
+        match result {
+            Err(EngineError::JurisdictionNotSupported {
+                jurisdiction,
+                reason,
+            }) => {
+                assert_eq!(jurisdiction, "QC");
+                assert!(reason.contains("Quebec"), "{reason}");
+                assert!(reason.contains("docs/jurisdictions.md"), "{reason}");
+                assert_eq!(reason, QUEBEC_UNSUPPORTED_REASON);
+            }
+            other => panic!("expected JurisdictionNotSupported, got {other:?}"),
+        }
+        let listing = list_jurisdictions();
+        let qc = listing
+            .jurisdictions
+            .iter()
+            .find(|row| row.code == "QC")
+            .unwrap();
+        assert!(!qc.supported);
+        assert_eq!(qc.name, "Quebec");
+        let note = qc.note.as_deref().unwrap();
+        assert!(note.contains("Quebec"));
+        assert!(note.contains("docs/jurisdictions.md"));
+    }
+
+    proptest! {
+        #![proptest_config(ProptestConfig::with_cases(10_000))]
+        /// Test 25 — property: every resolved interval contains as_of. 10k dates
+        /// from 2025-12-31 to 2027-01-02; outside coverage is DateBefore/After.
+        #[test]
+        fn resolved_interval_contains_as_of(offset in 0u32..=367) {
+            use crate::rules::registry::RuleError;
+            let as_of = add_days(date("2025-12-31"), offset);
+            prop_assume!(as_of <= date("2027-01-02"));
+            match EMBEDDED_REGISTRY.resolve(as_of) {
+                Ok(set) => {
+                    prop_assert!(as_of >= set.effective_from);
+                    if let Some(to) = set.effective_to {
+                        prop_assert!(as_of < to);
+                    }
+                }
+                Err(RuleError::DateBeforeCoverage { requested, earliest, .. }) => {
+                    prop_assert_eq!(requested, as_of);
+                    prop_assert!(as_of < earliest);
+                }
+                Err(RuleError::DateAfterCoverage { requested, latest, .. }) => {
+                    prop_assert_eq!(requested, as_of);
+                    prop_assert!(as_of >= latest);
+                }
+                Err(other) => prop_assert!(false, "unexpected {other}"),
+            }
+        }
     }
 }

@@ -7,3 +7,4 @@ rust-version.workspace = true
 
 [dependencies]
 netpay-core = { path = "../netpay-core" }
+serde_json = { workspace = true }

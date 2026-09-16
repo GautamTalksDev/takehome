@@ -1,0 +1,25 @@
+{
+  "BC": {
+    "tax_reduction_dependant": "44952.00",
+    "option2_s2": "690.00",
+    "option2_brackets": [
+      { "threshold": "0", "rate": "0.0560", "constant": "0.00" },
+      { "threshold": "50363.00", "rate": "0.0770", "constant": "1058.00" },
+      { "threshold": "100728.00", "rate": "0.1050", "constant": "3878.00" },
+      { "threshold": "115648.00", "rate": "0.1229", "constant": "5948.00" },
+      { "threshold": "140430.00", "rate": "0.1470", "constant": "9332.00" },
+      { "threshold": "190405.00", "rate": "0.1680", "constant": "13331.00" },
+      { "threshold": "265545.00", "rate": "0.2050", "constant": "23156.00" }
+    ]
+  },
+  "NL": {
+    "option2_basic_personal_amount": "13094.00"
+  },
+  "PE": {
+    "option2_sixth_bracket": {
+      "threshold": "200000.00",
+      "rate": "0.2000",
+      "constant": "8464.00"
+    }
+  }
+}

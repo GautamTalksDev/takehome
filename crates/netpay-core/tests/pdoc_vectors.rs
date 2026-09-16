@@ -67,6 +67,11 @@ struct OracleMeta {
     #[serde(default)]
     #[allow(dead_code)]
     pdoc_version_string: Option<String>,
+    /// Calendar edition live PDOC was serving at capture (may differ from case as_of).
+    observed_edition: String,
+    #[serde(default)]
+    #[allow(dead_code)]
+    rule_set_version: Option<String>,
     #[allow(dead_code)]
     browser: String,
     operator: String,
@@ -108,6 +113,11 @@ fn twenty_pdoc_ontario_vectors_match_to_the_cent() {
 
     for v in &file.vectors {
         assert_eq!(v.oracle.source, "CRA PDOC");
+        assert!(
+            !v.oracle.observed_edition.is_empty(),
+            "vector {}: oracle.observed_edition required (provenance)",
+            v.id
+        );
         assert!(
             matches!(v.oracle.operator.as_str(), "manual" | "pdoc-oracle-harness"),
             "vector {}: bad operator {}",

@@ -118,7 +118,8 @@ pub fn ontario_s(
     round_money(tax.min(available))
 }
 
-fn labour_credit(
+/// LCP = min(purchase × rate, max). Missing purchase or missing params is 0.
+pub fn labour_sponsored_credit(
     purchase: Option<Money>,
     params: Option<&LabourCredit>,
 ) -> Result<Money, OntarioTaxError> {
@@ -145,7 +146,7 @@ pub fn ontario_t2(
     lcp_params: Option<&LabourCredit>,
 ) -> Result<Money, OntarioTaxError> {
     let p = Money::parse(&pay_periods.get().to_string())?;
-    let lcp = labour_credit(lcp_purchase, lcp_params)?;
+    let lcp = labour_sponsored_credit(lcp_purchase, lcp_params)?;
     round_money(
         t4.checked_add(v1)?
             .checked_add(v2)?
@@ -608,6 +609,63 @@ mod tests {
         assert!(v2 > money("0.00"));
         assert!(s > money("0.00"));
         assert!(money("195.00") > money("0.00")); // P×LCP
+    }
+
+    /// Test 29 — None LCP path contributes exactly zero (purchase without params,
+    /// params without purchase, and both absent).
+    #[test]
+    fn labour_sponsored_credit_none_path_is_zero_not_skipped() {
+        let params = LabourCredit {
+            rate: Rate::parse("0.150").unwrap(),
+            max: money("1800.00"),
+        };
+        assert_eq!(
+            super::labour_sponsored_credit(None, None).unwrap(),
+            money("0.00")
+        );
+        assert_eq!(
+            super::labour_sponsored_credit(Some(money("10000.00")), None).unwrap(),
+            money("0.00")
+        );
+        assert_eq!(
+            super::labour_sponsored_credit(None, Some(&params)).unwrap(),
+            money("0.00")
+        );
+        let t4 = money("1000.00");
+        let p = PayPeriod::new(52).unwrap();
+        let both_none = ontario_t2(
+            t4,
+            money("0.00"),
+            money("0.00"),
+            money("0.00"),
+            p,
+            None,
+            None,
+        )
+        .unwrap();
+        let purchase_only = ontario_t2(
+            t4,
+            money("0.00"),
+            money("0.00"),
+            money("0.00"),
+            p,
+            Some(money("10000.00")),
+            None,
+        )
+        .unwrap();
+        let params_only = ontario_t2(
+            t4,
+            money("0.00"),
+            money("0.00"),
+            money("0.00"),
+            p,
+            None,
+            Some(&params),
+        )
+        .unwrap();
+        assert_eq!(both_none, t4);
+        assert_eq!(purchase_only, both_none);
+        assert_eq!(params_only, both_none);
     }
 
     /// 109. Quebec → T2 = 0 always

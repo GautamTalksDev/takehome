@@ -88,7 +88,7 @@
     {
       "symbol": "T",
       "t4127_reference": "T4127 Chapter 4, Step 6",
-      "definition": "Estimated federal and provincial or territorial tax deductions for the pay period."
+      "definition": "Estimated federal and provincial or territorial tax deductions for the pay period: round((T1+T2)/P)+L. This is the combined Step 6 quotient. It may differ by one cent from employee.total_tax, which is the sum of the separately rounded federal and provincial lines PDOC displays (round(T1/P)+L and round(T2/P)). Compare screen totals to employee.total_tax; keep breakdown.T as the T4127 figure."
     },
     {
       "symbol": "C",

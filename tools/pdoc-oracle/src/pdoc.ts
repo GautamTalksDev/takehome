@@ -29,6 +29,11 @@ export const PDOC_ROBOTS = `${PDOC_ORIGIN}/robots.txt`;
 
 export const MIN_GAP_MS = 3_000;
 export const HARD_STOP_AFTER = 3;
+/** Progress log / stall check while a capture is in flight. */
+export const HEARTBEAT_MS = 30_000;
+/** No completed form for this long → non-zero exit. Hung browser is not a rate limit.
+ * Must exceed max backoff (180s) plus one form attempt. */
+export const STALL_AFTER_MS = 300_000;
 const MAX_BACKOFF_MS = 180_000;
 
 export const OPS_DOC_REL = "docs/CONFORMANCE-OPERATIONS.md";
@@ -37,6 +42,76 @@ export class PolicyError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "PolicyError";
+  }
+}
+
+/** Queue worker made no progress. Distinct from a PDOC HTTP failure. */
+export class StallError extends PolicyError {
+  constructor(
+    readonly idleMs: number,
+    readonly lastProgressAt: string,
+  ) {
+    super(
+      `no progress for ${idleMs}ms (limit ${STALL_AFTER_MS}ms). last progress at ${lastProgressAt}. Hung browser or dead worker — not a rate limit. Exiting non-zero.`,
+    );
+    this.name = "StallError";
+  }
+}
+
+/** Throw if `nowMs - lastProgressAtMs` has reached the stall limit. */
+export function stallIfIdle(
+  lastProgressAtMs: number,
+  nowMs: number,
+  stallAfterMs = STALL_AFTER_MS,
+): void {
+  const idleMs = nowMs - lastProgressAtMs;
+  if (idleMs >= stallAfterMs) {
+    throw new StallError(idleMs, new Date(lastProgressAtMs).toISOString());
+  }
+}
+
+export function formatHeartbeat(args: {
+  attempted: number;
+  completed: number;
+  lastProgressAt: string;
+  idleMs: number;
+}): string {
+  return `heartbeat attempted=${args.attempted} completed=${args.completed} last_progress=${args.lastProgressAt} idle_s=${Math.floor(args.idleMs / 1000)}`;
+}
+
+/** Every queue terminal that must tick the stall watchdog. */
+export const PROGRESS_TERMINALS = [
+  "captured",
+  "cacheHit",
+  "step2Skip",
+  "editionRetired",
+  "hardError",
+] as const;
+
+export type ProgressTerminal = (typeof PROGRESS_TERMINALS)[number];
+
+/** Stall watchdog clock. Named methods so a forgotten path is a missing call, not a silent alias of `mark`. */
+export class ProgressTracker {
+  lastProgressMs: number;
+
+  constructor(nowMs: number) {
+    this.lastProgressMs = nowMs;
+  }
+
+  captured(nowMs = Date.now()): void {
+    this.lastProgressMs = nowMs;
+  }
+  cacheHit(nowMs = Date.now()): void {
+    this.lastProgressMs = nowMs;
+  }
+  step2Skip(nowMs = Date.now()): void {
+    this.lastProgressMs = nowMs;
+  }
+  editionRetired(nowMs = Date.now()): void {
+    this.lastProgressMs = nowMs;
+  }
+  hardError(nowMs = Date.now()): void {
+    this.lastProgressMs = nowMs;
   }
 }
 
@@ -84,6 +159,8 @@ export type RunConditions = {
 export type CacheRecord = {
   key: string;
   ruleSetVersion: string;
+  /** Calendar edition live PDOC was serving when this result was observed. */
+  observedEdition: string;
   input: unknown;
   output: unknown;
   retrievedAt: string;
@@ -91,7 +168,7 @@ export type CacheRecord = {
   robotsSha256: Record<string, string>;
   screenshotSha256: string | null;
   browser: string;
-  operator: "pdoc-oracle-harness";
+  operator: "pdoc-oracle-harness" | "manual";
 };
 
 export type PdocIdentityFile = {
@@ -523,6 +600,7 @@ export async function lookupCached(
   input: unknown,
   ruleSetVersion: string,
   observedIdentity: string | null,
+  opts?: { province?: string },
 ): Promise<CacheRecord | null> {
   const key = cacheKey(input, ruleSetVersion);
   const record = await readRecord(repoRoot, key);
@@ -530,6 +608,25 @@ export async function lookupCached(
   if (observedIdentity && record.pdocIdentity !== observedIdentity) {
     throw new PdocIdentityDriftError(record.pdocIdentity, observedIdentity);
   }
+  if (!record.observedEdition) {
+    throw new PolicyError(
+      `Cache record ${key} is missing observedEdition. Re-backfill or re-capture before use.`,
+    );
+  }
+  const province =
+    opts?.province ??
+    (typeof input === "object" &&
+    input &&
+    "province" in (input as Record<string, unknown>)
+      ? String((input as Record<string, unknown>).province)
+      : "ON");
+  const { assertRecordSatisfiesCase } = await import("./edition.ts");
+  assertRecordSatisfiesCase({
+    repoRoot,
+    observedEdition: record.observedEdition,
+    caseRuleSetVersion: ruleSetVersion,
+    province,
+  });
   return record;
 }
 
@@ -537,9 +634,11 @@ async function main(argv: string[]): Promise<void> {
   const cmd = argv[0] ?? "help";
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
     console.log(`Usage:
-  pdoc.ts check-robots   Fetch/parse robots.txt; exit 0 if PDOC is allowed
-  pdoc.ts probe          robots.txt + one PDOC entry-page identity probe
-  pdoc.ts capture        (not implemented: form driver lands with Appendix P)
+  pdoc.ts check-robots     Fetch/parse robots.txt; exit 0 if PDOC is allowed
+  pdoc.ts probe            robots.txt + one PDOC entry-page identity probe
+  pdoc.ts backfill-m1      Import M1 twenty into cache with observedEdition
+  pdoc.ts capture --smoke  Stratified 200-form smoke (Appendix P); report then stop
+  pdoc.ts capture --queue  Capturable July PDOC queue (10 of 14 P; after smoke + republish)
 
 Cache hits never contact PDOC. Identity probe is at most one PDOC request per run.
 Never writes engine output into expected.`);
@@ -559,10 +658,26 @@ Never writes engine output into expected.`);
     return;
   }
 
+  if (cmd === "backfill-m1") {
+    const { backfillM1 } = await import("./backfill-m1.ts");
+    const result = await backfillM1();
+    console.log(canonicalJson(result));
+    return;
+  }
+
   if (cmd === "capture") {
-    throw new PolicyError(
-      "capture is not enabled yet: the Playwright form driver is gated on Appendix P selectors. Use check-robots / probe. Do not guess field ids against PDOC.",
-    );
+    const { runCapture } = await import("./run-capture.ts");
+    const mode = argv.includes("--queue") ? "queue" : "smoke";
+    const limitFlag = argv.findIndex((a) => a === "--limit");
+    const limit =
+      limitFlag >= 0 && argv[limitFlag + 1]
+        ? Number(argv[limitFlag + 1])
+        : mode === "smoke"
+          ? 200
+          : undefined;
+    const result = await runCapture({ mode, limit });
+    console.log(canonicalJson(result));
+    return;
   }
 
   throw new PolicyError(`unknown command: ${cmd}`);

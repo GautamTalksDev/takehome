@@ -14,4 +14,6 @@ data/pdoc-cache/**
 !data/pdoc-cache/.gitkeep
 data/pdoc-screenshots/**
 !data/pdoc-screenshots/.gitkeep
+data/grids/**
+!data/grids/.gitkeep
 

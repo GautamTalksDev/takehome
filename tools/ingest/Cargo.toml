@@ -1,0 +1,32 @@
+[package]
+name = "netpay-ingest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "CRA T4127 CSV archive ingest. Parses archived bytes only; never a URL."
+build = "build.rs"
+
+[[bin]]
+name = "netpay-ingest"
+path = "src/main.rs"
+
+[dependencies]
+csv = "1"
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = "0.10"
+thiserror = { workspace = true }
+
+[dev-dependencies]
+netpay-core = { path = "../../crates/netpay-core" }
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+float_arithmetic = "deny"
+cast_possible_truncation = "deny"
+cast_precision_loss = "deny"
+cast_sign_loss = "deny"

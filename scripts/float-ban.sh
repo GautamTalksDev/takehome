@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Fails if IEEE-754 types appear anywhere in the money path.
 set -euo pipefail
-PATHS=("crates/netpay-core/src")
+PATHS=("crates/netpay-core/src" "tools/ingest/src" "tools/ingest/tests")
 PATTERN='\b(f32|f64)\b|\bas f(32|64)\b|to_f64|to_f32|from_f64|from_f32|parse::<f(32|64)>'
 FOUND=0
 for p in "${PATHS[@]}"; do

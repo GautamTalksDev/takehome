@@ -6,8 +6,11 @@
   "scripts": {
     "check-robots": "tsx src/pdoc.ts check-robots",
     "probe": "tsx src/pdoc.ts probe",
-    "capture": "tsx src/pdoc.ts capture",
-    "test": "tsx --test src/pdoc.test.ts"
+    "backfill-m1": "tsx src/pdoc.ts backfill-m1",
+    "capture": "tsx src/pdoc.ts capture --smoke",
+    "capture:queue": "tsx src/pdoc.ts capture --queue",
+    "spot-check-json-dom": "tsx src/spot-check-json-dom.ts",
+    "test": "tsx --test src/pdoc.test.ts src/edition.test.ts"
   },
   "engines": {
     "node": ">=20"

@@ -45,8 +45,9 @@ K still fails immediately; the intended imprecision is named and bounded.
 ## Consequences
 
 - Annual T3/T4 is discontinuous by at most $1.00 at each bracket threshold.
-  Measured 2026 jumps live in
-  `crates/netpay-core/tests/vectors/bracket_discontinuity_2026.json`.
+  The jump equals the difference of the two adjacent K rounding residuals.
+  Measured 2026 jumps for all thirteen bracket tables (both 2026 editions)
+  live in `crates/netpay-core/tests/vectors/bracket_discontinuity_2026.json`.
 - At P = 52 the largest possible withholding jump is under two cents.
 - PDOC exhibits the same discontinuity. Matching it is conformance, not a
   defect. See `CONFORMANCE.md` §Methodology.

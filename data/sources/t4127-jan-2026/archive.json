@@ -1,0 +1,94 @@
+{
+  "edition": "t4127-jan-2026",
+  "effective_from": "2026-01-01",
+  "published_by": "Canada Revenue Agency",
+  "source_document": "T4127 Payroll Deductions Formulas - 122nd Edition Effective January 1, 2026",
+  "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan.html",
+  "retrieved_at": "2026-09-12T03:58:28Z",
+  "files": [
+    {
+      "name": "cc-ab-01-26e.csv",
+      "sha256": "bfb763daac7b4e5c7d32fc225c3df316e17b41a72c86f79536815cc262f08444"
+    },
+    {
+      "name": "cc-bc-01-26e.csv",
+      "sha256": "4f0f66a0fe16e63eec4b0cc374fb05e0e10f1edc83c1f47482302eb7afab4c96"
+    },
+    {
+      "name": "cc-fd-01-26e.csv",
+      "sha256": "ed623d2b41f1879b08ef55ae0076c52d40ec51858026ad6f82ea978105ce373a"
+    },
+    {
+      "name": "cc-mb-01-26e.csv",
+      "sha256": "eda3f40c0c8c6286d4f1aeb9a328801afd34907618c6b539c60169fa363dfe8a"
+    },
+    {
+      "name": "cc-nb-01-26e.csv",
+      "sha256": "6742a300d1d4c0f091bc88cf20ccf8fbb47b4d4f846528668ad4450ca86cd2d9"
+    },
+    {
+      "name": "cc-nl-01-26e.csv",
+      "sha256": "20642ae08c3ea164eda94494d336908a92ebec9f556ab5853164161b5a9c5ccb"
+    },
+    {
+      "name": "cc-ns-01-26e.csv",
+      "sha256": "9410a3eb76713705ce74cca9a365a96fadbe82c01d49da622bed62d64d161e8f"
+    },
+    {
+      "name": "cc-nt-01-26e.csv",
+      "sha256": "71f124145000308400919a52feb3e4964479a451f384c18052026613a209f5da"
+    },
+    {
+      "name": "cc-nv-01-26e.csv",
+      "sha256": "968f5d1193f3eadca7d72cac0df49d394d62606803318b5298085ebc847751c4"
+    },
+    {
+      "name": "cc-on-01-26e.csv",
+      "sha256": "7b14bb199aea89d7887690d569dd72e78be120421466dbe1eef13fa6a1418b74"
+    },
+    {
+      "name": "cc-pei-01-26e.csv",
+      "sha256": "f84cacfac833093931ebc50c97fdef1a64b149ae6af40b01c7d34fbbce237efc"
+    },
+    {
+      "name": "cc-sk-01-26e.csv",
+      "sha256": "68b986f66c117b193d81acd9df0a90a8ce6fbcfcbc432db132b0a610c50c0555"
+    },
+    {
+      "name": "cc-yt-01-26e.csv",
+      "sha256": "ae0b6f0d2432cba34b4a3510f8055540526e0b1bcfda78a5ef7e6141f306692e"
+    },
+    {
+      "name": "cpp-qpp-addntl-01-26e.csv",
+      "sha256": "1362c4ca838bc9cab262eb6829904379adcd41fdd9ef5354496995d05aac9485"
+    },
+    {
+      "name": "cpp-qpp-br-01-26e.csv",
+      "sha256": "7d4f0f487f408590e2cbbb95ea65a5b5dd7052ae536da071a424ea147b3a5b87"
+    },
+    {
+      "name": "cpp-qpp-scnd-addntl-01-26e.csv",
+      "sha256": "aeeb9f2c042c11bb80ff744aa59edab56de43e523ef11109dd7985124a84448b"
+    },
+    {
+      "name": "cpp-qpp-ttl-01-26e.csv",
+      "sha256": "a8254ad90584f10a92f11fe5d34c9c6c42c856b686a8bc26c632886387e9ece4"
+    },
+    {
+      "name": "ei-01-26e.csv",
+      "sha256": "524162a6e1e62a7b2bdfe304a29f337273d03277519521a3cd380ec8e2fb0d1f"
+    },
+    {
+      "name": "qpip-01-26e.csv",
+      "sha256": "41b73748b7559902360f5e03eecdc133f82e3c25f54922452d2d3632b4e886d5"
+    },
+    {
+      "name": "rtsncmtrshldcnstnt-01-26e.csv",
+      "sha256": "3e708bcc916d37c6c4a0ccf37b651df615d5d7ca1651ad655e962013c369eb39"
+    },
+    {
+      "name": "thrrtsmnts-01-26e.csv",
+      "sha256": "9f4d29d8a3ccf01c5c96b720e848ad779311e9fefdd50a10f6f514c4315f9b59"
+    }
+  ]
+}

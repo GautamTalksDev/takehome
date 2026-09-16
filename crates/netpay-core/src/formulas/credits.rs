@@ -1,9 +1,10 @@
 //! Non-refundable tax credits K1–K4 / K1P / K2P (T4127 Chapter 4 / §6.3).
 //!
-//! Trap §21.2: [`k4`] takes [`GrossEmploymentIncome`], not [`AnnualTaxableIncome`].
-//! Trap §21.1: [`K2Method`] selects Annualized vs YearToDate; Annualized follows PDOC
-//! (`max(P×C×ratio, D×ratio)` capped), not the T4127 sentence that forces `base_max`
-//! in the period the annual CPP max is first reached.
+//! Trap §21.2: [`k4`] and [`k4p`] take [`GrossEmploymentIncome`], not [`AnnualTaxableIncome`].
+//! Trap §21.1: [`K2Method`] selects the CPP-credit base. Default
+//! [`K2Method::PdocObserved`] follows PDOC (`max(P×C×ratio, D×ratio)` capped)
+//! and does **not** force `base_max` in the reaching period.
+//! [`K2Method::T4127Literal`] is the document's reading of that sentence.
 
 use std::cmp::Ordering;
 
@@ -17,8 +18,8 @@ use thiserror::Error;
 #[cfg(test)]
 mod tests {
     use super::{
-        k1, k1p, k2, k2_cpp_annualized_base_before_max_rule, k3_adjusted, k4, AnnualTaxableIncome,
-        GrossEmploymentIncome,
+        k1, k1p, k2, k2_cpp_annualized_base_before_max_rule, k3_adjusted, k4, k4p,
+        AnnualTaxableIncome, GrossEmploymentIncome,
     };
     use crate::decimal::{Money, Rate, Ratio};
     use crate::request::{K2Method, PayPeriod};
@@ -85,51 +86,90 @@ mod tests {
 
     // 71 lives in `tests/compile_fail/k4_rejects_annual_taxable_income.rs` (trybuild).
 
-    /// 72. Early in the year, both K2 methods agree on a steady-salary case.
+    /// Test 28 — K4P uses the same CEA cap as K4, Yukon lowest rate 0.064.
     #[test]
-    fn k2_methods_agree_early_steady_salary() {
-        let p = PayPeriod::new(26).unwrap();
-        let c = money("55.50"); // steady period CPP
-        let ei = money("16.30");
-        let annualized = k2(
+    fn k4p_lesser_of_employment_income_and_cea() {
+        let cea = money("1501.00");
+        let r = rate("0.0640");
+        assert_eq!(
+            k4p(r, GrossEmploymentIncome::new(money("50000.00")), cea).unwrap(),
+            money("96.06")
+        );
+        assert_eq!(
+            k4p(r, GrossEmploymentIncome::new(money("1000.00")), cea).unwrap(),
+            money("64.00")
+        );
+    }
+
+    // Test 28 compile-fail lives in `tests/compile_fail/k4p_rejects_annual_taxable_income.rs`.
+
+    fn k2_call(
+        method: K2Method,
+        period_cpp: Money,
+        ytd_cpp_before: Money,
+        period_ei: Money,
+        ytd_ei_before: Money,
+        periods_remaining: u16,
+    ) -> Money {
+        k2(
             rate("0.1400"),
-            p,
-            c,
-            money("0.00"),
-            ei,
-            money("0.00"),
-            /* pr */ 26,
-            /* pm */ 12,
-            K2Method::Annualized,
+            PayPeriod::new(26).unwrap(),
+            period_cpp,
+            ytd_cpp_before,
+            period_ei,
+            ytd_ei_before,
+            periods_remaining,
+            12,
+            method,
             &cpp_params(),
             &ei_params(),
         )
-        .unwrap();
-        let ytd = k2(
-            rate("0.1400"),
-            p,
+        .unwrap()
+    }
+
+    /// 72. Early in the year, all three K2 methods agree on a steady-salary case.
+    #[test]
+    fn k2_methods_agree_early_steady_salary() {
+        let c = money("55.50");
+        let ei = money("16.30");
+        let pdoc = k2_call(
+            K2Method::PdocObserved,
             c,
             money("0.00"),
             ei,
             money("0.00"),
             26,
-            12,
+        );
+        let literal = k2_call(
+            K2Method::T4127Literal,
+            c,
+            money("0.00"),
+            ei,
+            money("0.00"),
+            26,
+        );
+        let ytd = k2_call(
             K2Method::YearToDate,
-            &cpp_params(),
-            &ei_params(),
-        )
-        .unwrap();
-        assert_eq!(annualized, ytd);
+            c,
+            money("0.00"),
+            ei,
+            money("0.00"),
+            26,
+        );
+        assert_eq!(pdoc, ytd);
+        assert_eq!(pdoc, literal);
     }
 
     /// 73. Poison case: CPP max reached in period 20 of 26.
     ///
-    /// PDOC (inverted from D-007) credits `max(P×C×ratio, D×ratio)` capped at
-    /// `base_max × PM/12` — **not** forcing `base_max` in the period the max is
-    /// reached. Period 20 therefore uses `D×ratio` (4200 × 0.0495/0.0595);
-    /// periods 21–26 (D already at total max) use `base_max`.
+    /// Re-specified to PDOC's observed rule (vector `on-biweekly-midyear-k2-max`).
+    /// [`K2Method::PdocObserved`] credits `max(P×C×ratio, D×ratio)` capped at
+    /// `base_max × PM/12` — **not** forcing `base_max` in the reaching period.
+    /// [`K2Method::T4127Literal`] is the T4127 Chapter 3 reading that does force
+    /// it. [`K2Method::YearToDate`] projects `D + PR×C`. All three produce
+    /// different K2 on this case (EI from the vector so the YTD EI half diverges).
     #[test]
-    fn k2_annualized_poison_case_uses_ytd_base_in_period_reaching_max() {
+    fn k2_midyear_reaching_period_three_methods() {
         let p = PayPeriod::new(26).unwrap();
         let params = cpp_params();
         let ei = ei_params();
@@ -169,7 +209,7 @@ mod tests {
                 money("0.00"),
                 pr,
                 12,
-                K2Method::Annualized,
+                K2Method::PdocObserved,
                 &params,
                 &ei,
             )
@@ -190,6 +230,31 @@ mod tests {
                 );
             }
         }
+
+        // Same mid-year reaching period as `on-biweekly-midyear-k2-max`
+        // (C=30.45, D=4200, EI=40.75, D1=1000, PR=7).
+        let c = c_period_20;
+        let d = d_before_20;
+        let period_ei = money("40.75");
+        let d1 = money("1000.00");
+        let pr = 7u16;
+
+        // PdocObserved — vector `on-biweekly-midyear-k2-max` (D-007 inversion).
+        let pdoc = k2_call(K2Method::PdocObserved, c, d, period_ei, d1, pr);
+        // T4127Literal — T4127 Chapter 3, factor K2: force base_max in that pay period.
+        let literal = k2_call(K2Method::T4127Literal, c, d, period_ei, d1, pr);
+        // YearToDate — T4127 Chapter 4 YTD form: D + PR×C and D1 + PR×EI, capped.
+        let ytd = k2_call(K2Method::YearToDate, c, d, period_ei, d1, pr);
+
+        assert_eq!(pdoc, money("637.51"));
+        assert_eq!(literal, money("641.05"));
+        assert_eq!(ytd, money("649.95"));
+        assert_ne!(
+            pdoc, literal,
+            "PDOC observed must differ from T4127 literal"
+        );
+        assert_ne!(pdoc, ytd, "PDOC observed must differ from YearToDate");
+        assert_ne!(literal, ytd, "T4127 literal must differ from YearToDate");
     }
 
     /// 74. YearToDate on the same employee also yields base_max from period 20.
@@ -251,7 +316,7 @@ mod tests {
                 money("0.00"),
                 1,
                 6,
-                K2Method::Annualized,
+                K2Method::PdocObserved,
                 &params,
                 &ei_params(),
             )
@@ -280,23 +345,23 @@ mod tests {
         }
     }
 
-    /// 75. The two methods disagree on a lumpy-income case.
+    /// 75. PdocObserved and YearToDate disagree on a lumpy-income case.
     ///
-    /// PDOC default for M1: **Annualized** (matches `on-biweekly-midyear-k2-max`
-    /// after D-007 inversion). YearToDate stays selectable via `k2_method`.
+    /// Default is [`K2Method::PdocObserved`] (vector `on-biweekly-midyear-k2-max`).
+    /// YearToDate stays selectable via `k2_method`.
     #[test]
     fn k2_methods_disagree_on_lumpy_income() {
         let p = PayPeriod::new(26).unwrap();
         let params = cpp_params();
         let ei = ei_params();
         let r = rate("0.1400");
-        // Lumpy: large C early, then small; YTD vs annualized diverge.
+        // Lumpy: large C early, then small; YTD vs PdocObserved diverge.
         let c = money("200.00");
         let d_before = money("2500.00");
         let period_ei = money("40.00");
         let d1_before = money("400.00");
         let pr = 10u16;
-        let annualized = k2(
+        let pdoc = k2(
             r,
             p,
             c,
@@ -305,7 +370,7 @@ mod tests {
             d1_before,
             pr,
             12,
-            K2Method::Annualized,
+            K2Method::PdocObserved,
             &params,
             &ei,
         )
@@ -324,9 +389,8 @@ mod tests {
             &ei,
         )
         .unwrap();
-        assert_ne!(annualized, ytd);
-        // PDOC chooses Annualized (D-007 closed); YearToDate remains selectable.
-        let _ = (annualized, ytd);
+        assert_ne!(pdoc, ytd);
+        let _ = (pdoc, ytd);
     }
 
     /// 76. base/total ratio (0.0495/0.0595) from the rule set is a Ratio, never rounded.
@@ -407,7 +471,7 @@ mod tests {
             money("0.00"),
             26,
             12,
-            K2Method::Annualized,
+            K2Method::PdocObserved,
             &cpp_params(),
             &ei_params(),
         )
@@ -421,7 +485,7 @@ mod tests {
             money("0.00"),
             26,
             12,
-            K2Method::Annualized,
+            K2Method::PdocObserved,
             &cpp_params(),
             &ei_params(),
         )
@@ -442,7 +506,7 @@ mod tests {
             money("0.00"),
             26,
             12,
-            K2Method::Annualized,
+            K2Method::PdocObserved,
             &cpp_params(),
             &ei_params(),
         )
@@ -456,7 +520,7 @@ mod tests {
             money("0.00"),
             26,
             12,
-            K2Method::Annualized,
+            K2Method::PdocObserved,
             &cpp_params(),
             &ei_params(),
         )
@@ -580,6 +644,17 @@ pub fn k4(
     )
 }
 
+/// Yukon K4P — same formula as [`k4`], provincial lowest rate.
+///
+/// Spec §21.2 applies here too: employment income, not factor A.
+pub fn k4p(
+    provincial_lowest_rate: Rate,
+    annual_gross_employment_income: GrossEmploymentIncome,
+    cea: Money,
+) -> Result<Money, CreditsError> {
+    k4(provincial_lowest_rate, annual_gross_employment_income, cea)
+}
+
 /// K3 late-introduction adjustment: `(P × K3) / PR` (T4127 Chapter 4).
 pub fn k3_adjusted(
     k3: Money,
@@ -602,12 +677,17 @@ pub fn k3_adjusted(
 
 /// K2 / K2P — CPP base + EI tax credits at `lowest_rate`.
 ///
-/// [`K2Method::Annualized`] (PDOC-confirmed): CPP credit base is
+/// [`K2Method::PdocObserved`] (default; PDOC-confirmed): CPP credit base is
 /// `min(base_max×PM/12, max(P×C×ratio, D×ratio))` with EI `min(P×EI, EI_max)`.
 /// That is: take the greater of the period-annualized figure and the YTD base
 /// figure, capped at the prorated base maximum — **without** forcing
-/// `base_max` in the pay period where YTD first reaches the annual CPP max
-/// (the T4127 §21.1 second sentence that would force it; PDOC does not).
+/// `base_max` in the pay period where YTD first reaches the annual CPP max.
+///
+/// [`K2Method::T4127Literal`] (T4127 Chapter 3, factor K2): the Chapter 4
+/// formula `min(P×C×ratio, base_max×PM/12)`, but if this period's YTD CPP
+/// reaches the annual maximum, force `base_max` (and force `EI_max` if this
+/// period's YTD EI reaches the annual EI maximum).
+///
 /// [`K2Method::YearToDate`] uses D/D1 + PR × period amounts.
 #[allow(clippy::too_many_arguments)] // T4127 K2 inputs are inherently many; pack later if needed.
 pub fn k2(
@@ -636,7 +716,7 @@ pub fn k2(
         Ratio::div(&cpp.base_rate.to_string(), &cpp.total_rate.to_string()).map_err(decimal)?;
 
     let cpp_base = match method {
-        K2Method::Annualized => {
+        K2Method::PdocObserved => {
             let period_annualized =
                 k2_cpp_annualized_base_before_max_rule(pay_periods, period_cpp, cpp_months, cpp)?;
             let ytd_base = ytd_cpp_before_period
@@ -647,10 +727,22 @@ pub fn k2(
             } else {
                 ytd_base
             };
-            if candidate.cmp_ratio(&prorated_base_max) == Ordering::Greater {
+            cap_cpp_base(candidate, prorated_base_max, one)?
+        }
+        K2Method::T4127Literal => {
+            let total_after = ytd_cpp_before_period
+                .checked_add(period_cpp)
+                .map_err(decimal)?;
+            if total_after >= cpp.total_max {
                 prorated_base_max
             } else {
-                candidate.checked_div(one).map_err(decimal)?
+                let raw = k2_cpp_annualized_base_before_max_rule(
+                    pay_periods,
+                    period_cpp,
+                    cpp_months,
+                    cpp,
+                )?;
+                cap_cpp_base(raw, prorated_base_max, one)?
             }
         }
         K2Method::YearToDate => {
@@ -661,16 +753,23 @@ pub fn k2(
             let projected_base = projected_total
                 .checked_mul_ratio(base_total)
                 .map_err(decimal)?;
-            if projected_base.cmp_ratio(&prorated_base_max) == Ordering::Greater {
-                prorated_base_max
-            } else {
-                projected_base.checked_div(one).map_err(decimal)?
-            }
+            cap_cpp_base(projected_base, prorated_base_max, one)?
         }
     };
 
+    let ei_annualized = period_ei.checked_mul(p).map_err(decimal)?;
     let ei_base = match method {
-        K2Method::Annualized => period_ei.checked_mul(p).map_err(decimal)?,
+        K2Method::PdocObserved => ei_annualized,
+        K2Method::T4127Literal => {
+            let total_after = ytd_ei_before_period
+                .checked_add(period_ei)
+                .map_err(decimal)?;
+            if total_after >= ei.employee_max {
+                ei.employee_max
+            } else {
+                ei_annualized
+            }
+        }
         K2Method::YearToDate => ytd_ei_before_period
             .checked_add(period_ei.checked_mul(pr).map_err(decimal)?)
             .map_err(decimal)?,
@@ -683,7 +782,20 @@ pub fn k2(
     rounded_rate_product(credit_base, lowest_rate)
 }
 
-/// Raw Annualized CPP-credit base `(P × C × base/total)` before comparing to YTD.
+fn cap_cpp_base(
+    candidate: Money,
+    prorated_base_max: Ratio,
+    one: Money,
+) -> Result<Ratio, CreditsError> {
+    if candidate.cmp_ratio(&prorated_base_max) == Ordering::Greater {
+        Ok(prorated_base_max)
+    } else {
+        candidate.checked_div(one).map_err(decimal)
+    }
+}
+
+/// Raw period-annualized CPP-credit base `(P × C × base/total)` before the
+/// YTD comparison or the reaching-period maximum rule.
 ///
 /// Test 73 uses this to prove period 20's raw figure is below both `D×ratio`
 /// and `base_max`.

@@ -17,10 +17,16 @@ import {
   parseRobots,
   pathAllowed,
   PdocIdentityDriftError,
+  formatHeartbeat,
   PolicyError,
+  ProgressTracker,
+  PROGRESS_TERMINALS,
   requireOpsDoc,
   rulesForAgent,
   sha256,
+  stallIfIdle,
+  StallError,
+  STALL_AFTER_MS,
   USER_AGENT,
   type RobotsFetch,
 } from "./pdoc.ts";
@@ -174,5 +180,50 @@ describe("policy", () => {
     assert.equal(backoffMs(2), 6_000);
     assert.equal(backoffMs(3), 12_000);
     assert.equal(backoffMs(10), 180_000);
+  });
+
+  it("stallIfIdle throws StallError after STALL_AFTER_MS with no progress", () => {
+    const last = Date.parse("2026-09-12T07:16:16.445Z");
+    stallIfIdle(last, last + STALL_AFTER_MS - 1);
+    assert.throws(
+      () => stallIfIdle(last, last + STALL_AFTER_MS),
+      (err: unknown) =>
+        err instanceof StallError &&
+        err.message.includes("no progress") &&
+        err.message.includes("2026-09-12T07:16:16.445Z"),
+    );
+  });
+
+  it("formatHeartbeat is a single progress line", () => {
+    const line = formatHeartbeat({
+      attempted: 15,
+      completed: 170,
+      lastProgressAt: "2026-09-12T22:51:24.638Z",
+      idleMs: 45_000,
+    });
+    assert.equal(
+      line,
+      "heartbeat attempted=15 completed=170 last_progress=2026-09-12T22:51:24.638Z idle_s=45",
+    );
+  });
+
+  it("every terminal path advances lastProgressMs", () => {
+    assert.deepEqual(
+      [...PROGRESS_TERMINALS],
+      ["captured", "cacheHit", "step2Skip", "editionRetired", "hardError"],
+    );
+    let t = 1_000_000;
+    const progress = new ProgressTracker(t);
+    for (const name of PROGRESS_TERMINALS) {
+      t += 1_000;
+      const before = progress.lastProgressMs;
+      progress[name](t);
+      assert.equal(
+        progress.lastProgressMs,
+        t,
+        `${name} must write lastProgressMs`,
+      );
+      assert.ok(progress.lastProgressMs > before, `${name} must advance the clock`);
+    }
   });
 });

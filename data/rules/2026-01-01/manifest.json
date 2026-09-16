@@ -1,7 +1,7 @@
 {
   "rule_set_version": "2026-01-01",
   "effective_from": "2026-01-01",
-  "effective_to": null,
+    "effective_to": "2026-07-01",
   "published_by": "Canada Revenue Agency",
   "sources": [
     {
@@ -12,7 +12,18 @@
       "source_sha256": "97a57a3072ef8b9caa35450e3aefb5c18f86b332795e5a0b7686860127a6319b",
       "files": [
         "federal.json",
+        "ab.json",
+        "bc.json",
+        "mb.json",
+        "nb.json",
+        "nl.json",
+        "ns.json",
+        "nt.json",
+        "nu.json",
         "on.json",
+        "pe.json",
+        "sk.json",
+        "yt.json",
         "cpp.json",
         "ei.json",
         "qpip.json"

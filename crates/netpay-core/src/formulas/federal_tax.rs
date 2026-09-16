@@ -430,73 +430,192 @@ mod tests {
     // 90. Crossing a bracket threshold by one cent changes T3 by at most $1.00,
     // not at most one cent. The discontinuity at threshold i equals
     // (K_exact,i − K_published,i) − (K_exact,i−1 − K_published,i−1);
-    // each residual is bounded by 0.50. Measured jumps are in
-    // tests/vectors/bracket_discontinuity_2026.json.
+    // each residual is bounded by 0.50. Measured jumps for every bracket
+    // table (FED + twelve provinces/territories, both rule-set versions)
+    // live in tests/vectors/bracket_discontinuity_2026.json.
     #[test]
     fn crossing_threshold_by_one_cent_matches_k_rounding_discontinuity() {
-        let set = crate::rules::loader::load_ruleset_2026_01_01().unwrap();
-        let mut measured: Vec<(String, Money, Money, Money, Money)> = Vec::new();
-        for (code, jurisdiction) in &set.jurisdictions {
-            let brackets = jurisdiction
-                .brackets
-                .get(crate::rules::schema::CalculationOption::Option1);
-            for i in 1..brackets.len() {
-                let threshold = brackets[i].threshold;
-                let just_below = threshold.checked_sub(money("0.01")).unwrap();
-                let t = |a: Money| {
-                    federal_t3(
-                        a,
-                        money("0.00"),
-                        money("0.00"),
-                        money("0.00"),
-                        money("0.00"),
-                        brackets,
-                    )
-                    .unwrap()
-                };
-                let t3_below = t(just_below);
-                let t3_at = t(threshold);
-                let jump = t3_at.checked_sub(t3_below).unwrap();
-                let abs_jump = if jump.is_negative() { -jump } else { jump };
-                assert!(
-                    abs_jump <= money("1.00"),
-                    "{} threshold {}: |jump| {abs_jump} exceeds $1.00 ({t3_below} → {t3_at})",
-                    code.0,
-                    threshold
-                );
-
-                let disc =
-                    crate::formulas::k_identity::k_rounding_discontinuity(brackets, i).unwrap();
-                let at_new = (threshold * brackets[i].rate)
-                    .checked_sub(brackets[i].constant)
-                    .unwrap();
-                let at_old = (threshold * brackets[i - 1].rate)
-                    .checked_sub(brackets[i - 1].constant)
-                    .unwrap();
-                let same_a_gap = at_new.checked_sub(at_old).unwrap();
-                assert_eq!(
-                    same_a_gap, disc,
-                    "{} threshold {}: same-A formula gap {same_a_gap} != residual expression {disc}",
-                    code.0, threshold
-                );
-                measured.push((code.0.clone(), threshold, t3_below, t3_at, jump));
-            }
+        let measured = measure_all_bracket_jumps();
+        assert_eq!(
+            measured
+                .iter()
+                .map(|row| row.jurisdiction.as_str())
+                .collect::<std::collections::BTreeSet<_>>(),
+            ["AB", "BC", "FED", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "SK", "YT"]
+                .into_iter()
+                .collect(),
+            "M-001 table must cover all thirteen bracket jurisdictions"
+        );
+        for row in &measured {
+            let abs_jump = if row.jump.is_negative() {
+                -row.jump
+            } else {
+                row.jump
+            };
+            assert!(
+                abs_jump <= money("1.00"),
+                "{} {} {} {}: |jump| {abs_jump} exceeds $1.00 ({} → {})",
+                row.rule_set_version,
+                row.jurisdiction,
+                row.calculation_option,
+                row.threshold,
+                row.t3_below,
+                row.t3_at
+            );
+            assert_eq!(
+                row.same_a_gap,
+                row.k_residual_delta,
+                "{} {} {} {}: same-A formula gap {} != residual expression {}",
+                row.rule_set_version,
+                row.jurisdiction,
+                row.calculation_option,
+                row.threshold,
+                row.same_a_gap,
+                row.k_residual_delta
+            );
         }
         assert_measured_jumps_match_fixture(&measured);
     }
 
-    fn assert_measured_jumps_match_fixture(measured: &[(String, Money, Money, Money, Money)]) {
+    #[test]
+    #[ignore = "set DUMP_M001=1 and run with --ignored --nocapture to regenerate the fixture"]
+    fn dump_m001_fixture_when_requested() {
+        if std::env::var("DUMP_M001").is_err() {
+            return;
+        }
+        let measured = measure_all_bracket_jumps();
+        let mut out = String::from("{\n");
+        out.push_str("  \"source_document\": \"T4127 Payroll Deductions Formulas — Table 8.1 / Chapter 4 provincial brackets\",\n");
+        out.push_str("  \"note\": \"Jump = T3(threshold) − T3(threshold − 0.01) with published whole-dollar K and zero credits. Negative means annual tax falls when income crosses the threshold. k_residual_delta is (K_exact,i − K_published,i) − (K_exact,i−1 − K_published,i−1) and equals the unrounded same-A formula gap. FED plus twelve provincial tables; Outside Canada has no provincial K.\",\n");
+        out.push_str("  \"thresholds\": [\n");
+        for (i, row) in measured.iter().enumerate() {
+            let delta = row.k_residual_delta.as_decimal().normalize().to_string();
+            out.push_str("    {\n");
+            out.push_str(&format!(
+                "      \"rule_set_version\": \"{}\",\n",
+                row.rule_set_version
+            ));
+            out.push_str(&format!(
+                "      \"jurisdiction\": \"{}\",\n",
+                row.jurisdiction
+            ));
+            out.push_str(&format!(
+                "      \"calculation_option\": \"{}\",\n",
+                row.calculation_option
+            ));
+            out.push_str(&format!("      \"threshold\": \"{}\",\n", row.threshold));
+            out.push_str(&format!("      \"t3_below\": \"{}\",\n", row.t3_below));
+            out.push_str(&format!("      \"t3_at\": \"{}\",\n", row.t3_at));
+            out.push_str(&format!("      \"jump\": \"{}\",\n", row.jump));
+            out.push_str(&format!("      \"k_residual_delta\": \"{delta}\"\n"));
+            if i + 1 == measured.len() {
+                out.push_str("    }\n");
+            } else {
+                out.push_str("    },\n");
+            }
+        }
+        out.push_str("  ]\n}\n");
+        eprint!("{out}");
+    }
+
+    struct MeasuredJump {
+        rule_set_version: String,
+        jurisdiction: String,
+        calculation_option: String,
+        threshold: Money,
+        t3_below: Money,
+        t3_at: Money,
+        jump: Money,
+        k_residual_delta: Money,
+        same_a_gap: Money,
+    }
+
+    fn measure_all_bracket_jumps() -> Vec<MeasuredJump> {
+        use crate::rules::schema::{CalculationOption, OptionScoped};
+        let mut measured = Vec::new();
+        for set in [
+            crate::rules::loader::load_ruleset_2026_01_01().unwrap(),
+            crate::rules::loader::load_ruleset_2026_07_01().unwrap(),
+        ] {
+            assert_eq!(
+                set.jurisdictions.len(),
+                13,
+                "{} must embed FED plus twelve provincial tables",
+                set.rule_set_version
+            );
+            for (code, jurisdiction) in &set.jurisdictions {
+                let options: &[CalculationOption] = match &jurisdiction.brackets {
+                    OptionScoped::Both(_) => &[CalculationOption::Option1],
+                    OptionScoped::PerOption { .. } => {
+                        &[CalculationOption::Option1, CalculationOption::Option2]
+                    }
+                };
+                for option in options {
+                    let brackets = jurisdiction.brackets.get(*option);
+                    let option_name = match option {
+                        CalculationOption::Option1 => "option1",
+                        CalculationOption::Option2 => "option2",
+                    };
+                    for i in 1..brackets.len() {
+                        let threshold = brackets[i].threshold;
+                        let just_below = threshold.checked_sub(money("0.01")).unwrap();
+                        let t = |a: Money| {
+                            federal_t3(
+                                a,
+                                money("0.00"),
+                                money("0.00"),
+                                money("0.00"),
+                                money("0.00"),
+                                brackets,
+                            )
+                            .unwrap()
+                        };
+                        let t3_below = t(just_below);
+                        let t3_at = t(threshold);
+                        let jump = t3_at.checked_sub(t3_below).unwrap();
+                        let disc =
+                            crate::formulas::k_identity::k_rounding_discontinuity(brackets, i)
+                                .unwrap();
+                        let at_new = (threshold * brackets[i].rate)
+                            .checked_sub(brackets[i].constant)
+                            .unwrap();
+                        let at_old = (threshold * brackets[i - 1].rate)
+                            .checked_sub(brackets[i - 1].constant)
+                            .unwrap();
+                        let same_a_gap = at_new.checked_sub(at_old).unwrap();
+                        measured.push(MeasuredJump {
+                            rule_set_version: set.rule_set_version.clone(),
+                            jurisdiction: code.0.clone(),
+                            calculation_option: option_name.to_string(),
+                            threshold,
+                            t3_below,
+                            t3_at,
+                            jump,
+                            k_residual_delta: disc,
+                            same_a_gap,
+                        });
+                    }
+                }
+            }
+        }
+        measured
+    }
+
+    fn assert_measured_jumps_match_fixture(measured: &[MeasuredJump]) {
         #[derive(serde::Deserialize)]
         struct Fixture {
             thresholds: Vec<Row>,
         }
         #[derive(serde::Deserialize)]
         struct Row {
+            rule_set_version: String,
             jurisdiction: String,
+            calculation_option: String,
             threshold: String,
             t3_below: String,
             t3_at: String,
             jump: String,
+            k_residual_delta: String,
         }
         let raw = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
@@ -506,16 +625,25 @@ mod tests {
         assert_eq!(
             fixture.thresholds.len(),
             measured.len(),
-            "fixture must list every FED and ON threshold"
+            "fixture must list every threshold of all thirteen bracket tables, both editions"
         );
-        for (row, (code, threshold, below, at, jump)) in
-            fixture.thresholds.iter().zip(measured.iter())
-        {
-            assert_eq!(row.jurisdiction, *code);
-            assert_eq!(money(&row.threshold), *threshold);
-            assert_eq!(money(&row.t3_below), *below);
-            assert_eq!(money(&row.t3_at), *at);
-            assert_eq!(money(&row.jump), *jump);
+        for (row, got) in fixture.thresholds.iter().zip(measured.iter()) {
+            assert_eq!(row.rule_set_version, got.rule_set_version);
+            assert_eq!(row.jurisdiction, got.jurisdiction);
+            assert_eq!(row.calculation_option, got.calculation_option);
+            assert_eq!(money(&row.threshold), got.threshold);
+            assert_eq!(money(&row.t3_below), got.t3_below);
+            assert_eq!(money(&row.t3_at), got.t3_at);
+            assert_eq!(money(&row.jump), got.jump);
+            assert_eq!(
+                crate::decimal::Money::parse(&row.k_residual_delta).unwrap(),
+                got.k_residual_delta,
+                "{} {} {} {}: fixture k_residual_delta",
+                got.rule_set_version,
+                got.jurisdiction,
+                got.calculation_option,
+                got.threshold
+            );
         }
     }
 

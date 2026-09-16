@@ -1,6 +1,13 @@
 [workspace]
 resolver = "2"
-members = ["crates/netpay-core", "crates/netpay-wasm", "crates/netpay-cli"]
+members = [
+    "crates/netpay-core",
+    "crates/netpay-wasm",
+    "crates/netpay-cli",
+    "tools/ingest",
+    "tools/grid-gen",
+    "tools/conformance",
+]
 
 [workspace.package]
 version = "0.1.0"

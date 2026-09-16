@@ -6,6 +6,8 @@ pub mod cpp;
 pub mod credits;
 pub mod ei;
 pub mod federal_tax;
+pub mod indexing;
+#[cfg(test)]
 pub mod k_identity;
 pub mod per_period;
 pub mod province;

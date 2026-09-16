@@ -28,7 +28,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "6e90c7ca206a1f07632715f82276c2d0134cc6f7c50e142eae6ee52bf717e3e5"
+        "screenshot_sha256": "6e90c7ca206a1f07632715f82276c2d0134cc6f7c50e142eae6ee52bf717e3e5",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC result screen SA_R; claim codes 1/1"
     },
@@ -60,7 +62,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "ecac47e3146e41ff1fbd4a56318a63c8db2389fa50a37d50203c32756dfde806"
+        "screenshot_sha256": "ecac47e3146e41ff1fbd4a56318a63c8db2389fa50a37d50203c32756dfde806",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC result screen SA_R; also shows F5 additional contribution 9.33"
     },
@@ -92,7 +96,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "a1b566e315ffe1e519a59648a2e9646a1b2064b8976a1806d4591bd4f4ddef47"
+        "screenshot_sha256": "a1b566e315ffe1e519a59648a2e9646a1b2064b8976a1806d4591bd4f4ddef47",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC result screen SA_R; claim codes 1/1"
     },
@@ -127,7 +133,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "3e6cbfb0f0c62c4cca7c6634ba4b0f3d3a865f951f5a21c46a1956365b9e9c92"
+        "screenshot_sha256": "3e6cbfb0f0c62c4cca7c6634ba4b0f3d3a865f951f5a21c46a1956365b9e9c92",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; YTD PE 70000 / YTD CPP 4000; period C remainder path"
     },
@@ -163,7 +171,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "e5396f02628950b636f91700dd592b8890d1b9ce5258ce4f76f8d78bcbaf616f"
+        "screenshot_sha256": "e5396f02628950b636f91700dd592b8890d1b9ce5258ce4f76f8d78bcbaf616f",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; ytd_pe=84000 ytd_cpp2=400 \u2192 CPP2 remaining-room cap 16.00 binds"
     },
@@ -195,7 +205,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "c6b0c671c880d3ad5312fc82a4b724ce6c70b114cf66e517147776781367be31"
+        "screenshot_sha256": "c6b0c671c880d3ad5312fc82a4b724ce6c70b114cf66e517147776781367be31",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R via Claim Code 1 (dynamic BPAF 15935.56); not fixed TD1 16452"
     },
@@ -227,7 +239,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "39a8d38e824922be04b59fc089067bd19291c94ebd539da244ba798e3089efcf"
+        "screenshot_sha256": "39a8d38e824922be04b59fc089067bd19291c94ebd539da244ba798e3089efcf",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; Ontario surtax V1 tier 1 band"
     },
@@ -259,7 +273,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "36badeb15aee410cad5d7be1b14a49b83b11d156e07abfa1170cd1b96d8a7b15"
+        "screenshot_sha256": "36badeb15aee410cad5d7be1b14a49b83b11d156e07abfa1170cd1b96d8a7b15",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; Ontario surtax V1 tier 2 cumulative"
     },
@@ -291,7 +307,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "5703bdb1253413de765e87c55b64fe1a3b018d6e5b562bbbccff7c29efae86be"
+        "screenshot_sha256": "5703bdb1253413de765e87c55b64fe1a3b018d6e5b562bbbccff7c29efae86be",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; V2=0 at A=18200"
     },
@@ -323,7 +341,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "9fe68bf570ce11783b7c20b1a9f4dd8d993ce8f364d96a00d1aa04bc58be2c48"
+        "screenshot_sha256": "9fe68bf570ce11783b7c20b1a9f4dd8d993ce8f364d96a00d1aa04bc58be2c48",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; health tier 20000<A<=36000"
     },
@@ -355,7 +375,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "d60354ddb5f7fa18fe148345166b53aa890677765e40fc0c4124f4d031371529"
+        "screenshot_sha256": "d60354ddb5f7fa18fe148345166b53aa890677765e40fc0c4124f4d031371529",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; health tier 36000<A<=48000"
     },
@@ -387,7 +409,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "5298a5310dbc198164097bf781eb5a2a6381cf5238cdaa82f85a46383d68e712"
+        "screenshot_sha256": "5298a5310dbc198164097bf781eb5a2a6381cf5238cdaa82f85a46383d68e712",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; health tier 48000<A<=72000"
     },
@@ -419,7 +443,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "cfa9c8f17f957767de88433d8550405e76389e13b29c745be6085a52b664732c"
+        "screenshot_sha256": "cfa9c8f17f957767de88433d8550405e76389e13b29c745be6085a52b664732c",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; health tier 72000<A<=200000"
     },
@@ -451,7 +477,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "41f95b80b1a7b7fb3c615863768563a532a9cf47ff137a5c740fd3f5863625c2"
+        "screenshot_sha256": "41f95b80b1a7b7fb3c615863768563a532a9cf47ff137a5c740fd3f5863625c2",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R via Claim Code 1 (dynamic BPAF 15393.31)"
     },
@@ -483,7 +511,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "4638100cbb54d573c8e86721c25fc7d0a0dc51e0e4f247122b04e63b3671df36"
+        "screenshot_sha256": "4638100cbb54d573c8e86721c25fc7d0a0dc51e0e4f247122b04e63b3671df36",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; claim E/E; provincial line is OHP-only 14.42"
     },
@@ -515,7 +545,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "584685a947f4b9f6c39e341971d01d8449f972e74b2576fd6dfa2fd0ab97d2b2"
+        "screenshot_sha256": "584685a947f4b9f6c39e341971d01d8449f972e74b2576fd6dfa2fd0ab97d2b2",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; claim codes 0/0"
     },
@@ -547,7 +579,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "e4237a6dfceca01aad822854fac07dbe09b7b38f04d40c55610cd308b4075920"
+        "screenshot_sha256": "e4237a6dfceca01aad822854fac07dbe09b7b38f04d40c55610cd308b4075920",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; TD1 amounts 16452/12989 (matches cc1 numerically)"
     },
@@ -579,7 +613,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "82a6d05b3d3cbf8637a08eb0a0a9c3a1e9f3935deaea491b5cca279ad5ce064e"
+        "screenshot_sha256": "82a6d05b3d3cbf8637a08eb0a0a9c3a1e9f3935deaea491b5cca279ad5ce064e",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R; monthly P=12 claim codes 1/1"
     },
@@ -599,7 +635,7 @@
         "ytd_pensionable_earnings": "71000.00",
         "ytd_insurable_earnings": "50000.00",
         "pay_periods_elapsed": 20,
-        "k2_method": "annualized"
+        "k2_method": "pdoc_observed"
       },
       "expected": {
         "federal_tax": "243.95",
@@ -617,9 +653,11 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "7ffb4f821d664bba20b2c09b05903520505344f10c8dab61bca5f772f155e021"
+        "screenshot_sha256": "7ffb4f821d664bba20b2c09b05903520505344f10c8dab61bca5f772f155e021",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
-      "notes": "PDOC SA_R claim-code 1; PE YTD 71000 (raised from 50000 \u2014 PDOC rejects CPP YTD 4200 below its PE consistency floor). D-007 closed: Annualized K2 uses max(P\u00d7C\u00d7ratio, D\u00d7ratio) capped (matches PDOC)."
+      "notes": "PDOC SA_R claim-code 1; PE YTD 71000 (raised from 50000 \u2014 PDOC rejects CPP YTD 4200 below its PE consistency floor). D-007 closed: default k2_method pdoc_observed uses max(P\u00d7C\u00d7ratio, D\u00d7ratio) capped (matches PDOC). See M-002."
     },
     {
       "id": "on-weekly-l-and-u1",
@@ -651,7 +689,9 @@
         "pdoc_version_string": "2026-06-11",
         "browser": "chromium (cursor-ide-browser)",
         "operator": "manual",
-        "screenshot_sha256": "af83d873b3c5099adde12dfe9bec2aed0fac85e1f16153e30aff786eb1b25d77"
+        "screenshot_sha256": "af83d873b3c5099adde12dfe9bec2aed0fac85e1f16153e30aff786eb1b25d77",
+        "observed_edition": "2026-07-01",
+        "rule_set_version": "2026-01-01"
       },
       "notes": "PDOC SA_R: Federal tax 79.51, Additional tax 25.00, Provincial 45.04, CPP 55.50, EI 16.30, union dues 15.00, Total 236.35, Net 763.65. expected.federal_tax is PDOC Federal+Additional (79.51+25.00): employee.federal_tax is T4127 [(T1)/P]+L, not PDOC's Federal-tax line."
     }

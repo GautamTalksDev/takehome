@@ -1,64 +1,1146 @@
 {
-  "rule_set_version": "2026-01-01",
-  "source_document": "T4127 Payroll Deductions Formulas — Table 8.1 (federal) / Ontario provincial brackets",
-  "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html",
-  "note": "Jump = T3(threshold) − T3(threshold − 0.01) with published whole-dollar K and zero credits. Negative means annual tax falls when income crosses the threshold: dollar-rounding of K is not monotone. The discontinuity equals (K_exact,i − K_published,i) − (K_exact,i−1 − K_published,i−1).",
+  "source_document": "T4127 Payroll Deductions Formulas — Table 8.1 / Chapter 4 provincial brackets",
+  "note": "Jump = T3(threshold) − T3(threshold − 0.01) with published whole-dollar K and zero credits. Negative means annual tax falls when income crosses the threshold. k_residual_delta is (K_exact,i − K_published,i) − (K_exact,i−1 − K_published,i−1) and equals the unrounded same-A formula gap. FED plus twelve provincial tables; Outside Canada has no provincial K.",
   "thresholds": [
     {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "61200.00",
+      "t3_below": "4896.00",
+      "t3_at": "4896.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "154259.00",
+      "t3_below": "14201.90",
+      "t3_at": "14202.08",
+      "jump": "0.18",
+      "k_residual_delta": "0.18"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "185111.00",
+      "t3_below": "17904.32",
+      "t3_at": "17904.43",
+      "jump": "0.11",
+      "k_residual_delta": "0.11"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "246813.00",
+      "t3_below": "25925.69",
+      "t3_at": "25925.82",
+      "jump": "0.13",
+      "k_residual_delta": "0.13"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "370220.00",
+      "t3_below": "43202.80",
+      "t3_at": "43202.00",
+      "jump": "-0.80",
+      "k_residual_delta": "-0.8"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "50363.00",
+      "t3_below": "2548.37",
+      "t3_at": "2547.95",
+      "jump": "-0.42",
+      "k_residual_delta": "-0.4168"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "100728.00",
+      "t3_below": "6426.06",
+      "t3_at": "6426.44",
+      "jump": "0.38",
+      "k_residual_delta": "0.384"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "115648.00",
+      "t3_below": "7993.04",
+      "t3_at": "7993.14",
+      "jump": "0.10",
+      "k_residual_delta": "0.0992"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "140430.00",
+      "t3_below": "11038.85",
+      "t3_at": "11039.21",
+      "jump": "0.36",
+      "k_residual_delta": "0.363"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "190405.00",
+      "t3_below": "18385.53",
+      "t3_at": "18385.04",
+      "jump": "-0.49",
+      "k_residual_delta": "-0.495"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "265545.00",
+      "t3_below": "31008.56",
+      "t3_at": "31008.73",
+      "jump": "0.17",
+      "k_residual_delta": "0.165"
+    },
+    {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "FED",
+      "calculation_option": "option1",
       "threshold": "58523.00",
       "t3_below": "8193.22",
       "t3_at": "8193.22",
-      "jump": "0.00"
+      "jump": "0.00",
+      "k_residual_delta": "-0.005"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "FED",
+      "calculation_option": "option1",
       "threshold": "117045.00",
       "t3_below": "20190.22",
       "t3_at": "20190.70",
-      "jump": "0.48"
+      "jump": "0.48",
+      "k_residual_delta": "0.475"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "FED",
+      "calculation_option": "option1",
       "threshold": "181440.00",
       "t3_below": "36933.40",
       "t3_at": "36932.60",
-      "jump": "-0.80"
+      "jump": "-0.80",
+      "k_residual_delta": "-0.8"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "FED",
+      "calculation_option": "option1",
       "threshold": "258482.00",
       "t3_below": "59274.78",
       "t3_at": "59275.06",
-      "jump": "0.28"
+      "jump": "0.28",
+      "k_residual_delta": "0.28"
     },
     {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "MB",
+      "calculation_option": "option1",
+      "threshold": "47000.00",
+      "t3_below": "5076.00",
+      "t3_at": "5075.50",
+      "jump": "-0.50",
+      "k_residual_delta": "-0.5"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "MB",
+      "calculation_option": "option1",
+      "threshold": "100000.00",
+      "t3_below": "11833.00",
+      "t3_at": "11833.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "52333.00",
+      "t3_below": "4919.30",
+      "t3_at": "4919.62",
+      "jump": "0.32",
+      "k_residual_delta": "0.318"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "104666.00",
+      "t3_below": "12246.24",
+      "t3_at": "12245.56",
+      "jump": "-0.68",
+      "k_residual_delta": "-0.68"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "193861.00",
+      "t3_below": "26516.76",
+      "t3_at": "26516.90",
+      "jump": "0.14",
+      "k_residual_delta": "0.135"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "44678.00",
+      "t3_below": "3886.99",
+      "t3_at": "3887.31",
+      "jump": "0.32",
+      "k_residual_delta": "0.324"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "89354.00",
+      "t3_below": "10365.33",
+      "t3_at": "10364.93",
+      "jump": "-0.40",
+      "k_residual_delta": "-0.398"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "159528.00",
+      "t3_below": "21452.42",
+      "t3_at": "21452.98",
+      "jump": "0.56",
+      "k_residual_delta": "0.56"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "223340.00",
+      "t3_below": "32811.52",
+      "t3_at": "32811.32",
+      "jump": "-0.20",
+      "k_residual_delta": "-0.2"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "285319.00",
+      "t3_below": "45083.16",
+      "t3_at": "45083.35",
+      "jump": "0.19",
+      "k_residual_delta": "0.19"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "570638.00",
+      "t3_below": "104429.70",
+      "t3_at": "104428.89",
+      "jump": "-0.81",
+      "k_residual_delta": "-0.81"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "1141275.00",
+      "t3_below": "225974.57",
+      "t3_at": "225974.95",
+      "jump": "0.38",
+      "k_residual_delta": "0.375"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "30995.00",
+      "t3_below": "2724.46",
+      "t3_at": "2724.75",
+      "jump": "0.29",
+      "k_residual_delta": "0.292"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "61991.00",
+      "t3_below": "7358.65",
+      "t3_at": "7357.90",
+      "jump": "-0.75",
+      "k_residual_delta": "-0.7548"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "97417.00",
+      "t3_below": "13263.41",
+      "t3_at": "13263.98",
+      "jump": "0.57",
+      "k_residual_delta": "0.5611"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "157124.00",
+      "t3_below": "23712.70",
+      "t3_at": "23713.04",
+      "jump": "0.34",
+      "k_residual_delta": "0.34"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "53003.00",
+      "t3_below": "3127.18",
+      "t3_at": "3127.26",
+      "jump": "0.08",
+      "k_residual_delta": "0.081"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "106009.00",
+      "t3_below": "7685.77",
+      "t3_at": "7686.10",
+      "jump": "0.33",
+      "k_residual_delta": "0.324"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "172346.00",
+      "t3_below": "15779.21",
+      "t3_at": "15778.61",
+      "jump": "-0.60",
+      "k_residual_delta": "-0.599"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "55801.00",
+      "t3_below": "2232.04",
+      "t3_at": "2232.07",
+      "jump": "0.03",
+      "k_residual_delta": "0.03"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "111602.00",
+      "t3_below": "6138.14",
+      "t3_at": "6138.18",
+      "jump": "0.04",
+      "k_residual_delta": "0.04"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "181439.00",
+      "t3_below": "12423.51",
+      "t3_at": "12423.49",
+      "jump": "-0.02",
+      "k_residual_delta": "-0.025"
+    },
+    {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "ON",
+      "calculation_option": "option1",
       "threshold": "53891.00",
       "t3_below": "2721.49",
       "t3_at": "2721.03",
-      "jump": "-0.46"
+      "jump": "-0.46",
+      "k_residual_delta": "-0.469"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "ON",
+      "calculation_option": "option1",
       "threshold": "107785.00",
       "t3_below": "7652.33",
       "t3_at": "7652.81",
-      "jump": "0.48"
+      "jump": "0.48",
+      "k_residual_delta": "0.4785"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "ON",
+      "calculation_option": "option1",
       "threshold": "150000.00",
       "t3_below": "12364.00",
       "t3_at": "12364.00",
-      "jump": "0.00"
+      "jump": "0.00",
+      "k_residual_delta": "0"
     },
     {
+      "rule_set_version": "2026-01-01",
       "jurisdiction": "ON",
+      "calculation_option": "option1",
       "threshold": "220000.00",
       "t3_below": "20876.00",
       "t3_at": "20876.00",
-      "jump": "0.00"
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "33928.00",
+      "t3_below": "3223.16",
+      "t3_at": "3223.10",
+      "jump": "-0.06",
+      "k_residual_delta": "-0.0584"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "65820.00",
+      "t3_below": "7518.95",
+      "t3_at": "7519.12",
+      "jump": "0.17",
+      "k_residual_delta": "0.166"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "106890.00",
+      "t3_below": "14336.74",
+      "t3_at": "14337.02",
+      "jump": "0.28",
+      "k_residual_delta": "0.278"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "142520.00",
+      "t3_below": "20615.02",
+      "t3_at": "20614.80",
+      "jump": "-0.22",
+      "k_residual_delta": "-0.224"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "SK",
+      "calculation_option": "option1",
+      "threshold": "54532.00",
+      "t3_below": "5725.86",
+      "t3_at": "5725.50",
+      "jump": "-0.36",
+      "k_residual_delta": "-0.36"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "SK",
+      "calculation_option": "option1",
+      "threshold": "155805.00",
+      "t3_below": "18384.62",
+      "t3_at": "18384.73",
+      "jump": "0.11",
+      "k_residual_delta": "0.1"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "58523.00",
+      "t3_below": "3745.47",
+      "t3_at": "3745.07",
+      "jump": "-0.40",
+      "k_residual_delta": "-0.402"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "117045.00",
+      "t3_below": "9012.05",
+      "t3_at": "9012.91",
+      "jump": "0.86",
+      "k_residual_delta": "0.855"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "181440.00",
+      "t3_below": "16031.96",
+      "t3_at": "16031.32",
+      "jump": "-0.64",
+      "k_residual_delta": "-0.64"
+    },
+    {
+      "rule_set_version": "2026-01-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "500000.00",
+      "t3_below": "56807.00",
+      "t3_at": "56807.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "61200.00",
+      "t3_below": "4896.00",
+      "t3_at": "4896.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "154259.00",
+      "t3_below": "14201.90",
+      "t3_at": "14202.08",
+      "jump": "0.18",
+      "k_residual_delta": "0.18"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "185111.00",
+      "t3_below": "17904.32",
+      "t3_at": "17904.43",
+      "jump": "0.11",
+      "k_residual_delta": "0.11"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "246813.00",
+      "t3_below": "25925.69",
+      "t3_at": "25925.82",
+      "jump": "0.13",
+      "k_residual_delta": "0.13"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "AB",
+      "calculation_option": "option1",
+      "threshold": "370220.00",
+      "t3_below": "43202.80",
+      "t3_at": "43202.00",
+      "jump": "-0.80",
+      "k_residual_delta": "-0.8"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "50363.00",
+      "t3_below": "3092.29",
+      "t3_at": "3091.95",
+      "jump": "-0.34",
+      "k_residual_delta": "-0.3372"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "100728.00",
+      "t3_below": "6970.06",
+      "t3_at": "6970.44",
+      "jump": "0.38",
+      "k_residual_delta": "0.384"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "115648.00",
+      "t3_below": "8537.04",
+      "t3_at": "8537.14",
+      "jump": "0.10",
+      "k_residual_delta": "0.0992"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "140430.00",
+      "t3_below": "11582.85",
+      "t3_at": "11582.21",
+      "jump": "-0.64",
+      "k_residual_delta": "-0.637"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "190405.00",
+      "t3_below": "18928.53",
+      "t3_at": "18929.04",
+      "jump": "0.51",
+      "k_residual_delta": "0.505"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option1",
+      "threshold": "265545.00",
+      "t3_below": "31552.56",
+      "t3_at": "31552.73",
+      "jump": "0.17",
+      "k_residual_delta": "0.165"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "50363.00",
+      "t3_below": "2820.33",
+      "t3_at": "2819.95",
+      "jump": "-0.38",
+      "k_residual_delta": "-0.377"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "100728.00",
+      "t3_below": "6698.06",
+      "t3_at": "6698.44",
+      "jump": "0.38",
+      "k_residual_delta": "0.384"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "115648.00",
+      "t3_below": "8265.04",
+      "t3_at": "8265.14",
+      "jump": "0.10",
+      "k_residual_delta": "0.0992"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "140430.00",
+      "t3_below": "11310.85",
+      "t3_at": "11311.21",
+      "jump": "0.36",
+      "k_residual_delta": "0.363"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "190405.00",
+      "t3_below": "18657.53",
+      "t3_at": "18657.04",
+      "jump": "-0.49",
+      "k_residual_delta": "-0.495"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "BC",
+      "calculation_option": "option2",
+      "threshold": "265545.00",
+      "t3_below": "31280.56",
+      "t3_at": "31280.73",
+      "jump": "0.17",
+      "k_residual_delta": "0.165"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "FED",
+      "calculation_option": "option1",
+      "threshold": "58523.00",
+      "t3_below": "8193.22",
+      "t3_at": "8193.22",
+      "jump": "0.00",
+      "k_residual_delta": "-0.005"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "FED",
+      "calculation_option": "option1",
+      "threshold": "117045.00",
+      "t3_below": "20190.22",
+      "t3_at": "20190.70",
+      "jump": "0.48",
+      "k_residual_delta": "0.475"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "FED",
+      "calculation_option": "option1",
+      "threshold": "181440.00",
+      "t3_below": "36933.40",
+      "t3_at": "36932.60",
+      "jump": "-0.80",
+      "k_residual_delta": "-0.8"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "FED",
+      "calculation_option": "option1",
+      "threshold": "258482.00",
+      "t3_below": "59274.78",
+      "t3_at": "59275.06",
+      "jump": "0.28",
+      "k_residual_delta": "0.28"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "MB",
+      "calculation_option": "option1",
+      "threshold": "47000.00",
+      "t3_below": "5076.00",
+      "t3_at": "5075.50",
+      "jump": "-0.50",
+      "k_residual_delta": "-0.5"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "MB",
+      "calculation_option": "option1",
+      "threshold": "100000.00",
+      "t3_below": "11833.00",
+      "t3_at": "11833.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "52333.00",
+      "t3_below": "4919.30",
+      "t3_at": "4919.62",
+      "jump": "0.32",
+      "k_residual_delta": "0.318"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "104666.00",
+      "t3_below": "12246.24",
+      "t3_at": "12245.56",
+      "jump": "-0.68",
+      "k_residual_delta": "-0.68"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NB",
+      "calculation_option": "option1",
+      "threshold": "193861.00",
+      "t3_below": "26516.76",
+      "t3_at": "26516.90",
+      "jump": "0.14",
+      "k_residual_delta": "0.135"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "44678.00",
+      "t3_below": "3886.99",
+      "t3_at": "3887.31",
+      "jump": "0.32",
+      "k_residual_delta": "0.324"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "89354.00",
+      "t3_below": "10365.33",
+      "t3_at": "10364.93",
+      "jump": "-0.40",
+      "k_residual_delta": "-0.398"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "159528.00",
+      "t3_below": "21452.42",
+      "t3_at": "21452.98",
+      "jump": "0.56",
+      "k_residual_delta": "0.56"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "223340.00",
+      "t3_below": "32811.52",
+      "t3_at": "32811.32",
+      "jump": "-0.20",
+      "k_residual_delta": "-0.2"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "285319.00",
+      "t3_below": "45083.16",
+      "t3_at": "45083.35",
+      "jump": "0.19",
+      "k_residual_delta": "0.19"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "570638.00",
+      "t3_below": "104429.70",
+      "t3_at": "104428.89",
+      "jump": "-0.81",
+      "k_residual_delta": "-0.81"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NL",
+      "calculation_option": "option1",
+      "threshold": "1141275.00",
+      "t3_below": "225974.57",
+      "t3_at": "225974.95",
+      "jump": "0.38",
+      "k_residual_delta": "0.375"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "30995.00",
+      "t3_below": "2724.46",
+      "t3_at": "2724.75",
+      "jump": "0.29",
+      "k_residual_delta": "0.292"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "61991.00",
+      "t3_below": "7358.65",
+      "t3_at": "7357.90",
+      "jump": "-0.75",
+      "k_residual_delta": "-0.7548"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "97417.00",
+      "t3_below": "13263.41",
+      "t3_at": "13263.98",
+      "jump": "0.57",
+      "k_residual_delta": "0.5611"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NS",
+      "calculation_option": "option1",
+      "threshold": "157124.00",
+      "t3_below": "23712.70",
+      "t3_at": "23713.04",
+      "jump": "0.34",
+      "k_residual_delta": "0.34"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "53003.00",
+      "t3_below": "3127.18",
+      "t3_at": "3127.26",
+      "jump": "0.08",
+      "k_residual_delta": "0.081"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "106009.00",
+      "t3_below": "7685.77",
+      "t3_at": "7686.10",
+      "jump": "0.33",
+      "k_residual_delta": "0.324"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NT",
+      "calculation_option": "option1",
+      "threshold": "172346.00",
+      "t3_below": "15779.21",
+      "t3_at": "15778.61",
+      "jump": "-0.60",
+      "k_residual_delta": "-0.599"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "55801.00",
+      "t3_below": "2232.04",
+      "t3_at": "2232.07",
+      "jump": "0.03",
+      "k_residual_delta": "0.03"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "111602.00",
+      "t3_below": "6138.14",
+      "t3_at": "6138.18",
+      "jump": "0.04",
+      "k_residual_delta": "0.04"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "NU",
+      "calculation_option": "option1",
+      "threshold": "181439.00",
+      "t3_below": "12423.51",
+      "t3_at": "12423.49",
+      "jump": "-0.02",
+      "k_residual_delta": "-0.025"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "ON",
+      "calculation_option": "option1",
+      "threshold": "53891.00",
+      "t3_below": "2721.49",
+      "t3_at": "2721.03",
+      "jump": "-0.46",
+      "k_residual_delta": "-0.469"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "ON",
+      "calculation_option": "option1",
+      "threshold": "107785.00",
+      "t3_below": "7652.33",
+      "t3_at": "7652.81",
+      "jump": "0.48",
+      "k_residual_delta": "0.4785"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "ON",
+      "calculation_option": "option1",
+      "threshold": "150000.00",
+      "t3_below": "12364.00",
+      "t3_at": "12364.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "ON",
+      "calculation_option": "option1",
+      "threshold": "220000.00",
+      "t3_below": "20876.00",
+      "t3_at": "20876.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "33928.00",
+      "t3_below": "3223.16",
+      "t3_at": "3223.10",
+      "jump": "-0.06",
+      "k_residual_delta": "-0.0584"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "65820.00",
+      "t3_below": "7518.95",
+      "t3_at": "7519.12",
+      "jump": "0.17",
+      "k_residual_delta": "0.166"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "106890.00",
+      "t3_below": "14336.74",
+      "t3_at": "14337.02",
+      "jump": "0.28",
+      "k_residual_delta": "0.278"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "142520.00",
+      "t3_below": "20615.02",
+      "t3_at": "20614.80",
+      "jump": "-0.22",
+      "k_residual_delta": "-0.224"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option1",
+      "threshold": "200000.00",
+      "t3_below": "31536.00",
+      "t3_at": "31536.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option2",
+      "threshold": "33928.00",
+      "t3_below": "3223.16",
+      "t3_at": "3223.10",
+      "jump": "-0.06",
+      "k_residual_delta": "-0.0584"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option2",
+      "threshold": "65820.00",
+      "t3_below": "7518.95",
+      "t3_at": "7519.12",
+      "jump": "0.17",
+      "k_residual_delta": "0.166"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option2",
+      "threshold": "106890.00",
+      "t3_below": "14336.74",
+      "t3_at": "14337.02",
+      "jump": "0.28",
+      "k_residual_delta": "0.278"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option2",
+      "threshold": "142520.00",
+      "t3_below": "20615.02",
+      "t3_at": "20614.80",
+      "jump": "-0.22",
+      "k_residual_delta": "-0.224"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "PE",
+      "calculation_option": "option2",
+      "threshold": "200000.00",
+      "t3_below": "31536.00",
+      "t3_at": "31536.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "SK",
+      "calculation_option": "option1",
+      "threshold": "54532.00",
+      "t3_below": "5725.86",
+      "t3_at": "5725.50",
+      "jump": "-0.36",
+      "k_residual_delta": "-0.36"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "SK",
+      "calculation_option": "option1",
+      "threshold": "155805.00",
+      "t3_below": "18384.62",
+      "t3_at": "18384.73",
+      "jump": "0.11",
+      "k_residual_delta": "0.1"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "58523.00",
+      "t3_below": "3745.47",
+      "t3_at": "3745.07",
+      "jump": "-0.40",
+      "k_residual_delta": "-0.402"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "117045.00",
+      "t3_below": "9012.05",
+      "t3_at": "9012.91",
+      "jump": "0.86",
+      "k_residual_delta": "0.855"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "181440.00",
+      "t3_below": "16031.96",
+      "t3_at": "16031.32",
+      "jump": "-0.64",
+      "k_residual_delta": "-0.64"
+    },
+    {
+      "rule_set_version": "2026-07-01",
+      "jurisdiction": "YT",
+      "calculation_option": "option1",
+      "threshold": "500000.00",
+      "t3_below": "56807.00",
+      "t3_at": "56807.00",
+      "jump": "0.00",
+      "k_residual_delta": "0"
     }
   ]
 }

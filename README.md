@@ -11,6 +11,14 @@ curl -X POST https://api.netpay.ca/v1/deductions \
 Every response names the rule set version that answered it. Ask for a date in
 February 2026 in November 2026 and you get February's rules.
 
+```bash
+curl https://api.netpay.ca/v1/jurisdictions
+```
+
+Quebec is listed there as unsupported. A `QC` deductions request returns
+`JurisdictionNotSupported`; it does not return federal-only tax. Details:
+[docs/jurisdictions.md](docs/jurisdictions.md), [docs/pricing.md](docs/pricing.md).
+
 - Conformance record (including every disagreement with CRA PDOC): /conformance
 - Machine-readable change log: /changes
 - Pre-registered stop condition: [KILL-TEST.md](./KILL-TEST.md)

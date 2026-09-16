@@ -1,0 +1,29 @@
+{
+  "basic_personal_amount": {
+    "amount": "20381.00",
+    "type": "fixed"
+  },
+  "brackets": [
+    {
+      "constant": "0.00",
+      "rate": "0.1050",
+      "threshold": "0"
+    },
+    {
+      "constant": "1091.00",
+      "rate": "0.1250",
+      "threshold": "54532.00"
+    },
+    {
+      "constant": "4207.00",
+      "rate": "0.1450",
+      "threshold": "155805.00"
+    }
+  ],
+  "index_rate": "0.020",
+  "lcp": {
+    "max": "875.00",
+    "rate": "0.175"
+  },
+  "lowest_rate": "0.1050"
+}

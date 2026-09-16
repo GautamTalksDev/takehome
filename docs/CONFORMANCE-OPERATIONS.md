@@ -84,6 +84,8 @@ Non-negotiable for every automated session:
 | Minimum gap between **network** requests that hit PDOC | **3 seconds** |
 | Non-HTTP-200 (or failed navigation / form submit) | **Exponential backoff** before retry |
 | Consecutive hard failures | **Hard stop after 3**, loud error, no further requests that session |
+| **Heartbeat** | **Every 30 seconds** to `data/pdoc-cache/queue-progress.log` (`heartbeat attempted=… idle_s=…`) |
+| **Stall** | **No completed form for 5 minutes** → **non-zero exit**, checkpoint saved. A hung browser is not a rate limit. |
 | Scheduling | **Overnight / scheduled batches only** — never a burst of back-to-back fetches |
 | Cache hit | **Zero** network contact with PDOC |
 
@@ -150,6 +152,15 @@ vectors), the record includes:
 | Operator | `pdoc-oracle-harness` for this tool |
 | PDOC identity | Version string, or form-structure hash if no version is exposed (§10.2) |
 | robots.txt hash | SHA-256 of each robots.txt body fetched for this run (§10.1) |
+| `observed_edition` | Calendar rule-set edition live PDOC was **serving** at capture time (e.g. `2026-07-01` for the 123rd edition). Distinct from `rule_set_version`, which is the case key. |
+| `rule_set_version` | Netpay / CRA effective rule-set id the case was generated against |
+
+A cache record may satisfy a case only when `observed_edition` equals the
+case `rule_set_version`, **or** `data/edition-identity.json` proves every
+jurisdiction the case touches is field-identical between those editions
+(test 18 jurisdiction tables + test 19 claim-code files). Anything else is
+a hard error — including January-only BC/NL/PE forms against a July-serving
+PDOC, which are **edition-retired**, not pending.
 
 Emitted vector records use **exactly** the step-12 format consumed by
 `crates/netpay-core/tests/pdoc_vectors.rs` (`id`, `description`, `request`,
@@ -297,10 +308,54 @@ pre-filled with the published maximum. Using fixed `$16,452` on a phaseout
 case silently corrupts that entire grid dimension: every cell looks “captured”
 but the oracle never applied BPAF reduction.
 
-This bit one M1 vector before correction. Write it into every M2 capture runbook
-before generating ~250,000 cases through the same path.
+This bit one M1 vector before correction. Write it into every M2 capture runbook.
+Do not generate ~250,000 PDOC visits; see §13.
 
+### 11.2 Oracle source: `/SALARY/calculate` JSON vs rendered DOM
+
+The harness reads period amounts from PDOC’s **`/SALARY/calculate` JSON**
+response (XSSI-prefixed), not from the results DOM. Reasons:
+
+1. The Angular results page can crash mid-render after a successful calculate.
+2. The JSON payload is stable and complete for the fields we map.
+
+That endpoint is a **different interface** than a human user sees. It is
+undocumented as a public API. We treat it as the capture oracle only because
+it is what the salary form itself posts to.
+
+**Spot-check policy:** on every new harness version, and at the start of each
+overnight queue session, compare JSON figures to the rendered results for a
+handful of cases (at least one exact match and one known M-003 midpoint-down
+case when available). Record the check in the run checkpoint notes.
+If JSON and DOM diverge on a mapped field, **hard stop** — do not trust the
+queue until the mapping is reconciled.
+
+**Spot-check performed 2026-09-12:** three cases (ON weekly claim1, AB P=10
+M-003, BC biweekly claim0). Federal and provincial tax lines matched JSON ↔
+rendered text. Full results DOM still often incomplete (CPP/EI/net lines
+missing — the Angular hazard that motivated JSON capture). `npm run
+spot-check-json-dom` in `tools/pdoc-oracle`.
+
+## 12. Grid version on every run
+
+The M2 case list comes from `tools/grid-gen`. It is deterministic: same
+`grid_version` (`2026.1`) and seed (`t4127-grid-2026.1`) produce byte-identical
+output. Every conformance run — cache hit or capture — **records that
+`grid_version`** in the run header and in [`CONFORMANCE.md`](../CONFORMANCE.md).
+A number without a grid version is not a conformance number.
+
+## 13. Sampling design (PDOC vs interior vs uncapturable)
+
+The grid is 842,304 cells. PDOC is one session at 3 seconds per uncached
+form. The published queue is every **distinct** July boundary form against
+the **ten** pay periods the live salary UI exposes (not all fourteen legal
+P). Forms with P ∈ {1, 2, 4, 2000}, `$0` gross, or sub-dollar gross are the
+named **`uncapturable`** class: invariants + differential oracle, same as
+the interior log-ladder. Root [`CONFORMANCE.md`](../CONFORMANCE.md) states
+the split and the distinct-form count after fingerprint dedup. Do not queue
+a run that cannot finish, and do not publish a shorter queue under the old
+all-14-P headline.
 
 ---
 
-*Last updated: 2026-09-12 — §11 capture hazard (fixed TD1 vs claim codes / BPAF); §10 identity alarm; robots.txt checked before first automated harness capture.*
+*Last updated: 2026-09-12 — §11.2 JSON oracle; §13 ten-P queue + uncapturable; §12 grid version; §10 identity alarm.*

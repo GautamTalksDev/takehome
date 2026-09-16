@@ -1,0 +1,22 @@
+{
+  "FED": {
+    "bpa_min": "14829.00"
+  },
+  "AB": {
+    "supplemental_credit": true
+  },
+  "BC": {
+    "tax_reduction_dependant": "41722.00"
+  },
+  "ON": {
+    "tax_reduction_dependant": "554.00",
+    "health_premium": [
+      { "threshold": "0.00", "rate": "0.00", "base": "0.00", "cap": "0.00" },
+      { "threshold": "20000.00", "rate": "0.06", "base": "0.00", "cap": "300.00" },
+      { "threshold": "36000.00", "rate": "0.06", "base": "300.00", "cap": "450.00" },
+      { "threshold": "48000.00", "rate": "0.25", "base": "450.00", "cap": "600.00" },
+      { "threshold": "72000.00", "rate": "0.25", "base": "600.00", "cap": "750.00" },
+      { "threshold": "200000.00", "rate": "0.25", "base": "750.00", "cap": "900.00" }
+    ]
+  }
+}

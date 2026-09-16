@@ -1,0 +1,98 @@
+{
+  "basic_personal_amount": {
+    "amount": "13216.00",
+    "type": "fixed"
+  },
+  "brackets": {
+    "option1": [
+      {
+        "constant": "0.00",
+        "prorated": true,
+        "rate": "0.0614",
+        "threshold": "0"
+      },
+      {
+        "constant": "786.00",
+        "rate": "0.0770",
+        "threshold": "50363.00"
+      },
+      {
+        "constant": "3606.00",
+        "rate": "0.1050",
+        "threshold": "100728.00"
+      },
+      {
+        "constant": "5676.00",
+        "rate": "0.1229",
+        "threshold": "115648.00"
+      },
+      {
+        "constant": "9061.00",
+        "rate": "0.1470",
+        "threshold": "140430.00"
+      },
+      {
+        "constant": "13059.00",
+        "rate": "0.1680",
+        "threshold": "190405.00"
+      },
+      {
+        "constant": "22884.00",
+        "rate": "0.2050",
+        "threshold": "265545.00"
+      }
+    ],
+    "option2": [
+      {
+        "constant": "0.00",
+        "rate": "0.0560",
+        "threshold": "0"
+      },
+      {
+        "constant": "1058.00",
+        "rate": "0.0770",
+        "threshold": "50363.00"
+      },
+      {
+        "constant": "3878.00",
+        "rate": "0.1050",
+        "threshold": "100728.00"
+      },
+      {
+        "constant": "5948.00",
+        "rate": "0.1229",
+        "threshold": "115648.00"
+      },
+      {
+        "constant": "9332.00",
+        "rate": "0.1470",
+        "threshold": "140430.00"
+      },
+      {
+        "constant": "13331.00",
+        "rate": "0.1680",
+        "threshold": "190405.00"
+      },
+      {
+        "constant": "23156.00",
+        "rate": "0.2050",
+        "threshold": "265545.00"
+      }
+    ]
+  },
+  "index_rate": "0.022",
+  "lowest_rate": {
+    "option1": "0.0614",
+    "option2": "0.0560"
+  },
+  "tax_reduction": {
+    "option1": {
+      "basic": "805.00",
+      "dependant": "44952.00"
+    },
+    "option2": {
+      "basic": "690.00",
+      "dependant": "44952.00"
+    }
+  }
+}

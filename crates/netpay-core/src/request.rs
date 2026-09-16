@@ -14,6 +14,7 @@ use thiserror::Error;
 mod tests {
     use super::{
         CalculationOption, ClaimCode, K2Method, PayPeriod, Province, Request, RequestError,
+        RoundingCompat,
     };
 
     fn minimal_json() -> String {
@@ -83,16 +84,37 @@ mod tests {
     }
 
     #[test]
-    fn defaults_option1_cpp_months_12_k2_annualized_earnings_follow_gross() {
+    fn defaults_option1_cpp_months_12_k2_pdoc_observed_earnings_follow_gross() {
         let req = Request::from_json(&minimal_json()).expect("minimal");
         assert_eq!(req.calculation_option, CalculationOption::Option1);
         assert_eq!(req.cpp_months, 12);
-        assert_eq!(req.k2_method, K2Method::Annualized);
+        assert_eq!(req.k2_method, K2Method::PdocObserved);
+        assert_eq!(req.rounding_compat, RoundingCompat::T4127);
         assert_eq!(req.pensionable_earnings(), &req.gross_pay);
         assert_eq!(req.insurable_earnings(), &req.gross_pay);
         assert!(req.as_of.to_string() == "2026-03-15");
         assert_eq!(req.dependants_under_19, None);
         assert_eq!(req.dependants_disabled, None);
+    }
+
+    #[test]
+    fn k2_method_wire_names_and_annualized_alias() {
+        fn parse(method: &str) -> K2Method {
+            let json = format!(
+                r#"{{
+                    "as_of": "2026-03-15",
+                    "province": "ON",
+                    "pay_period": 26,
+                    "gross_pay": "2500.00",
+                    "k2_method": "{method}"
+                }}"#
+            );
+            Request::from_json(&json).expect(method).k2_method
+        }
+        assert_eq!(parse("pdoc_observed"), K2Method::PdocObserved);
+        assert_eq!(parse("annualized"), K2Method::PdocObserved);
+        assert_eq!(parse("t4127_literal"), K2Method::T4127Literal);
+        assert_eq!(parse("year_to_date"), K2Method::YearToDate);
     }
 
     #[test]
@@ -212,6 +234,12 @@ pub enum RequestError {
         "ambiguous provincial claim: supply provincial_claim_code or provincial_tcp, not both (field conflict)"
     )]
     AmbiguousProvincialClaim,
+    /// `rounding_compat: pdoc` is accepted on the wire (ADR-003) but has no
+    /// implementation until finding 002 names PDOC’s midpoint condition.
+    #[error(
+        "rounding_compat pdoc is not implemented until finding 002 names the PDOC midpoint rule (ADR-003)"
+    )]
+    RoundingCompatPdocNotImplemented,
 }
 
 impl Serialize for Province {
@@ -276,6 +304,31 @@ impl Province {
         Self::Yt,
         Self::OutsideCanada,
     ];
+
+    /// Every province, territory, Quebec, and Outside Canada.
+    pub fn all() -> &'static [Province] {
+        Self::ALL
+    }
+
+    /// English display name for product surfaces.
+    pub fn display_name(self) -> &'static str {
+        match self {
+            Self::Ab => "Alberta",
+            Self::Bc => "British Columbia",
+            Self::Mb => "Manitoba",
+            Self::Nb => "New Brunswick",
+            Self::Nl => "Newfoundland and Labrador",
+            Self::Ns => "Nova Scotia",
+            Self::Nt => "Northwest Territories",
+            Self::Nu => "Nunavut",
+            Self::On => "Ontario",
+            Self::Pe => "Prince Edward Island",
+            Self::Qc => "Quebec",
+            Self::Sk => "Saskatchewan",
+            Self::Yt => "Yukon",
+            Self::OutsideCanada => "Outside Canada",
+        }
+    }
 }
 
 impl fmt::Display for Province {
@@ -394,13 +447,42 @@ impl<'de> Deserialize<'de> for ClaimCode {
     }
 }
 
-/// How factor K2 / K2P is computed (T4127).
+/// How factor K2 / K2P is computed.
+///
+/// Variants name the *behaviour*, not the annualizing mechanism. Wire values
+/// are `pdoc_observed` (default), `t4127_literal`, and `year_to_date`.
+/// `annualized` is accepted as an alias of `pdoc_observed`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
 pub enum K2Method {
+    /// PDOC observed: `max(P×C×ratio, D×ratio)` capped at `base_max×PM/12`.
+    /// Does not force `base_max` in the reaching period.
+    /// Vector `on-biweekly-midyear-k2-max` (D-007 inversion).
     #[default]
-    Annualized,
+    #[serde(alias = "annualized")]
+    PdocObserved,
+    /// T4127 Chapter 3, factor K2: force `base_max` “in that pay period”
+    /// when year-to-date first reaches the annual CPP maximum.
+    T4127Literal,
+    /// Year-to-date projection: `D + PR×C` and `D1 + PR×EI`, each capped
+    /// (T4127 Chapter 4 YTD form).
     YearToDate,
+}
+
+/// Period-tax rounding when T4127 decimal half-up and live PDOC diverge.
+///
+/// Wire: `t4127` (default), `pdoc`. See [`docs/ADR-003-rounding-compat.md`].
+/// `pdoc` deserializes but [`crate::calculate`] returns
+/// [`RequestError::RoundingCompatPdocNotImplemented`] until finding 002 closes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum RoundingCompat {
+    /// Exact decimal half-up (`round_tax_to_cent`) on period lines.
+    #[default]
+    T4127,
+    /// Reserved: match live PDOC period lines once finding 002 names the midpoint condition.
+    /// Not implemented — calculate must not silently alias [`Self::T4127`].
+    Pdoc,
 }
 
 fn default_option1() -> CalculationOption {
@@ -448,6 +530,9 @@ pub struct Request {
     pub cpp_months: u8,
     #[serde(default)]
     pub k2_method: K2Method,
+    /// Period rounding when T4127 and PDOC diverge (ADR-003). Default `t4127`.
+    #[serde(default)]
+    pub rounding_compat: RoundingCompat,
 
     // --- Option 2 (cumulative averaging) ---------------------------------
     #[serde(default, skip_serializing_if = "Option::is_none")]

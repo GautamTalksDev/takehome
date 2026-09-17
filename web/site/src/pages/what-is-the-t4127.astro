@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="What is the T4127 — Takehome">
+  <article class="prose">
+    <h1>What is the T4127?</h1>
+    <p class="lede">
+      T4127 is the Canada Revenue Agency publication <cite>Payroll Deductions
+      Formulas for Computer Programs</cite>. It is the specification a payroll
+      engine is supposed to implement. It is not PDOC, and it is not the
+      Income Tax Act restated in prose.
+    </p>
+
+    <h2>What it contains</h2>
+    <p>
+      Chapter 3 is CPP, CPP2, and EI, including the period exemption
+      (truncate $3,500/P to the cent) and the annual maxima. Chapter 4 is
+      federal and provincial tax: annualize, apply R and K, subtract credits
+      K1 through K4 / K1P through K5P, divide by P, add additional tax L.
+      Chapter 8 is the federal and provincial rate tables (the JSON files
+      under <code>data/rules/</code>). Chapter 6 covers bonuses, retroactive
+      pay, and related F5 splits.
+    </p>
+
+    <h2>Editions</h2>
+    <p>
+      CRA publishes a January edition and, most years, a July edition when a
+      province changes mid-year. 2026 January is the 122nd edition; 2026 July
+      is the 123rd. Only BC, NL, and PE overlay in July 2026. The rest of the
+      country inherits January byte-for-byte.
+    </p>
+
+    <h2>T4127 versus PDOC</h2>
+    <p>
+      The Payroll Deductions Online Calculator is a CRA web app. It is the
+      oracle this project compares against. It is not the formula. Where
+      T4127 and PDOC disagree, both numbers are published:
+    </p>
+    <ul>
+      <li>
+        M-002 — K2 in the reaching period. T4127 says use the annual maximum
+        in that period; PDOC does not. Selectable as <code>k2_method</code>.
+      </li>
+      <li>
+        M-003 — midpoint direction. T4127 half-up versus a 1¢ PDOC line on
+        164 forms. Open. The full list is
+        <a href="/conformance/">the conformance record</a>.
+      </li>
+    </ul>
+
+    <h2>What T4127 is not</h2>
+    <p>
+      It is not Revenu Québec TP-1015.3. It is not a tax-return engine (no
+      RRSP deduction F unless the request supplies RPP contributions; this
+      crate currently holds F at zero). It is not a gross-up formula — searching
+      for a gross that produces a net is repeated Option 1, which
+      <a href="/gross-up-calculator/">this site will do in the browser</a>.
+    </p>
+
+    <p>
+      Source URLs for the ingested editions are on each
+      <a href="/rates/">rates</a> page’s calculator citations after you run a
+      number.
+    </p>
+  </article>
+</Base>

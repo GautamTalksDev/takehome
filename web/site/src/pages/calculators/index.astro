@@ -1,0 +1,70 @@
+---
+import Base from '../../layouts/Base.astro';
+import { PROVINCES } from '../../lib/provinces.js';
+import {
+  EMPLOYEE_INTENTS,
+  EMPLOYER_INTENTS,
+  SITUATIONS,
+} from '../../lib/catalog.js';
+---
+
+<Base title="Payroll calculators — Takehome">
+  <article class="prose">
+    <h1>Calculators</h1>
+    <p>
+      One T4127 engine. Each page answers one query. Pick the province of
+      employment, then the question.
+    </p>
+    <h2>By province</h2>
+    <ul>
+      {
+        PROVINCES.map((row) => (
+          <li>
+            <a href={`/calculators/${row.slug}/`}>
+              {row.name}
+              {row.supported ? '' : ' (not supported)'}
+            </a>
+            {' — '}
+            <a href={`/take-home-pay/${row.slug}/`}>take-home</a>
+            {' · '}
+            <a href={`/payroll-deductions/${row.slug}/`}>deductions</a>
+            {' · '}
+            <a href={`/employer-cost/${row.slug}/`}>employer cost</a>
+            {' · '}
+            <a href={`/rates/2026/${row.slug}/`}>rates</a>
+          </li>
+        ))
+      }
+    </ul>
+    <h2>Employee</h2>
+    <ul>
+      {
+        EMPLOYEE_INTENTS.map((intent) => (
+          <li>
+            <a href={`/${intent.path}/on/`}>{intent.query} (Ontario)</a>
+          </li>
+        ))
+      }
+    </ul>
+    <h2>Employer</h2>
+    <ul>
+      {
+        EMPLOYER_INTENTS.map((intent) => (
+          <li>
+            <a href={`/${intent.path}/on/`}>{intent.query} (Ontario)</a>
+          </li>
+        ))
+      }
+    </ul>
+    <h2>Situational</h2>
+    <ul>
+      {
+        SITUATIONS.map((row) => (
+          <li>
+            <a href={`/${row.id}/`}>{row.id.replace(/-/g, ' ')}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </article>
+</Base>

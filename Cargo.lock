@@ -250,70 +250,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
-name = "netpay-cli"
-version = "0.1.0"
-dependencies = [
- "netpay-core",
- "serde_json",
-]
-
-[[package]]
-name = "netpay-conformance"
-version = "0.1.0"
-dependencies = [
- "netpay-core",
- "netpay-grid-gen",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
-]
-
-[[package]]
-name = "netpay-core"
-version = "0.1.0"
-dependencies = [
- "proptest",
- "rust_decimal",
- "rust_decimal_macros",
- "serde",
- "serde_json",
- "serde_path_to_error",
- "thiserror",
- "trybuild",
-]
-
-[[package]]
-name = "netpay-grid-gen"
-version = "0.1.0"
-dependencies = [
- "netpay-core",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
-]
-
-[[package]]
-name = "netpay-ingest"
-version = "0.1.0"
-dependencies = [
- "csv",
- "netpay-core",
- "serde",
- "serde_json",
- "sha2",
- "thiserror",
-]
-
-[[package]]
-name = "netpay-wasm"
-version = "0.1.0"
-dependencies = [
- "netpay-core",
-]
-
-[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -627,6 +563,72 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "takehome-cli"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "takehome-core",
+]
+
+[[package]]
+name = "takehome-conformance"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+ "takehome-core",
+ "takehome-grid-gen",
+ "thiserror",
+]
+
+[[package]]
+name = "takehome-core"
+version = "0.1.0"
+dependencies = [
+ "proptest",
+ "rust_decimal",
+ "rust_decimal_macros",
+ "serde",
+ "serde_json",
+ "serde_path_to_error",
+ "thiserror",
+ "trybuild",
+]
+
+[[package]]
+name = "takehome-grid-gen"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "sha2",
+ "takehome-core",
+ "thiserror",
+]
+
+[[package]]
+name = "takehome-ingest"
+version = "0.1.0"
+dependencies = [
+ "csv",
+ "serde",
+ "serde_json",
+ "sha2",
+ "takehome-core",
+ "thiserror",
+]
+
+[[package]]
+name = "takehome-wasm"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "takehome-core",
+ "wasm-bindgen",
 ]
 
 [[package]]

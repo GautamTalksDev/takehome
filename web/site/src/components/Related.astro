@@ -1,0 +1,69 @@
+---
+const { province, intent, situation } = Astro.props;
+---
+
+<nav class="related" aria-label="Related">
+  <h2>Related</h2>
+  <ul>
+    {
+      province ? (
+        <>
+          <li>
+            <a href={`/calculators/${province.slug}/`}>{province.name} calculator</a>
+          </li>
+          <li>
+            <a href={`/take-home-pay/${province.slug}/`}>{province.name} take-home pay</a>
+          </li>
+          <li>
+            <a href={`/payroll-deductions/${province.slug}/`}>
+              {province.name} payroll deductions
+            </a>
+          </li>
+          <li>
+            <a href={`/employer-cost/${province.slug}/`}>{province.name} employer cost</a>
+          </li>
+          <li>
+            <a href={`/rates/2026/${province.slug}/`}>{province.name} rates, January 2026</a>
+          </li>
+          <li>
+            <a href={`/rates/2026-07/${province.slug}/`}>{province.name} rates, July 2026</a>
+          </li>
+        </>
+      ) : null
+    }
+    {
+      intent?.kind === 'employee' ? (
+        <li>
+          <a href="/bonus-tax-calculator/">Bonus tax</a>
+        </li>
+      ) : null
+    }
+    {
+      intent?.kind === 'employer' ? (
+        <li>
+          <a href="/cpp-2027-rate-change/">CPP 2027 rate change</a>
+        </li>
+      ) : null
+    }
+    {
+      situation ? (
+        <>
+          <li>
+            <a href="/calculators/on/">Ontario calculator (default)</a>
+          </li>
+          <li>
+            <a href="/how-payroll-deductions-work-in-canada/">
+              How payroll deductions work
+            </a>
+          </li>
+        </>
+      ) : null
+    }
+    <li>
+      <a href="/conformance/">Conformance record</a>
+    </li>
+    <li>
+      <a href="/what-is-the-t4127/">What is the T4127</a>
+    </li>
+  </ul>
+</nav>

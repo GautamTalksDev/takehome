@@ -32,7 +32,7 @@ export const STEP1 = {
   next: { role: "button" as const, name: "Next" },
 };
 
-/** Province select values on PDOC (not Netpay codes). */
+/** Province select values on PDOC (not Takehome codes). */
 export const PROVINCE_VALUE: Record<string, string> = {
   AB: "ALBERTA",
   BC: "BRITISH_COLUMBIA",
@@ -149,5 +149,5 @@ export const RESULTS = {
   cpp2: /^CPP2 deductions$/i,
   ei: /^EI deductions$/i,
   totalDeductions: /^Total deductions$/i,
-  netPay: /^Net amount$/i,
+  netAmount: /^Net amount$/i,
 };

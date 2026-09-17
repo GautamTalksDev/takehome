@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import { PROVINCES } from '../../lib/provinces.js';
+import { RATE_YEARS } from '../../lib/catalog.js';
+---
+
+<Base title="Payroll deduction rates — Takehome">
+  <article class="prose">
+    <h1>Payroll deduction rates</h1>
+    <p>
+      Tables from the ingested T4127 rule sets. January 2026 is the 122nd
+      edition; July 2026 is the 123rd. CPP, EI, and federal brackets are the
+      same in both editions. BC, NL, and PE are the jurisdictions with a July
+      overlay.
+    </p>
+    {
+      RATE_YEARS.map((year) => (
+        <section>
+          <h2>
+            {year.label} ({year.edition})
+          </h2>
+          <ul>
+            {PROVINCES.map((row) => (
+              <li>
+                <a href={`/rates/${year.slug}/${row.slug}/`}>{row.name}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+    <p>
+      <a href="/cpp-2027-rate-change/">CPP 2027 rate change</a> is a separate
+      page because the 2027 T4127 edition is not ingested yet.
+    </p>
+  </article>
+</Base>

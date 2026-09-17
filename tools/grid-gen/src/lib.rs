@@ -6,18 +6,18 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::float_arithmetic)]
 
-use netpay_core::decimal::{DecimalError, Money, Rate};
-use netpay_core::request::{ClaimCode, PayPeriod, Province, Request};
-use netpay_core::rounding::round_tax_to_cent;
-use netpay_core::rules::registry::Registry;
-use netpay_core::rules::schema::{
-    BasicPersonalAmount, CalculationOption, CalendarDate, DateParseError, Jurisdiction,
-    JurisdictionCode, OptionScoped, RuleSet,
-};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
+use takehome_core::decimal::{DecimalError, Money, Rate};
+use takehome_core::request::{ClaimCode, PayPeriod, Province, Request};
+use takehome_core::rounding::round_tax_to_cent;
+use takehome_core::rules::registry::Registry;
+use takehome_core::rules::schema::{
+    BasicPersonalAmount, CalculationOption, CalendarDate, DateParseError, Jurisdiction,
+    JurisdictionCode, OptionScoped, RuleSet,
+};
 use thiserror::Error;
 
 pub mod sampling;
@@ -124,9 +124,79 @@ pub use sampling::{
     PDOC_CAPTURABLE_PAY_PERIODS, PDOC_UNCAPTURABLE_PAY_PERIODS,
 };
 
+/// Deterministic request sample for WASM/native identity (spec §5.4).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct WasmIdentitySample {
+    pub grid_version: String,
+    pub ids: Vec<String>,
+    pub jurisdictions: Vec<String>,
+    pub requests: Vec<Request>,
+}
+
+/// Take `n` grid cases, spread across every employment jurisdiction.
+pub fn wasm_identity_sample(n: usize) -> Result<WasmIdentitySample, GridError> {
+    if n == 0 {
+        return Err(GridError::Message(
+            "sample size must be positive".to_string(),
+        ));
+    }
+    let grid = generate()?;
+    let mut buckets: BTreeMap<String, Vec<&GridCase>> = BTreeMap::new();
+    for case in &grid.cases {
+        buckets.entry(case.province.clone()).or_default().push(case);
+    }
+    let jurisdictions: Vec<String> = GRID_JURISDICTIONS
+        .iter()
+        .map(|province| province.as_str().to_string())
+        .collect();
+    if buckets.len() != jurisdictions.len() {
+        return Err(GridError::Message(format!(
+            "grid jurisdictions {} != {}",
+            buckets.len(),
+            jurisdictions.len()
+        )));
+    }
+    let registry = &*takehome_core::rules::loader::EMBEDDED_REGISTRY;
+    let per = n / jurisdictions.len();
+    let rem = n % jurisdictions.len();
+    let mut ids = Vec::with_capacity(n);
+    let mut requests = Vec::with_capacity(n);
+    for (index, code) in jurisdictions.iter().enumerate() {
+        let extra = usize::from(index < rem);
+        let want = per.saturating_add(extra);
+        let cases = buckets
+            .get(code)
+            .ok_or_else(|| GridError::Message(format!("no grid cases for {code}")))?;
+        let mut taken = 0usize;
+        for case in cases.iter() {
+            let req = case_to_request(case)?;
+            if takehome_core::calculate(&req, registry).is_err() {
+                continue;
+            }
+            ids.push(case.id.clone());
+            requests.push(req);
+            taken = taken.saturating_add(1);
+            if taken == want {
+                break;
+            }
+        }
+        if taken < want {
+            return Err(GridError::Message(format!(
+                "{code} has {taken} calculable cases, need {want}"
+            )));
+        }
+    }
+    Ok(WasmIdentitySample {
+        grid_version: GRID_VERSION.to_string(),
+        ids,
+        jurisdictions,
+        requests,
+    })
+}
+
 /// Build the grid from the embedded rule registry.
 pub fn generate() -> Result<Grid, GridError> {
-    generate_with(&netpay_core::rules::loader::EMBEDDED_REGISTRY)
+    generate_with(&takehome_core::rules::loader::EMBEDDED_REGISTRY)
 }
 
 /// Build the grid from an explicit registry (tests / tooling).
@@ -255,7 +325,7 @@ pub fn canonical_digest(grid: &Grid) -> Result<String, GridError> {
 
 /// Git sha baked in at compile time.
 pub fn git_sha() -> &'static str {
-    env!("NETPAY_GRID_GIT_SHA")
+    env!("TAKEHOME_GRID_GIT_SHA")
 }
 
 /// Map a grid case onto a [`Request`] (claim codes, not fixed TD1 dollars).
@@ -289,8 +359,8 @@ pub fn case_to_request(case: &GridCase) -> Result<Request, GridError> {
         federal_tc: None,
         provincial_tcp: None,
         cpp_months: 12,
-        k2_method: netpay_core::request::K2Method::PdocObserved,
-        rounding_compat: netpay_core::request::RoundingCompat::T4127,
+        k2_method: takehome_core::request::K2Method::PdocObserved,
+        rounding_compat: takehome_core::request::RoundingCompat::T4127,
         ytd_pensionable_earnings: None,
         ytd_insurable_earnings: None,
         ytd_cpp: None,
@@ -420,7 +490,7 @@ fn named_boundaries(set: &RuleSet, province: Province) -> Result<Vec<NamedAmount
 fn push_brackets(
     out: &mut BTreeSet<NamedAmount>,
     kind: &str,
-    brackets: &OptionScoped<Vec<netpay_core::rules::schema::Bracket>>,
+    brackets: &OptionScoped<Vec<takehome_core::rules::schema::Bracket>>,
 ) {
     for opt in [CalculationOption::Option1, CalculationOption::Option2] {
         for bracket in brackets.get(opt) {

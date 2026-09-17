@@ -1,0 +1,146 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="CPP 2027 rate change — Takehome">
+  <article class="prose">
+    <h1>CPP 2027 rate change</h1>
+    <p class="lede">
+      On 1 January 2027 the contribution <em>structure</em> does not add a new
+      tier. The employee/employer rate on earnings up to YMPE stays 5.95%. The
+      second additional contribution on YMPE-to-YAMPE stays 4%. What will
+      change is the dollar ceilings — YMPE, YAMPE, and the annual maxima —
+      once CRA and OSFI publish them. Those dollars are not public as of 16
+      September 2026, and this page will not invent them.
+    </p>
+
+    <h2>What is already law</h2>
+    <p>
+      The Canada Pension Plan enhancement is finished as a rate schedule.
+      First additional contributions (the extra 1% that took the combined
+      employee rate from 4.95% to 5.95%) finished phasing in with the 2023
+      year. Second additional contributions (CPP2) began 1 January 2024 at 4%
+      of pensionable earnings between the year’s YMPE and YAMPE (YAMPE is
+      legislated at 14% above YMPE, rounded). Nothing in the CPP statute
+      schedules a further employee-rate increase for 2027.
+    </p>
+    <p>
+      Employer contributions remain dollar-for-dollar matches of both C and
+      C2. A 2027 paycheque does not introduce a third employer CPP line.
+    </p>
+
+    <h2>2026 numbers, still the live table</h2>
+    <p>
+      Until a 2027-01-01 rule set is ingested from the next T4127 edition,
+      the live engine uses the 2026 table:
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>2026 amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>YMPE</td>
+          <td>$74,600.00</td>
+        </tr>
+        <tr>
+          <td>YAMPE</td>
+          <td>$85,000.00</td>
+        </tr>
+        <tr>
+          <td>Basic exemption</td>
+          <td>$3,500.00</td>
+        </tr>
+        <tr>
+          <td>Employee / employer rate to YMPE</td>
+          <td>5.95% (4.95% + 1.00%)</td>
+        </tr>
+        <tr>
+          <td>CPP2 rate YMPE to YAMPE</td>
+          <td>4.00%</td>
+        </tr>
+        <tr>
+          <td>Max C (employee)</td>
+          <td>$4,230.45 (base $3,519.45 + first additional $711.00)</td>
+        </tr>
+        <tr>
+          <td>Max C2 (employee)</td>
+          <td>$416.00</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Source: ingested <code>data/rules/2026-01-01/cpp.json</code>, inherited
+      by the 123rd edition. See
+      <a href="/rates/2026/on/">Ontario January 2026 rates</a> for the same
+      CPP block beside provincial tax.
+    </p>
+
+    <h2>What 1 January 2027 actually changes</h2>
+    <p>
+      YMPE is indexed to the average weekly earnings series. CRA typically
+      announces the next YMPE in November. YAMPE follows (14% above YMPE,
+      rounded to the published dollar). The annual maxima are then:
+    </p>
+    <ul>
+      <li>
+        Base C max = 4.95% × (YMPE − $3,500), rounded to the cent the way
+        T4127 Chapter 3 states.
+      </li>
+      <li>First additional max = 1.00% × (YMPE − $3,500).</li>
+      <li>C2 max = 4.00% × (YAMPE − YMPE).</li>
+    </ul>
+    <p>
+      The $3,500 basic exemption is not indexed. It has been $3,500 for
+      decades and is not on the 2027 change list.
+    </p>
+    <p>
+      Federal and provincial tax tables also index. Those K constants are a
+      different announcement (the 2027 T4127 edition, usually posted in
+      December). Do not reuse 2026 K values on a 2027-01-15 pay date once
+      that edition exists.
+    </p>
+
+    <h2>What this engine will do on a 2027 pay date today</h2>
+    <p>
+      Rule set <code>2026-07-01</code> is open-ended (<code>effective_to:
+      null</code>). A pay date of 2027-01-15 currently resolves to the 123rd
+      edition and applies 2026 YMPE/YAMPE. That is the wrong ceiling for a
+      real 2027 remittance. When CRA publishes the 2027 T4127, the 2027-01-01
+      rule set will be ingested and this page will be updated with the
+      published dollars — not with a forecast.
+    </p>
+    <p>
+      Until then, treat any 2027 date in the
+      <a href="/calculators/on/">calculator</a> as “2026 formulas, dated in
+      2027,” and do not file from it.
+    </p>
+
+    <h2>EI is a separate announcement</h2>
+    <p>
+      Maximum insurable earnings and the 2027 EI rate are set under the EI
+      Act, not the CPP enhancement. The 2026 employee rate is 1.63% of
+      insurable earnings to $68,900 (max $1,123.07); employer 1.4× (max
+      $1,572.30). This page is not an EI-2027 forecast.
+    </p>
+
+    <h2>Quebec</h2>
+    <p>
+      QPP is not CPP. Quebec’s 2027 additional contribution schedule, if any,
+      will come from Retraite Québec / Revenu Québec. This engine still
+      refuses Quebec rather than print C as if the employee were in Ontario.
+      See <a href="/calculators/qc/">Quebec</a>.
+    </p>
+
+    <h2>When this page will change</h2>
+    <p>
+      The moment the 2027 YMPE is a published CRA/OSFI number, it lands in
+      <a href="/changes/">/changes</a> and in this table. The RSS feed is
+      <a href="/changes.xml">/changes.xml</a>. There will not be a
+      “projected YMPE” row here in the meantime.
+    </p>
+  </article>
+</Base>

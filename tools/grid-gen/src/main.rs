@@ -1,11 +1,11 @@
-use netpay_grid_gen::{
-    canonical_bytes, generate, july_boundary_queue, sampling_report, stratified_smoke_queue,
-    GridError,
-};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode;
+use takehome_grid_gen::{
+    canonical_bytes, generate, july_boundary_queue, sampling_report, stratified_smoke_queue,
+    wasm_identity_sample, GridError,
+};
 
 fn main() -> ExitCode {
     let mut args = env::args().skip(1);
@@ -14,13 +14,14 @@ fn main() -> ExitCode {
     let mut report = false;
     let mut emit_queue = false;
     let mut smoke: Option<usize> = None;
+    let mut identity_sample: Option<usize> = None;
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--out" => {
                 out_dir = args.next().map(PathBuf::from);
                 if out_dir.is_none() {
                     eprintln!(
-                        "usage: netpay-grid-gen [--out DIR] [--manifest] [--report] [--queue] [--smoke N]"
+                        "usage: takehome-grid-gen [--out DIR] [--manifest] [--report] [--queue] [--smoke N] [--identity-sample N]"
                     );
                     return ExitCode::from(2);
                 }
@@ -28,6 +29,19 @@ fn main() -> ExitCode {
             "--manifest" => manifest_only = true,
             "--report" => report = true,
             "--queue" => emit_queue = true,
+            "--identity-sample" => {
+                let Some(raw) = args.next() else {
+                    eprintln!("--identity-sample requires N");
+                    return ExitCode::from(2);
+                };
+                match raw.parse::<usize>() {
+                    Ok(n) => identity_sample = Some(n),
+                    Err(_) => {
+                        eprintln!("--identity-sample N must be an integer");
+                        return ExitCode::from(2);
+                    }
+                }
+            }
             "--smoke" => {
                 let Some(raw) = args.next() else {
                     eprintln!("--smoke requires N");
@@ -43,7 +57,7 @@ fn main() -> ExitCode {
             }
             "--help" | "-h" => {
                 eprintln!(
-                    "usage: netpay-grid-gen [--out DIR] [--manifest] [--report] [--queue] [--smoke N]"
+                    "usage: takehome-grid-gen [--out DIR] [--manifest] [--report] [--queue] [--smoke N] [--identity-sample N]"
                 );
                 return ExitCode::SUCCESS;
             }
@@ -53,7 +67,14 @@ fn main() -> ExitCode {
             }
         }
     }
-    match run(out_dir.as_deref(), manifest_only, report, emit_queue, smoke) {
+    match run(
+        out_dir.as_deref(),
+        manifest_only,
+        report,
+        emit_queue,
+        smoke,
+        identity_sample,
+    ) {
         Ok(()) => ExitCode::SUCCESS,
         Err(err) => {
             eprintln!("{err}");
@@ -68,12 +89,31 @@ fn run(
     report: bool,
     emit_queue: bool,
     smoke: Option<usize>,
+    identity_sample: Option<usize>,
 ) -> Result<(), GridError> {
+    if let Some(n) = identity_sample {
+        let sample = wasm_identity_sample(n)?;
+        let json = serde_json::to_string(&sample).map_err(|e| GridError::Message(e.to_string()))?;
+        if let Some(dir) = out_dir {
+            fs::create_dir_all(dir).map_err(|e| GridError::Message(e.to_string()))?;
+            let path = dir.join(format!("grid-sample-{n}.json"));
+            fs::write(&path, format!("{json}\n")).map_err(|e| GridError::Message(e.to_string()))?;
+            eprintln!(
+                "identity sample {} cases / {} jurisdictions → {}",
+                sample.requests.len(),
+                sample.jurisdictions.len(),
+                path.display()
+            );
+        } else {
+            println!("{json}");
+        }
+        return Ok(());
+    }
     let grid = generate()?;
     if emit_queue {
         let queue = july_boundary_queue(&grid);
-        let json = serde_json::to_string_pretty(&queue)
-            .map_err(|e| GridError::Message(e.to_string()))?;
+        let json =
+            serde_json::to_string_pretty(&queue).map_err(|e| GridError::Message(e.to_string()))?;
         if let Some(dir) = out_dir {
             fs::create_dir_all(dir).map_err(|e| GridError::Message(e.to_string()))?;
             fs::write(dir.join("pdoc-queue.json"), format!("{json}\n"))
@@ -90,8 +130,8 @@ fn run(
     }
     if let Some(n) = smoke {
         let queue = stratified_smoke_queue(&grid, n);
-        let json = serde_json::to_string_pretty(&queue)
-            .map_err(|e| GridError::Message(e.to_string()))?;
+        let json =
+            serde_json::to_string_pretty(&queue).map_err(|e| GridError::Message(e.to_string()))?;
         if let Some(dir) = out_dir {
             fs::create_dir_all(dir).map_err(|e| GridError::Message(e.to_string()))?;
             fs::write(dir.join("smoke-queue.json"), format!("{json}\n"))

@@ -19,7 +19,7 @@ import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 
 export const USER_AGENT =
-  "Netpay-PDOC-Oracle/0.1 (+https://github.com/netpay-ca/netpay; conformance; contact=https://github.com/netpay-ca/netpay/blob/main/docs/CONFORMANCE-OPERATIONS.md)";
+  "Takehome-PDOC-Oracle/0.1 (+https://github.com/takehome-ca/takehome; conformance; contact=https://github.com/takehome-ca/takehome/blob/main/docs/CONFORMANCE-OPERATIONS.md)";
 
 export const PDOC_ORIGIN = "https://apps.cra-arc.gc.ca";
 export const PDOC_ENTRY_PATH = "/ebci/rhpd/beta/entry";
@@ -184,7 +184,7 @@ export function sha256(data: string | Buffer): string {
 export function findRepoRoot(start = dirname(fileURLToPath(import.meta.url))): string {
   let dir = start;
   for (let i = 0; i < 12; i++) {
-    if (existsSync(join(dir, OPS_DOC_REL)) && existsSync(join(dir, "crates/netpay-core"))) {
+    if (existsSync(join(dir, OPS_DOC_REL)) && existsSync(join(dir, "crates/takehome-core"))) {
       return dir;
     }
     const parent = dirname(dir);

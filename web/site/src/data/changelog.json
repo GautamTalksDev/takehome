@@ -1,0 +1,56 @@
+{
+  "feed_title": "Takehome changes",
+  "feed_link": "https://takehome.gautamkhosla.com/changes/",
+  "feed_description": "Machine-readable change log for the T4127 engine and the public calculators.",
+  "items": [
+    {
+      "id": "unreleased-embed",
+      "title": "Unreleased — embeddable take-home widget",
+      "date": "2026-09-16",
+      "link": "https://takehome.gautamkhosla.com/embed/",
+      "summary": "One script tag, same T4127 WASM engine, no cookie and no salary posted back. Demo and a pitch for job boards, recruiters, and relocation services at /embed/."
+    },
+    {
+      "id": "unreleased-five-minute",
+      "title": "Unreleased — five-minute API path",
+      "date": "2026-09-16",
+      "link": "https://takehome.gautamkhosla.com/docs/",
+      "summary": "Docs in the header. Email, verify, test key, first call. Ontario weekly $1000 on 2026-01-15 returns net_pay 800.79."
+    },
+    {
+      "id": "unreleased",
+      "title": "Unreleased — Worker API",
+      "date": "2026-09-16",
+      "link": "https://takehome.gautamkhosla.com/changes/",
+      "summary": "Cloudflare Worker API (POST /v1/deductions and M3 GET surfaces) over the WASM engine. Unknown fields named; out-of-range as_of rejected; OpenAPI generated from the same schemas."
+    },
+    {
+      "id": "unreleased-keys",
+      "title": "Unreleased — self-serve keys and CAD billing",
+      "date": "2026-09-16",
+      "link": "https://takehome.gautamkhosla.com/pricing/",
+      "summary": "np_test_ and np_live_ keys, hashed at rest. Metering counts calculations. Live keys hard-stop at the published CAD plan limit. Signup is email, verify, keys, first call."
+    },
+    {
+      "id": "unreleased-pages",
+      "title": "Unreleased — 200 pages, RSS, CPP 2027",
+      "date": "2026-09-16",
+      "link": "https://takehome.gautamkhosla.com/changes/",
+      "summary": "Site catalog expanded to 200 HTML pages from four templates (employee, employer, situational, reference). /conformance renders the full disagreement list. /changes has an RSS feed. /cpp-2027-rate-change published ahead of the 2027 T4127 edition."
+    },
+    {
+      "id": "0.3.0-m2",
+      "title": "0.3.0-m2 — thirteen jurisdictions, 164 M-003 rows",
+      "date": "2026-09-15",
+      "link": "https://takehome.gautamkhosla.com/conformance/",
+      "summary": "Thirteen-jurisdiction T4127 engine (both 2026 editions); Quebec remains typed unsupported. July PDOC queue finished: 8,818/8,982 compared forms; 164 one-cent M-003 disagreements counted; 780 step-2 non-advances named out of the rate. Overall PDOC agreement 8,838/9,002 including M1. Finding 002 remains open."
+    },
+    {
+      "id": "0.2.0-m1",
+      "title": "0.2.0-m1 — Ontario PDOC 20/20",
+      "date": "2026-09-12",
+      "link": "https://takehome.gautamkhosla.com/conformance/",
+      "summary": "M0: fixed-point decimal type and CRA rounding rules. M1: Ontario PDOC 20/20."
+    }
+  ]
+}

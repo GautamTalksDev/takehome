@@ -51,7 +51,7 @@ describe("robots.txt parser", () => {
 
   it("lets a more specific user-agent group win", () => {
     const groups = parseRobots(
-      "User-agent: *\nDisallow: /\n\nUser-agent: Netpay-PDOC-Oracle\nDisallow:\n",
+      "User-agent: *\nDisallow: /\n\nUser-agent: Takehome-PDOC-Oracle\nDisallow:\n",
     );
     const rules = rulesForAgent(groups, USER_AGENT);
     assert.equal(pathAllowed(rules, "/ebci/rhpd/beta/entry"), true);
@@ -171,7 +171,7 @@ describe("cache key and identity", () => {
 
 describe("policy", () => {
   it("fail-closed without the operations doc", async () => {
-    const dir = await mkdtemp(join(tmpdir(), "netpay-pdoc-"));
+    const dir = await mkdtemp(join(tmpdir(), "takehome-pdoc-"));
     assert.throws(() => requireOpsDoc(dir), PolicyError);
   });
 

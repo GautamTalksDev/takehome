@@ -1,0 +1,39 @@
+---
+import Base from '../../layouts/Base.astro';
+import Calculator from '../../components/Calculator.astro';
+import Related from '../../components/Related.astro';
+import { INTENTS } from '../../lib/catalog.js';
+import { intentCopy } from '../../lib/copy.js';
+import { PROVINCES, provinceBySlug } from '../../lib/provinces.js';
+
+export function getStaticPaths() {
+  return INTENTS.flatMap((intent) =>
+    PROVINCES.map((province) => ({
+      params: { intent: intent.path, code: province.slug },
+    })),
+  );
+}
+
+const intent = INTENTS.find((row) => row.path === Astro.params.intent);
+const province = provinceBySlug(Astro.params.code);
+if (!intent || !province) {
+  throw new Error(`unknown intent page ${Astro.params.intent}/${Astro.params.code}`);
+}
+const copy = intentCopy(intent, province);
+---
+
+<Base title={copy.title}>
+  <Calculator
+    code={province.code}
+    name={province.name}
+    supported={province.supported}
+    heading={copy.h1}
+    lede={copy.lede}
+    answer={copy.answer}
+    mechanisms={copy.mechanisms}
+    defaultPayPeriod={intent.payPeriod}
+    defaultGross={intent.gross}
+    resultMode={intent.resultMode}
+  />
+  <Related province={province} intent={intent} />
+</Base>

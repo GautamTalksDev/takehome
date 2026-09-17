@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import changelog from '../data/changelog.json';
+---
+
+<Base title="Changes — Takehome">
+  <article class="prose">
+    <h1>Changes</h1>
+    <p>
+      Machine-readable log of the engine and the public site. Subscribe via
+      <a href="/changes.xml">RSS</a>. Source: <code>web/site/src/data/changelog.json</code>.
+    </p>
+    {
+      changelog.items.map((item) => (
+        <section>
+          <h2>
+            <a href={item.link}>{item.title}</a>
+          </h2>
+          <p>
+            <time datetime={item.date}>{item.date}</time>
+            {' · '}
+            <code>{item.id}</code>
+          </p>
+          <p>{item.summary}</p>
+        </section>
+      ))
+    }
+  </article>
+</Base>

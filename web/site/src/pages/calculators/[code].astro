@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Calculator from '../../components/Calculator.astro';
+import Related from '../../components/Related.astro';
+import { intentCopy } from '../../lib/copy.js';
+import { PROVINCES, provinceBySlug } from '../../lib/provinces.js';
+
+export function getStaticPaths() {
+  return PROVINCES.map((row) => ({ params: { code: row.slug } }));
+}
+
+const { code: slug } = Astro.params;
+const row = provinceBySlug(slug);
+if (!row) {
+  throw new Error(`unknown calculator slug ${slug}`);
+}
+const copy = intentCopy(
+  { id: 'take-home-pay', path: 'take-home-pay', kind: 'employee' },
+  row,
+);
+---
+
+<Base title={copy.title}>
+  <Calculator
+    code={row.code}
+    name={row.name}
+    supported={row.supported}
+    heading={copy.h1}
+    lede={copy.lede}
+    answer={copy.answer}
+    mechanisms={copy.mechanisms}
+  />
+  <Related province={row} />
+</Base>

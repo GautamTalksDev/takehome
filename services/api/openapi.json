@@ -1,0 +1,1254 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Takehome API",
+    "version": "0.1.0",
+    "description": "T4127 payroll deductions. Generated from services/api/src/schema.js. Do not hand-edit openapi.json."
+  },
+  "servers": [
+    {
+      "url": "https://takehome.gautamkhosla.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/deductions": {
+      "post": {
+        "operationId": "createDeduction",
+        "summary": "Calculate T4127 payroll deductions for one pay period.",
+        "description": "Requires a Bearer np_test_ or np_live_ key. Metering counts calculations, not HTTP requests. A future batch of 500 counts 500. Test keys are free and unmetered. Live keys hard-stop at the plan limit; Takehome does not surprise-bill.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeductionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deduction",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeductionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Plan calculation limit reached",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Jurisdiction not supported",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signup": {
+      "post": {
+        "operationId": "signup",
+        "summary": "Start signup. Email, verify, keys. No sales call.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification email sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signup/verify": {
+      "get": {
+        "operationId": "verifySignup",
+        "summary": "Verify email and issue np_test_ plus np_live_ keys.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Keys issued once",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/checkout": {
+      "post": {
+        "operationId": "createCheckout",
+        "summary": "Stripe Checkout session in CAD for a published self-serve tier.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/webhook": {
+      "post": {
+        "operationId": "stripeWebhook",
+        "summary": "Stripe webhook. Upgrades the plan. Never invents overage.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Received",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rules": {
+      "get": {
+        "operationId": "listRules",
+        "summary": "Embedded T4127 rule-set editions.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Rule set list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulesListResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rules/{version}": {
+      "get": {
+        "operationId": "getRule",
+        "summary": "One embedded rule-set edition. Unknown versions 404; never nearest-match.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rule set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleVersionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/jurisdictions": {
+      "get": {
+        "operationId": "listJurisdictions",
+        "summary": "Provinces and territories. Quebec is listed as unsupported.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Jurisdictions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JurisdictionsResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/changes": {
+      "get": {
+        "operationId": "listChanges",
+        "summary": "Machine-readable change log.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Changes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangesResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/conformance": {
+      "get": {
+        "operationId": "getConformance",
+        "summary": "PDOC conformance record, including every disagreement.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Conformance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConformanceResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Liveness plus a probe calculation.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Engine failed the probe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "getOpenApi",
+        "summary": "OpenAPI document generated from the same schemas as this service.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OpenAPI envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "np_test_ or np_live_ key. Stored hashed. Test keys run the same engine, unmetered."
+      }
+    },
+    "schemas": {
+      "Identity": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "ErrorBody": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "docs"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "docs": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "ErrorEnvelope": {
+        "type": "object",
+        "required": [
+          "error",
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          },
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "DeductionRequest": {
+        "type": "object",
+        "required": [
+          "province",
+          "pay_period",
+          "gross_pay"
+        ],
+        "additionalProperties": false,
+        "description": "T4127 request. Unknown fields are rejected by name. as_of is required by core; if omitted here the Worker sets the UTC request date and does not nearest-match a rule set.",
+        "properties": {
+          "as_of": {
+            "type": "string",
+            "format": "date"
+          },
+          "province": {
+            "type": "string"
+          },
+          "pay_period": {
+            "type": "integer"
+          },
+          "gross_pay": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "calculation_option": {
+            "type": "string"
+          },
+          "pensionable_earnings": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "insurable_earnings": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "federal_claim_code": {},
+          "provincial_claim_code": {},
+          "federal_tc": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "provincial_tcp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "cpp_months": {
+            "type": "integer"
+          },
+          "k2_method": {
+            "type": "string"
+          },
+          "rounding_compat": {
+            "type": "string"
+          },
+          "ytd_pensionable_earnings": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_insurable_earnings": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_cpp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_cpp2": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_ei": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_federal_tax": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_provincial_tax": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "pay_periods_elapsed": {
+            "type": "integer"
+          },
+          "bonus": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "retroactive_pay": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "commission_income": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "commission_expenses": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "estimated_annual_expenses": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_qpp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_qpp2": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_qpip": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "prior_province": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "cpp_exempt": {
+            "type": "boolean"
+          },
+          "cpp_election_after_65": {
+            "type": "boolean"
+          },
+          "additional_tax_requested": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "taxable_benefits": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "union_dues": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "alimony": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "child_care_expenses": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "prescribed_zone_deduction": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "lcf_purchase": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "lcp_purchase": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "dependants_under_19": {
+            "type": "integer"
+          },
+          "dependants_disabled": {
+            "type": "integer"
+          }
+        }
+      },
+      "DeductionResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "employee",
+          "employer"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": "string"
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "prorated_rules_applied": {
+            "type": "boolean"
+          },
+          "employee": {
+            "type": "object"
+          },
+          "employer": {
+            "type": "object"
+          },
+          "annual_projection": {
+            "type": "object"
+          },
+          "breakdown": {
+            "type": "object"
+          },
+          "citations": {
+            "type": "array"
+          },
+          "warnings": {
+            "type": "array"
+          }
+        }
+      },
+      "JurisdictionStatus": {
+        "type": "object",
+        "required": [
+          "code",
+          "name",
+          "supported"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "JurisdictionsResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "jurisdictions"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "jurisdictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JurisdictionStatus"
+            }
+          }
+        }
+      },
+      "RuleSetVersionStatus": {
+        "type": "object",
+        "required": [
+          "version",
+          "effective_from"
+        ],
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "RulesListResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "rule_set_versions"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": "string"
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "rule_set_versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuleSetVersionStatus"
+            }
+          }
+        }
+      },
+      "RuleVersionResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "effective_from"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": "string"
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "ChangesResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "items"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "feed_title": {
+            "type": "string"
+          },
+          "feed_link": {
+            "type": "string"
+          },
+          "feed_description": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array"
+          }
+        }
+      },
+      "ConformanceResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "record"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "record": {
+            "type": "object"
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          },
+          "rule_set_version": {
+            "type": "string"
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "OpenApiResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "document"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "document": {
+            "type": "object"
+          }
+        }
+      },
+      "SignupRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "SignupResponse": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "VerifyResponse": {
+        "type": "object",
+        "required": [
+          "test_key",
+          "live_key",
+          "message"
+        ],
+        "properties": {
+          "test_key": {
+            "type": "string",
+            "pattern": "^np_test_[0-9a-f]{48}$"
+          },
+          "live_key": {
+            "type": "string",
+            "pattern": "^np_live_[0-9a-f]{48}$"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "CheckoutRequest": {
+        "type": "object",
+        "required": [
+          "plan"
+        ],
+        "properties": {
+          "plan": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "growth",
+              "business"
+            ]
+          },
+          "success_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "cancel_url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "CheckoutResponse": {
+        "type": "object",
+        "required": [
+          "url",
+          "currency",
+          "plan"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "cad"
+            ]
+          },
+          "plan": {
+            "type": "string"
+          }
+        }
+      },
+      "WebhookResponse": {
+        "type": "object",
+        "required": [
+          "received"
+        ],
+        "properties": {
+          "received": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

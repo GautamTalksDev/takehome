@@ -81,7 +81,7 @@ function requestFromItem(item: QueueItem): Record<string, unknown> {
 }
 
 function engineEmployee(repoRoot: string, request: unknown): Record<string, string> | null {
-  const bin = join(repoRoot, "target/debug/netpay-cli");
+  const bin = join(repoRoot, "target/debug/takehome-cli");
   const run = () =>
     spawnSync(bin, ["calculate"], {
       input: JSON.stringify(request),
@@ -90,17 +90,17 @@ function engineEmployee(repoRoot: string, request: unknown): Record<string, stri
     });
   let r = run();
   if (r.status !== 0) {
-    const build = spawnSync("cargo", ["build", "-p", "netpay-cli", "-q"], {
+    const build = spawnSync("cargo", ["build", "-p", "takehome-cli", "-q"], {
       cwd: repoRoot,
       encoding: "utf8",
     });
     if (build.status !== 0) {
-      console.error("netpay-cli build failed:", build.stderr);
+      console.error("takehome-cli build failed:", build.stderr);
       return null;
     }
     r = run();
     if (r.status !== 0) {
-      console.error("netpay-cli calculate failed:", r.stderr);
+      console.error("takehome-cli calculate failed:", r.stderr);
       return null;
     }
   }
@@ -139,7 +139,7 @@ async function loadQueue(
   if (mode === "queue") {
     const emit = spawnSync(
       "cargo",
-      ["run", "-p", "netpay-grid-gen", "-q", "--", "--queue", "--out", outDir],
+      ["run", "-p", "takehome-grid-gen", "-q", "--", "--queue", "--out", outDir],
       { cwd: repoRoot, encoding: "utf8" },
     );
     if (emit.status !== 0) {
@@ -151,7 +151,7 @@ async function loadQueue(
   const n = limit ?? 200;
   const emit = spawnSync(
     "cargo",
-    ["run", "-p", "netpay-grid-gen", "-q", "--", "--smoke", String(n), "--out", outDir],
+    ["run", "-p", "takehome-grid-gen", "-q", "--", "--smoke", String(n), "--out", outDir],
     { cwd: repoRoot, encoding: "utf8" },
   );
   if (emit.status !== 0) {
@@ -319,7 +319,7 @@ export async function runCapture(opts: {
         await limiter.waitTurn();
         const context = await browser.newContext({
           userAgent:
-            "Netpay-PDOC-Oracle/0.1 (+https://github.com/netpay-ca/netpay; conformance; contact=https://github.com/netpay-ca/netpay/blob/main/docs/CONFORMANCE-OPERATIONS.md)",
+            "Takehome-PDOC-Oracle/0.1 (+https://github.com/takehome-ca/takehome; conformance; contact=https://github.com/takehome-ca/takehome/blob/main/docs/CONFORMANCE-OPERATIONS.md)",
         });
         const page = await context.newPage();
         try {

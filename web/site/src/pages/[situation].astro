@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/Calculator.astro';
+import Related from '../components/Related.astro';
+import { SITUATIONS } from '../lib/catalog.js';
+import { extraFieldDefs, situationCopy } from '../lib/copy.js';
+import { provinceBySlug } from '../lib/provinces.js';
+
+export function getStaticPaths() {
+  return SITUATIONS.map((row) => ({ params: { situation: row.id } }));
+}
+
+const situation = SITUATIONS.find((row) => row.id === Astro.params.situation);
+if (!situation) {
+  throw new Error(`unknown situation ${Astro.params.situation}`);
+}
+const copy = situationCopy(situation.id);
+const ontario = provinceBySlug('on');
+---
+
+<Base title={`${copy.h1} — Takehome`}>
+  <Calculator
+    code="ON"
+    name="Ontario"
+    supported
+    heading={copy.h1}
+    lede={copy.lede}
+    answer={copy.answer}
+    extraFields={extraFieldDefs(situation)}
+    defaultPayPeriod={situation.payPeriod}
+    defaultGross={situation.defaultGross}
+    defaultClaim={situation.defaultClaim ?? '1'}
+    showProvinceSelect
+    resultMode={situation.resultMode ?? 'net'}
+  />
+  <Related province={ontario} situation={situation} />
+</Base>

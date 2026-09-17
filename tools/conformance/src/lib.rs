@@ -3,16 +3,16 @@
 #![forbid(unsafe_code)]
 #![deny(clippy::float_arithmetic)]
 
-use netpay_core::request::Request;
-use netpay_core::response::ENGINE_BUILD_SHA256;
-use netpay_core::rules::loader::EMBEDDED_REGISTRY;
-use netpay_core::{calculate, Money};
-use netpay_grid_gen::{generate, oracle_census, sampling_report, CensusRow, SamplingReport};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use takehome_core::request::Request;
+use takehome_core::response::ENGINE_BUILD_SHA256;
+use takehome_core::rules::loader::EMBEDDED_REGISTRY;
+use takehome_core::{calculate, Money};
+use takehome_grid_gen::{generate, oracle_census, sampling_report, CensusRow, SamplingReport};
 use thiserror::Error;
 
 pub mod markdown;
@@ -20,7 +20,7 @@ pub mod markdown;
 const METHODOLOGY: &str = include_str!("methodology.md");
 const M1_VECTORS: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../crates/netpay-core/tests/vectors/pdoc_ontario_2026_01.json"
+    "/../../crates/takehome-core/tests/vectors/pdoc_ontario_2026_01.json"
 ));
 const GRID_PDOC_BOUNDARY_JSON: &str = include_str!("grid_pdoc_boundary_2026.json");
 
@@ -104,7 +104,7 @@ pub enum ReportError {
     #[error("{0}")]
     Message(String),
     #[error(transparent)]
-    Grid(#[from] netpay_grid_gen::GridError),
+    Grid(#[from] takehome_grid_gen::GridError),
     #[error(transparent)]
     Json(#[from] serde_json::Error),
     #[error(transparent)]
@@ -343,7 +343,7 @@ pub fn check_committed(root: &Path, report: &Report) -> Result<(), ReportError> 
         .map_err(|e| ReportError::Message(format!("conformance.json missing: {e}")))?;
     if got_md != md || got_json != json {
         return Err(ReportError::Message(
-            "conformance report is stale; run `cargo run -p netpay-conformance -- --write`"
+            "conformance report is stale; run `cargo run -p takehome-conformance -- --write`"
                 .to_string(),
         ));
     }
@@ -487,7 +487,7 @@ fn measure_grid_pdoc(defined_from_grid: u64) -> Result<Corpus, ReportError> {
     ))
 }
 
-fn employee_map(e: &netpay_core::EmployeeAmounts) -> BTreeMap<String, String> {
+fn employee_map(e: &takehome_core::EmployeeAmounts) -> BTreeMap<String, String> {
     let mut m = BTreeMap::new();
     m.insert("federal_tax".into(), e.federal_tax.to_string());
     m.insert("provincial_tax".into(), e.provincial_tax.to_string());
@@ -550,8 +550,8 @@ fn collect_json(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), ReportError> {
 #[cfg(test)]
 mod tests {
     use super::{assemble_report, Corpus, Report, RunStatus};
-    use netpay_grid_gen::{CensusRow, OracleClass, SamplingReport};
     use std::collections::BTreeMap;
+    use takehome_grid_gen::{CensusRow, OracleClass, SamplingReport};
 
     fn empty_sampling() -> SamplingReport {
         SamplingReport {
@@ -711,14 +711,16 @@ mod tests {
     /// Exact half-cent of annual/P: 2*annual_cents / P is an odd integer.
     fn period_is_half_cent(annual_cents: i64, p: u16) -> bool {
         let p = i64::from(p);
-        p != 0 && (annual_cents * 2).rem_euclid(p) == 0 && ((annual_cents * 2) / p).rem_euclid(2) == 1
+        p != 0
+            && (annual_cents * 2).rem_euclid(p) == 0
+            && ((annual_cents * 2) / p).rem_euclid(2) == 1
     }
 
     /// Corpus census: every delta is ±1¢; T2/P half-cent vs not, by field class.
     #[test]
     fn m003_corpus_every_delta_is_one_cent_and_t2_halfcent_rate() {
-        use netpay_core::rules::loader::EMBEDDED_REGISTRY;
-        use netpay_core::{calculate, Request};
+        use takehome_core::rules::loader::EMBEDDED_REGISTRY;
+        use takehome_core::{calculate, Request};
         let snap = super::grid_pdoc_snapshot().unwrap();
         let mut t2_half = 0u32;
         let mut t2_not = 0u32;

@@ -3,7 +3,7 @@
 **Status:** Published before the first automated request from this repository’s
 Playwright harness (`tools/pdoc-oracle/`).
 
-**Audience:** Maintainers of Netpay, CRA/PDOC operators who may observe our
+**Audience:** Maintainers of Takehome, CRA/PDOC operators who may observe our
 traffic, and anyone auditing how vector `expected` amounts are obtained.
 
 **Related:** Root [`CONFORMANCE.md`](../CONFORMANCE.md) records measured
@@ -14,7 +14,7 @@ contacting PDOC.
 
 ## 1. Purpose
 
-Netpay implements CRA T4127 payroll deduction formulas. The authoritative
+Takehome implements CRA T4127 payroll deduction formulas. The authoritative
 interactive check for period amounts is the CRA **Payroll Deductions Online
 Calculator** (PDOC):
 
@@ -30,7 +30,7 @@ We drive that form only to:
 
 We are **not** scraping PDOC for a product feature, rate API, or live proxy.
 The harness is a **standalone developer tool**. It is never part of a deployed
-Netpay artifact and does not import `netpay-core`.
+Takehome artifact and does not import `takehome-core`.
 
 This policy exists so automated use is distinguishable from a scraper: honest
 identity, published rate limits, permanent cache, and overnight batching.
@@ -41,12 +41,12 @@ identity, published rate limits, permanent cache, and overnight batching.
 
 | | |
 |--|--|
-| **Project** | Netpay (`netpay-ca/netpay`) |
-| **Repository** | https://github.com/netpay-ca/netpay |
-| **Conformance record** | https://github.com/netpay-ca/netpay/blob/main/CONFORMANCE.md |
-| **This policy** | https://github.com/netpay-ca/netpay/blob/main/docs/CONFORMANCE-OPERATIONS.md |
-| **Issues / abuse reports** | https://github.com/netpay-ca/netpay/issues |
-| **Product site** | https://netpay.ca |
+| **Project** | Takehome (`takehome-ca/takehome`) |
+| **Repository** | https://github.com/takehome-ca/takehome |
+| **Conformance record** | https://github.com/takehome-ca/takehome/blob/main/CONFORMANCE.md |
+| **This policy** | https://github.com/takehome-ca/takehome/blob/main/docs/CONFORMANCE-OPERATIONS.md |
+| **Issues / abuse reports** | https://github.com/takehome-ca/takehome/issues |
+| **Product site** | https://takehome.gautamkhosla.com |
 
 If CRA or Shared Services Canada needs us to stop, slow further, or change
 identity strings, open an issue on the repository or contact the maintainers
@@ -64,7 +64,7 @@ browser string alone.
 Example shape (exact string may include a harness version):
 
 ```text
-Netpay-PDOC-Oracle/0.1 (+https://github.com/netpay-ca/netpay; conformance; contact=https://github.com/netpay-ca/netpay/blob/main/docs/CONFORMANCE-OPERATIONS.md)
+Takehome-PDOC-Oracle/0.1 (+https://github.com/takehome-ca/takehome; conformance; contact=https://github.com/takehome-ca/takehome/blob/main/docs/CONFORMANCE-OPERATIONS.md)
 ```
 
 Human-operated captures (Cursor browser, manual transcription) are labelled
@@ -115,7 +115,7 @@ sha256( canonical_input_json || rule_set_version )
 
 - `canonical_input_json` is a stable serialization of the case input (sorted
   object keys, lexical money strings, no insignificant whitespace variance).
-- `rule_set_version` is the Netpay / CRA effective rule-set id for the case
+- `rule_set_version` is the Takehome / CRA effective rule-set id for the case
   (e.g. `2026-01-01`), concatenated as a string after the JSON.
 
 **Invariants:**
@@ -153,7 +153,7 @@ vectors), the record includes:
 | PDOC identity | Version string, or form-structure hash if no version is exposed (§10.2) |
 | robots.txt hash | SHA-256 of each robots.txt body fetched for this run (§10.1) |
 | `observed_edition` | Calendar rule-set edition live PDOC was **serving** at capture time (e.g. `2026-07-01` for the 123rd edition). Distinct from `rule_set_version`, which is the case key. |
-| `rule_set_version` | Netpay / CRA effective rule-set id the case was generated against |
+| `rule_set_version` | Takehome / CRA effective rule-set id the case was generated against |
 
 A cache record may satisfy a case only when `observed_edition` equals the
 case `rule_set_version`, **or** `data/edition-identity.json` proves every
@@ -163,7 +163,7 @@ a hard error — including January-only BC/NL/PE forms against a July-serving
 PDOC, which are **edition-retired**, not pending.
 
 Emitted vector records use **exactly** the step-12 format consumed by
-`crates/netpay-core/tests/pdoc_vectors.rs` (`id`, `description`, `request`,
+`crates/takehome-core/tests/pdoc_vectors.rs` (`id`, `description`, `request`,
 `expected`, `oracle`, optional `notes`).
 
 **Never** write engine output into `expected`. Only PDOC (or a documented
@@ -174,7 +174,7 @@ manual transcription of a PDOC screen) may fill those fields.
 ## 7. Batch plan
 
 1. **M1 first:** the twenty Ontario cases in
-   `crates/netpay-core/tests/vectors/pdoc_ontario_2026_01.json`.
+   `crates/takehome-core/tests/vectors/pdoc_ontario_2026_01.json`.
    Prefer cache hits for already-filled manual captures where the harness can
    import or re-key them; otherwise fetch only `PENDING_PDOC` rows, at policy
    rate.
@@ -226,7 +226,7 @@ origin `https://apps.cra-arc.gc.ca/robots.txt`.
 | Rule | Behaviour |
 |------|-----------|
 | Fetch | Honest User-Agent (§3). Record HTTP status, final URL, and **SHA-256 of the response body**. |
-| Parse | RFC 9309 groups (`User-agent`, `Allow`, `Disallow`). Longest matching path rule wins. Our product token is `Netpay-PDOC-Oracle`; otherwise `*`. |
+| Parse | RFC 9309 groups (`User-agent`, `Allow`, `Disallow`). Longest matching path rule wins. Our product token is `Takehome-PDOC-Oracle`; otherwise `*`. |
 | 404 / missing file | No robots.txt → **no restrictions** for that origin (RFC 9309). Still record status + body hash so a later 200 cannot be confused with “we never checked.” |
 | 5xx / network failure | **Fail closed.** Do not treat an outage as permission. |
 | Disallow of a PDOC path | **Stop.** Do not discover a ban after thousands of requests. We find another approach (manual capture, CRA-published tables) — we do not crawl around the disallow. |

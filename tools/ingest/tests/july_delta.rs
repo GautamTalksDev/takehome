@@ -1,14 +1,14 @@
 //! July 2026 delta ingest (spec §21.9). Tests 14–19.
 
-use netpay_core::rules::schema::{
-    BasicPersonalAmount, CalculationOption, Jurisdiction, OptionScoped,
-};
-use netpay_core::{Money, Rate};
-use netpay_ingest::{ingest_archive_with, parse_bracket_table, IngestOptions, TABLE_8_1};
 use serde_json::Value;
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
+use takehome_core::rules::schema::{
+    BasicPersonalAmount, CalculationOption, Jurisdiction, OptionScoped,
+};
+use takehome_core::{Money, Rate};
+use takehome_ingest::{ingest_archive_with, parse_bracket_table, IngestOptions, TABLE_8_1};
 
 fn workspace_data(rel: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -17,7 +17,10 @@ fn workspace_data(rel: &str) -> PathBuf {
 }
 
 fn unique_temp(label: &str) -> PathBuf {
-    let p = std::env::temp_dir().join(format!("netpay-ingest-july-{label}-{}", std::process::id()));
+    let p = std::env::temp_dir().join(format!(
+        "takehome-ingest-july-{label}-{}",
+        std::process::id()
+    ));
     let _ = fs::remove_dir_all(&p);
     fs::create_dir_all(&p).unwrap();
     p
@@ -56,7 +59,7 @@ fn july_delta_overlay_and_missing_jurisdictions_without_overlay() {
     );
 
     let csv = fs::read(archive.join("rates-income-thresholds-constants-26e.csv")).unwrap();
-    let text = netpay_ingest::decode_bytes(&csv).text;
+    let text = takehome_ingest::decode_bytes(&csv).text;
     let parsed = parse_bracket_table("rates-income-thresholds-constants-26e.csv", &text).unwrap();
     assert_eq!(
         parsed.len(),

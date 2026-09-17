@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Embed a take-home estimate — Takehome" engine={false}>
+  <article class="prose">
+    <h1>Embed</h1>
+    <p class="lede">
+      One script tag. The salary is calculated in the reader’s browser with
+      the same T4127 engine as the rest of Takehome. No cookie. No pixel. No
+      salary posted back to us.
+    </p>
+
+    <pre><code>{`<script src="https://takehome.gautamkhosla.com/embed.js" data-province="ON"
+        data-gross="75000"></script>`}</code></pre>
+
+    <p>
+      Job boards, recruiters, and relocation services: put that on a listing
+      and the candidate sees take-home on the posted salary before they open
+      another tab. You get a calculator your readers keep; we get a link to
+      the formulas. The same engine publishes every disagreement with the
+      CRA’s own calculator, including all 164 one-cent cases, and the 1
+      January 2027 CPP rate change you will have to implement.
+    </p>
+
+    <h2>Live on this page</h2>
+    <p>Ontario, $75,000 a year, claim code 1, July 2026 rules:</p>
+    <script
+      is:inline
+      src="/embed.js"
+      data-province="ON"
+      data-gross="75000"></script>
+  </article>
+</Base>

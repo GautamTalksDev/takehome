@@ -30,7 +30,7 @@ The per-threshold jump equals the difference of that bracket's two K
 rounding residuals. Measured 2026 jumps for **all thirteen bracket
 tables** (FED plus twelve provinces/territories; both January and July
 editions; Outside Canada has no provincial K) live in
-`crates/netpay-core/tests/vectors/bracket_discontinuity_2026.json`.
+`crates/takehome-core/tests/vectors/bracket_discontinuity_2026.json`.
 
 Period-tax vs gross is therefore **not** strictly monotone. The property
 `ontario_calculate_invariants` uses the M-001 bound (≤ $0.09 per period

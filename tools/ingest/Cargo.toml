@@ -1,5 +1,5 @@
 [package]
-name = "netpay-ingest"
+name = "takehome-ingest"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -9,7 +9,7 @@ description = "CRA T4127 CSV archive ingest. Parses archived bytes only; never a
 build = "build.rs"
 
 [[bin]]
-name = "netpay-ingest"
+name = "takehome-ingest"
 path = "src/main.rs"
 
 [dependencies]
@@ -20,7 +20,7 @@ sha2 = "0.10"
 thiserror = { workspace = true }
 
 [dev-dependencies]
-netpay-core = { path = "../../crates/netpay-core" }
+takehome-core = { path = "../../crates/takehome-core" }
 
 [lints.rust]
 unsafe_code = "forbid"

@@ -43,6 +43,6 @@ A new run that observes a different PDOC identity than `pdoc-identity.json`
 **exits non-zero** and does not drain the queue (§10.2).
 
 Queue size is the distinct capturable July form count from
-`netpay-grid-gen --queue` (ten of fourteen legal P). Uncapturable forms are
+`takehome-grid-gen --queue` (ten of fourteen legal P). Uncapturable forms are
 not skipped silently under an all-14-P headline — they are a named oracle
 class in `CONFORMANCE.md`.

@@ -1,17 +1,17 @@
 //! Tests 32–35: deterministic versioned grid, boundary search, provenance, coverage.
 
-use netpay_core::request::Province;
-use netpay_core::rules::loader::EMBEDDED_REGISTRY;
-use netpay_core::rules::schema::{
+use std::collections::BTreeMap;
+use takehome_core::request::Province;
+use takehome_core::rules::loader::EMBEDDED_REGISTRY;
+use takehome_core::rules::schema::{
     BasicPersonalAmount, CalculationOption, JurisdictionCode, OptionScoped,
 };
-use netpay_grid_gen::{
+use takehome_grid_gen::{
     canonical_digest, generate, rule_set_neighborhood_dates, BC_TAX_REDUCTION_START,
     BONUS_SHORTCUT, GRID_JURISDICTIONS, GRID_VERSION, SEED,
 };
-use std::collections::BTreeMap;
 
-fn mentions(grid: &netpay_grid_gen::Grid, province: Province, needle: &str) -> bool {
+fn mentions(grid: &takehome_grid_gen::Grid, province: Province, needle: &str) -> bool {
     let code = province.as_str();
     grid.cases.iter().any(|case| {
         case.province == code
@@ -237,5 +237,26 @@ fn grid_covers_every_jurisdiction_evenly() {
             *count * 2 >= mean && mean * 2 >= *count,
             "{code} has {count} cases; mean {mean} (factor-of-two rule, spec §4.1)"
         );
+    }
+}
+
+/// Identity sample is 500 cases, every employment jurisdiction, deterministic.
+#[test]
+fn wasm_identity_sample_is_500_across_thirteen_and_deterministic() {
+    let a = takehome_grid_gen::wasm_identity_sample(500).expect("sample a");
+    let b = takehome_grid_gen::wasm_identity_sample(500).expect("sample b");
+    assert_eq!(a, b);
+    assert_eq!(a.requests.len(), 500);
+    assert_eq!(a.ids.len(), 500);
+    assert_eq!(a.jurisdictions.len(), GRID_JURISDICTIONS.len());
+    let mut seen = std::collections::BTreeSet::new();
+    for req in &a.requests {
+        seen.insert(req.province.as_str());
+    }
+    assert_eq!(seen.len(), GRID_JURISDICTIONS.len());
+    assert!(!seen.contains("QC"));
+    for req in &a.requests {
+        takehome_core::calculate(req, &EMBEDDED_REGISTRY)
+            .unwrap_or_else(|e| panic!("{}: {e}", req.province.as_str()));
     }
 }

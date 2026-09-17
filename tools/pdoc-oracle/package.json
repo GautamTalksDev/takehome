@@ -1,5 +1,5 @@
 {
-  "name": "@netpay/pdoc-oracle",
+  "name": "@takehome/pdoc-oracle",
   "private": true,
   "type": "module",
   "description": "CRA PDOC oracle harness. Never writes engine output into expected.",

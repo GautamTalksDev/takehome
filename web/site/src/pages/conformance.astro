@@ -1,0 +1,17 @@
+---
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Base from '../layouts/Base.astro';
+import { renderMarkdown } from '../lib/markdown.js';
+
+const source = readFileSync(
+  path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../CONFORMANCE.md'),
+  'utf8',
+);
+const html = renderMarkdown(source);
+---
+
+<Base title="Conformance — Takehome">
+  <article class="prose" data-testid="conformance" set:html={html} />
+</Base>

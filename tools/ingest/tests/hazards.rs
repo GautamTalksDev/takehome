@@ -1,20 +1,20 @@
 //! Documented CRA CSV format hazards (spec §6.1 / §21.8). One test per hazard,
 //! then the January 2026 round-trip that is the point of this crate.
 
-use netpay_core::rounding::round_claim_to_dollar;
-use netpay_core::rules::schema::{
-    BasicPersonalAmount, Jurisdiction, JurisdictionCode, OptionScoped, RuleSet,
-};
-use netpay_core::Money;
-use netpay_ingest::{
-    cra_code_to_jurisdiction, csv_rows, decode_bytes, filename_to_jurisdiction, ingest_archive,
-    parse_bracket_table, parse_other_amounts, special_token, strip_thousands, BasicCell,
-    EncodingKind, SpecialToken, JURISDICTION_TO_CRA, THIRTEEN,
-};
 use serde_json::{json, Value};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use takehome_core::rounding::round_claim_to_dollar;
+use takehome_core::rules::schema::{
+    BasicPersonalAmount, Jurisdiction, JurisdictionCode, OptionScoped, RuleSet,
+};
+use takehome_core::Money;
+use takehome_ingest::{
+    cra_code_to_jurisdiction, csv_rows, decode_bytes, filename_to_jurisdiction, ingest_archive,
+    parse_bracket_table, parse_other_amounts, special_token, strip_thousands, BasicCell,
+    EncodingKind, SpecialToken, JURISDICTION_TO_CRA, THIRTEEN,
+};
 
 fn fixtures() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("fixtures")
@@ -178,7 +178,7 @@ fn special_tokens_map_to_basic_personal_amount_variants() {
         Some(BasicCell::Amount(ref a)) if a == "12989.00"
     ));
 
-    let dummy = [netpay_ingest::Bracket {
+    let dummy = [takehome_ingest::Bracket {
         threshold: "0".into(),
         rate: "0.1400".into(),
         constant: "0.00".into(),
@@ -198,25 +198,25 @@ fn special_tokens_map_to_basic_personal_amount_variants() {
     // BPAF needs 5 brackets for phaseout indices 3 and 4.
     let fed_brackets = vec![
         dummy[0].clone(),
-        netpay_ingest::Bracket {
+        takehome_ingest::Bracket {
             threshold: "58523.00".into(),
             rate: "0.2050".into(),
             constant: "3804.00".into(),
             ..Default::default()
         },
-        netpay_ingest::Bracket {
+        takehome_ingest::Bracket {
             threshold: "117045.00".into(),
             rate: "0.2600".into(),
             constant: "10241.00".into(),
             ..Default::default()
         },
-        netpay_ingest::Bracket {
+        takehome_ingest::Bracket {
             threshold: "181440.00".into(),
             rate: "0.2900".into(),
             constant: "15685.00".into(),
             ..Default::default()
         },
-        netpay_ingest::Bracket {
+        takehome_ingest::Bracket {
             threshold: "258482.00".into(),
             rate: "0.3300".into(),
             constant: "26024.00".into(),
@@ -224,10 +224,10 @@ fn special_tokens_map_to_basic_personal_amount_variants() {
         },
     ];
 
-    let fed = netpay_ingest::jurisdiction_json("FED", &fed_brackets, &bundle).unwrap();
-    let yt = netpay_ingest::jurisdiction_json("YT", &dummy, &bundle).unwrap();
-    let qc = netpay_ingest::jurisdiction_json("QC", &dummy, &bundle).unwrap();
-    let mb = netpay_ingest::jurisdiction_json("MB", &dummy, &bundle).unwrap();
+    let fed = takehome_ingest::jurisdiction_json("FED", &fed_brackets, &bundle).unwrap();
+    let yt = takehome_ingest::jurisdiction_json("YT", &dummy, &bundle).unwrap();
+    let qc = takehome_ingest::jurisdiction_json("QC", &dummy, &bundle).unwrap();
+    let mb = takehome_ingest::jurisdiction_json("MB", &dummy, &bundle).unwrap();
 
     let fed_bpa: BasicPersonalAmount =
         serde_json::from_value(fed["basic_personal_amount"].clone()).unwrap();
@@ -307,7 +307,7 @@ fn january_2026_federal_and_ontario_match_hand_authored() {
         .as_str()
         .unwrap()
         .starts_with("https://"));
-    assert_eq!(source["tool_version"], netpay_ingest::tool_version());
+    assert_eq!(source["tool_version"], takehome_ingest::tool_version());
     assert!(!source["ingest_git_sha"].as_str().unwrap().is_empty());
     assert!(
         source["archive_files"]
@@ -320,7 +320,7 @@ fn january_2026_federal_and_ontario_match_hand_authored() {
 }
 
 /// Test 7 — a corrupted K digit fails the test-28 identity canary when loaded
-/// through netpay-core. Ingest itself does not parse numbers.
+/// through takehome-core. Ingest itself does not parse numbers.
 #[test]
 fn corrupted_k_digit_fails_identity_canary() {
     let ok_text = fixture_text("brackets-federal-ok.csv");
@@ -347,8 +347,8 @@ fn corrupted_k_digit_fails_identity_canary() {
     );
 }
 
-fn empty_bundle() -> netpay_ingest::ParsedBundle {
-    netpay_ingest::ParsedBundle {
+fn empty_bundle() -> takehome_ingest::ParsedBundle {
+    takehome_ingest::ParsedBundle {
         brackets: BTreeMap::new(),
         other: BTreeMap::new(),
         claim_code_1_tc: BTreeMap::new(),
@@ -361,7 +361,7 @@ fn empty_bundle() -> netpay_ingest::ParsedBundle {
 }
 
 fn unique_temp(label: &str) -> PathBuf {
-    let p = std::env::temp_dir().join(format!("netpay-ingest-{label}-{}", std::process::id()));
+    let p = std::env::temp_dir().join(format!("takehome-ingest-{label}-{}", std::process::id()));
     let _ = fs::remove_dir_all(&p);
     fs::create_dir_all(&p).unwrap();
     p
@@ -415,7 +415,7 @@ const STUB_CPP: &str = r#"{
     "second_additional_max": "416.00"
 }"#;
 
-fn ruleset_from_brackets(brackets: &[netpay_ingest::Bracket]) -> String {
+fn ruleset_from_brackets(brackets: &[takehome_ingest::Bracket]) -> String {
     let lowest = &brackets[0].rate;
     let j = json!({
         "brackets": brackets.iter().map(|b| json!({

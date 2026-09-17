@@ -1,0 +1,40 @@
+{
+  "currency": "CAD",
+  "upgrade_url": "https://takehome.gautamkhosla.com/pricing/",
+  "test": {
+    "id": "test",
+    "name": "Test",
+    "cad_cents": 0,
+    "calculations": null
+  },
+  "live": [
+    {
+      "id": "developer",
+      "name": "Developer",
+      "cad_cents": 0,
+      "calculations": 1000,
+      "blurb": "Live keys for a real integration. Test keys stay unmetered."
+    },
+    {
+      "id": "starter",
+      "name": "Starter",
+      "cad_cents": 4900,
+      "calculations": 25000,
+      "blurb": "A Canadian payroll product in production."
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "cad_cents": 14900,
+      "calculations": 150000,
+      "blurb": "Multi-employer or multi-province volume."
+    },
+    {
+      "id": "business",
+      "name": "Business",
+      "cad_cents": 39900,
+      "calculations": 1000000,
+      "blurb": "A million calculations a month, still self-serve."
+    }
+  ]
+}

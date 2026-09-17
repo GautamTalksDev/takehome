@@ -1,0 +1,257 @@
+---
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { CLAIM_CODES, PAY_PERIODS, PROVINCES } from '../lib/provinces.js';
+
+const factors = JSON.parse(
+  readFileSync(
+    path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../../../data/factors.json',
+    ),
+    'utf8',
+  ),
+);
+const {
+  code,
+  name,
+  supported = true,
+  heading,
+  lede,
+  answer,
+  mechanisms = [],
+  extraFields = [],
+  defaultPayPeriod = 26,
+  defaultGross = '1000.00',
+  defaultAsOf = '2026-07-01',
+  defaultClaim = '1',
+  showProvinceSelect = false,
+  resultMode = 'net',
+} = Astro.props;
+const factorDefs = factors.factors;
+const h1 = heading ?? `${name} take-home pay`;
+const intro =
+  lede ??
+  'T4127 payroll deductions in this browser. Recalculates as you type. No account.';
+---
+
+<article>
+  <h1>{h1}</h1>
+  <p class="lede">{intro}</p>
+  {answer ? <p class="answer">{answer}</p> : null}
+
+  {
+    supported ? (
+      <div class="calc">
+        <form
+          id="calculator"
+          data-province={code}
+          data-supported="true"
+          data-result-mode={resultMode}
+        >
+          {
+            showProvinceSelect ? (
+              <label>
+                <span>Province of employment</span>
+                <select data-testid="province" name="province">
+                  {PROVINCES.filter((row) => row.supported).map((row) => (
+                    <option value={row.code} selected={row.code === code}>
+                      {row.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null
+          }
+          <label>
+            <span>Pay date (rules as-of)</span>
+            <input
+              data-testid="as-of"
+              name="as_of"
+              type="date"
+              value={defaultAsOf}
+              required
+            />
+          </label>
+          <p>
+            The engine does not read a clock. It uses the pay date you enter.
+          </p>
+          <label>
+            <span>Pay periods per year</span>
+            <select data-testid="pay-period" name="pay_period">
+              {PAY_PERIODS.map((row) => (
+                <option value={row.value} selected={row.value === defaultPayPeriod}>
+                  {row.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>
+              {resultMode === 'grossup'
+                ? 'Initial gross (search starts here)'
+                : 'Gross pay this period'}
+            </span>
+            <input
+              data-testid="gross-pay"
+              name="gross_pay"
+              type="text"
+              inputmode="decimal"
+              autocomplete="off"
+              value={defaultGross}
+              required
+            />
+          </label>
+          {
+            extraFields.map((field) => (
+              <label>
+                <span>{field.label}</span>
+                <input
+                  data-testid={field.testid ?? field.name}
+                  name={field.name}
+                  type="text"
+                  inputmode="decimal"
+                  autocomplete="off"
+                  value={field.value ?? ''}
+                />
+              </label>
+            ))
+          }
+          <label>
+            <span>Federal claim code</span>
+            <select data-testid="federal-claim" name="federal_claim_code">
+              {CLAIM_CODES.map((c) => (
+                <option value={c} selected={c === defaultClaim}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Provincial claim code</span>
+            <select data-testid="provincial-claim" name="provincial_claim_code">
+              {CLAIM_CODES.map((c) => (
+                <option value={c} selected={c === defaultClaim}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+        </form>
+
+        <div class="result" aria-live="polite">
+          <p class="net">
+            $<span data-testid="net-pay"></span>
+          </p>
+          <p class="headline-note" data-testid="headline-note"></p>
+          <div class="lines">
+            <div>
+              <span>Federal tax</span>
+              <span data-testid="federal-tax"></span>
+            </div>
+            <div>
+              <span>Provincial tax</span>
+              <span data-testid="provincial-tax"></span>
+            </div>
+            <div>
+              <span>CPP</span>
+              <span data-testid="cpp"></span>
+            </div>
+            <div>
+              <span>CPP2</span>
+              <span data-testid="cpp2"></span>
+            </div>
+            <div>
+              <span>EI</span>
+              <span data-testid="ei"></span>
+            </div>
+            <div>
+              <span>Total deductions</span>
+              <span data-testid="total-deductions"></span>
+            </div>
+            <div>
+              <span>Employer CPP</span>
+              <span data-testid="employer-cpp"></span>
+            </div>
+            <div>
+              <span>Employer CPP2</span>
+              <span data-testid="employer-cpp2"></span>
+            </div>
+            <div>
+              <span>Employer EI</span>
+              <span data-testid="employer-ei"></span>
+            </div>
+            <div>
+              <span>Employer cost (gross + premiums)</span>
+              <span data-testid="employer-cost"></span>
+            </div>
+          </div>
+          <p class="rule-set" data-testid="rule-set"></p>
+          <p class="warning hidden" data-testid="prorated-warning"></p>
+          <p class="privacy" data-testid="privacy">
+            No salary figure leaves the browser.
+          </p>
+        </div>
+      </div>
+    ) : (
+      <p class="unsupported" data-testid="unsupported">
+        Quebec uses Revenu Québec formulas (QPP/QPIP), not T4127 Chapter 4
+        provincial tax. This engine does not calculate Quebec and will not
+        return a federal-only answer with T2 = 0. Roadmap:
+        docs/jurisdictions.md.
+      </p>
+    )
+  }
+
+  {
+    supported && (
+      <>
+        <details data-testid="working">
+          <summary>Show the working</summary>
+          <table>
+            <thead>
+              <tr>
+                <th>Factor</th>
+                <th>Value</th>
+                <th>Definition</th>
+              </tr>
+            </thead>
+            <tbody id="breakdown-body">
+              {factorDefs.map((row) => (
+                <tr data-testid="factor-row" data-factor={row.symbol}>
+                  <th scope="row">
+                    <span data-testid={`factor-${row.symbol}`}>{row.symbol}</span>
+                  </th>
+                  <td data-role="value"></td>
+                  <td>
+                    {row.definition} ({row.t4127_reference})
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+        <section>
+          <h2>Sources</h2>
+          <ul data-testid="citations"></ul>
+        </section>
+      </>
+    )
+  }
+
+  {
+    mechanisms.length > 0 ? (
+      <section class="prose">
+        {mechanisms.map((row) => (
+          <>
+            <h2>{row.h2}</h2>
+            <p>{row.p}</p>
+          </>
+        ))}
+      </section>
+    ) : null
+  }
+
+  <slot />
+</article>

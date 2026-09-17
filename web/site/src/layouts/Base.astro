@@ -1,0 +1,74 @@
+---
+import { PROVINCES } from '../lib/provinces.js';
+import '../styles/site.css';
+
+const apiOrigin = import.meta.env.PUBLIC_API_ORIGIN ?? '';
+const { title, engine = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-api={apiOrigin}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta
+      name="description"
+      content="Canadian payroll deductions from the T4127 formulas, in the browser. No salary figure leaves the browser."
+    />
+    <link rel="alternate" type="application/rss+xml" title="Takehome changes" href="/changes.xml" />
+  </head>
+  <body>
+    <header>
+      <p><a href="/">Takehome</a> — Shows its work.</p>
+      <nav aria-label="API">
+        <ul>
+          <li><a href="/docs/">Docs</a></li>
+          <li><a href="/signup/">API keys</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Calculators">
+        <ul>
+          {
+            PROVINCES.map((row) => (
+              <li>
+                <a href={`/calculators/${row.slug}/`}>{row.code}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>
+        Takehome is a calculation of CRA T4127 formulas. It is not a payroll
+        provider and does not file returns. The CRA Payroll Deductions Online
+        Calculator is the authoritative source.
+      </p>
+      <nav aria-label="Reference">
+        <ul>
+          <li><a href="/calculators/">Calculators</a></li>
+          <li><a href="/rates/">Rates</a></li>
+          <li><a href="/changes/">Changes</a></li>
+          <li><a href="/changes.xml">RSS</a></li>
+          <li><a href="/conformance/">Conformance</a></li>
+          <li><a href="/how-payroll-deductions-work-in-canada/">How deductions work</a></li>
+          <li><a href="/what-is-the-t4127/">T4127</a></li>
+          <li><a href="/cpp-2027-rate-change/">CPP 2027</a></li>
+          <li><a href="/embed/">Embed</a></li>
+          <li><a href="/docs/">Docs</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/signup/">API keys</a></li>
+          <li><a href="/sitemap.xml">Sitemap</a></li>
+        </ul>
+      </nav>
+    </footer>
+    {engine ? (
+      <script is:inline type="module" src="/engine/calculator.js"></script>
+    ) : null}
+  </body>
+</html>

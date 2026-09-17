@@ -1,0 +1,25 @@
+{
+  "name": "@takehome/api",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "openapi": "node scripts/generate-openapi.js",
+    "openapi:check": "node scripts/generate-openapi.js --check",
+    "sync-data": "node scripts/sync-data.js",
+    "pretest": "node scripts/sync-data.js && node scripts/generate-openapi.js",
+    "test": "node --test tests/*.test.js",
+    "local": "node scripts/local.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "takehome-ca": "file:../../packages/takehome-js"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "wrangler": "^4.34.0"
+  }
+}

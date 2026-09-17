@@ -1,11 +1,11 @@
-# netpay-grid-gen
+# takehome-grid-gen
 
 Deterministic conformance case list (spec §11.2). Boundary density beats volume.
 
 ```bash
-cargo run -p netpay-grid-gen -- --manifest
-cargo run -p netpay-grid-gen -- --out /tmp/netpay-grid
-cargo run -p netpay-grid-gen -- --report
+cargo run -p takehome-grid-gen -- --manifest
+cargo run -p takehome-grid-gen -- --out /tmp/takehome-grid
+cargo run -p takehome-grid-gen -- --report
 ```
 
 `--out DIR` writes `manifest.json` and `cases.jsonl`. The bytes of that

@@ -1,0 +1,272 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Related from '../../../components/Related.astro';
+import { RATE_YEARS } from '../../../lib/catalog.js';
+import { PROVINCE_FACTS } from '../../../lib/copy.js';
+import { PROVINCES, provinceBySlug } from '../../../lib/provinces.js';
+import {
+  bpaText,
+  bracketRows,
+  loadEdition,
+  loadProvincial,
+  money,
+  rate,
+} from '../../../lib/rules.js';
+
+export function getStaticPaths() {
+  return RATE_YEARS.flatMap((year) =>
+    PROVINCES.map((province) => ({
+      params: { year: year.slug, code: province.slug },
+    })),
+  );
+}
+
+const year = RATE_YEARS.find((row) => row.slug === Astro.params.year);
+const province = provinceBySlug(Astro.params.code);
+if (!year || !province) {
+  throw new Error(`unknown rates page ${Astro.params.year}/${Astro.params.code}`);
+}
+const edition = loadEdition(year.version);
+const provincial = loadProvincial(year.version, province.slug);
+const facts = PROVINCE_FACTS[province.slug];
+const rowsByOption = provincial ? bracketRows(provincial.brackets) : null;
+
+function optionLabel(key) {
+  return key === 'option1' ? 'Option 1' : key === 'option2' ? 'Option 2' : key;
+}
+---
+
+<Base title={`${province.name} payroll rates, ${year.label} — Takehome`}>
+  <article class="prose">
+    <h1>{province.name} payroll rates — {year.label}</h1>
+    <p>
+      {year.edition}, rule set {year.version}. {facts.t2Line}
+    </p>
+    <p>
+      These figures are copied from the ingested JSON, not re-typed from
+      memory. Use the <a href={`/take-home-pay/${province.slug}/`}>calculator</a> for
+      a period result.
+    </p>
+
+    <h2>Federal (same for every province)</h2>
+    <p>{rate(edition.federal.lowest_rate)} lowest rate. BPAF {bpaText(edition.federal.basic_personal_amount)} Canada employment amount {money(edition.federal.canada_employment_amount)}. LCF {rate(edition.federal.lcf.rate)} to {money(edition.federal.lcf.max)}. Quebec abatement {rate(edition.federal.abatement)} (not applied outside Quebec). Outside-Canada surtax {rate(edition.federal.surtax_flat)}.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Threshold</th>
+          <th>Rate R</th>
+          <th>Constant K</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          edition.federal.brackets.map((row) => (
+            <tr>
+              <td>{money(row.threshold)}</td>
+              <td>{rate(row.rate)}</td>
+              <td>{money(row.constant)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h2>CPP {year.label}</h2>
+    <p>
+      YMPE {money(edition.cpp.ympe)}, YAMPE {money(edition.cpp.yampe)}, basic
+      exemption {money(edition.cpp.basic_exemption)}. Employee total rate{' '}
+      {rate(edition.cpp.total_rate)} (base {rate(edition.cpp.base_rate)} + first
+      additional {rate(edition.cpp.first_additional_rate)}). Second additional{' '}
+      {rate(edition.cpp.second_additional_rate)} on earnings between YMPE and
+      YAMPE. Annual maxima: C {money(edition.cpp.total_max)} (base{' '}
+      {money(edition.cpp.base_max)} + first additional{' '}
+      {money(edition.cpp.first_additional_max)}), C2{' '}
+      {money(edition.cpp.second_additional_max)}. Employer matches C and C2.
+    </p>
+
+    <h2>EI {year.label}</h2>
+    <p>
+      Maximum insurable {money(edition.ei.max_insurable)}. Employee{' '}
+      {rate(edition.ei.employee_rate)} (max {money(edition.ei.employee_max)}).
+      Employer {rate(edition.ei.employer_rate)} (max {money(edition.ei.employer_max)}),
+      which is 1.4 × the employee rate.
+    </p>
+
+    {
+      province.slug === 'qc' ? (
+        <>
+          <h2>Quebec provincial table</h2>
+          <p>
+            There is no T4127 Chapter 4 file for Quebec. Revenu Québec publishes
+            TP-1015.3. This page will not invent QPP or provincial brackets.
+          </p>
+        </>
+      ) : null
+    }
+
+    {
+      province.slug === 'outsidecanada' ? (
+        <>
+          <h2>Outside Canada — no provincial table</h2>
+          <p>
+            T2 is zero. Federal tax is increased by the 48% surtax in the
+            federal file. CPP and EI still use the tables above.
+          </p>
+        </>
+      ) : null
+    }
+
+    {
+      provincial && rowsByOption
+        ? Object.entries(rowsByOption).map(([key, rows]) => (
+            <>
+              <h2>
+                {province.name} brackets
+                {Object.keys(rowsByOption).length > 1 ? ` — ${optionLabel(key)}` : ''}
+              </h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Threshold</th>
+                    <th>Rate V</th>
+                    <th>Constant KP</th>
+                    <th>Prorated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <tr>
+                      <td>{money(row.threshold)}</td>
+                      <td>{rate(row.rate)}</td>
+                      <td>{money(row.constant)}</td>
+                      <td>{row.prorated ? 'yes' : 'no'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          ))
+        : null
+    }
+
+    {
+      provincial ? (
+        <>
+          <h2>{province.name} personal amount</h2>
+          <p>TCP {bpaText(provincial.basic_personal_amount)} Lowest rate {rate(provincial.lowest_rate)}.</p>
+        </>
+      ) : null
+    }
+
+    {
+      provincial?.surtax ? (
+        <>
+          <h2>Surtax</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Threshold (on provincial tax)</th>
+                <th>Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              {provincial.surtax.map((row) => (
+                <tr>
+                  <td>{money(row.threshold)}</td>
+                  <td>{rate(row.rate)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null
+    }
+
+    {
+      provincial?.health_premium ? (
+        <>
+          <h2>Ontario Health Premium</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Taxable income from</th>
+                <th>Rate</th>
+                <th>Base</th>
+                <th>Cap</th>
+              </tr>
+            </thead>
+            <tbody>
+              {provincial.health_premium.map((row) => (
+                <tr>
+                  <td>{money(row.threshold)}</td>
+                  <td>{rate(row.rate)}</td>
+                  <td>{money(row.base)}</td>
+                  <td>{money(row.cap)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null
+    }
+
+    {
+      provincial?.tax_reduction ? (
+        <>
+          <h2>Tax reduction</h2>
+          {provincial.tax_reduction.basic ? (
+            <p>
+              Basic {money(provincial.tax_reduction.basic)}; dependant{' '}
+              {money(provincial.tax_reduction.dependant)}.
+            </p>
+          ) : (
+            <p>
+              Option 1 basic {money(provincial.tax_reduction.option1?.basic)},
+              Option 2 basic {money(provincial.tax_reduction.option2?.basic)}.
+              Dependant{' '}
+              {money(
+                provincial.tax_reduction.option1?.dependant ??
+                  provincial.tax_reduction.option2?.dependant,
+              )}
+              .
+            </p>
+          )}
+        </>
+      ) : null
+    }
+
+    {
+      provincial?.lcp ? (
+        <>
+          <h2>LCP</h2>
+          <p>
+            Labour-sponsored funds credit {rate(provincial.lcp.rate)} to{' '}
+            {money(provincial.lcp.max)}. Applied only when lcp_purchase is on the
+            request.
+          </p>
+        </>
+      ) : null
+    }
+
+    {
+      provincial?.supplemental_credit ? (
+        <>
+          <h2>K5P</h2>
+          <p>
+            Alberta supplemental credit: max(0, ((K1P + K2P) − $4,896.00) × 0.25),
+            rounded to the cent. The JSON flag is presence-only; the threshold
+            and rate are T4127 Chapter 4 constants.
+          </p>
+        </>
+      ) : null
+    }
+
+    <h2>What this edition does not change</h2>
+    <p>
+      {year.slug === '2026-07'
+        ? 'CPP, EI, and federal brackets are inherited from January. Only BC, NL, and PE overlay provincial files in the 123rd edition.'
+        : 'This is the 1 January 2026 starting table. Open the July page for BC first-bracket proration, NL TCP, and the PE $200,000 band.'}
+    </p>
+  </article>
+  <Related province={province} />
+</Base>

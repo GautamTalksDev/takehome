@@ -24,17 +24,26 @@ jobs:
       - uses: actions/checkout@v4
       - name: Ban IEEE-754 in money paths
         run: ./scripts/float-ban.sh
-      - name: Ban float-producing dependencies in netpay-core
+      - name: Ban float-producing dependencies in takehome-core
         run: |
           # rust_decimal's float features would reintroduce a conversion path.
-          if grep -nE 'rust_decimal.*features.*float' crates/netpay-core/Cargo.toml; then
-            echo "rust_decimal float feature enabled in netpay-core" >&2
+          if grep -nE 'rust_decimal.*features.*float' crates/takehome-core/Cargo.toml; then
+            echo "rust_decimal float feature enabled in takehome-core" >&2
             exit 1
           fi
           echo "dependency float-ban: clean"
 
+  name-ban:
+    # Retired product name. Historical notes are the only permitted leftover
+    # hits (CHANGELOG, CONFORMANCE, ADRs, findings).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ban leftover retired product name
+        run: ./scripts/name-ban.sh
+
   build-test:
-    needs: float-ban
+    needs: [float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +66,7 @@ jobs:
         run: cargo test --workspace --all-features
 
       - name: Conformance report current
-        run: cargo run -p netpay-conformance -- --check
+        run: cargo run -p takehome-conformance -- --check
 
       - name: Test (release, catches overflow-behaviour divergence)
         run: cargo test --workspace --release
@@ -71,8 +80,139 @@ jobs:
           grep -c 'test result: ok' /tmp/run1.txt
           diff <(grep 'test result' /tmp/run1.txt) <(grep 'test result' /tmp/run2.txt)
 
+  wasm-js:
+    # Spec §5.4: WASM and native are the same engine. If they disagree, every
+    # downstream runtime claim is marketing.
+    needs: [float-ban, name-ban]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Cache wasm-bindgen-cli
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-bindgen
+          key: wasm-bindgen-cli-0.2.128-${{ runner.os }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: WASM / native identity + gzip size
+        run: bash packages/takehome-js/scripts/test.sh
+
+  python:
+    needs: [float-ban, name-ban]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install maturin and pytest
+        run: pip install maturin pytest
+
+      - name: Build and test takehome-ca
+        working-directory: packages/takehome-py
+        run: |
+          maturin develop --release
+          pytest -q
+
+  site:
+    # Spec §5.5 / §13.3: the calculator works offline, matches the engine, and
+    # makes no network request during a calculation.
+    needs: [float-ban, name-ban]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Cache wasm-bindgen-cli
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-bindgen
+          key: wasm-bindgen-cli-0.2.128-${{ runner.os }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Native CLI
+        run: cargo build -p takehome-cli --release
+
+      - name: Install site tooling
+        working-directory: web/site
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        working-directory: web/site
+        run: npx playwright install --with-deps chromium
+
+      - name: Calculator Playwright, JS budget, Lighthouse
+        working-directory: web/site
+        run: npm test
+        env:
+          TAKEHOME_CLI: ${{ github.workspace }}/target/release/takehome
+          ASTRO_TELEMETRY_DISABLED: "1"
+
+  api:
+    # Spec §10.2 tests 11–26: Worker JSON API, keys, metering, billing, five-minute path.
+    needs: [float-ban, name-ban]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.90.0
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Cache wasm-bindgen-cli
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/wasm-bindgen
+          key: wasm-bindgen-cli-0.2.128-${{ runner.os }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: WASM module
+        run: bash packages/takehome-js/scripts/build.sh
+
+      - name: Worker contract tests 11–26
+        working-directory: services/api
+        run: npm ci && npm test
+
   deny:
-    needs: float-ban
+    needs: [float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

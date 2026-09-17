@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import { cadLabel, PLANS } from '../lib/plans.js';
+---
+
+<Base title="Pricing — Takehome">
+  <article class="prose">
+    <h1>Pricing</h1>
+    <p class="lede">
+      Published CAD prices. Sign up, verify your email, make a call. Test keys
+      run the same engine and are not metered. Live keys hard-stop at the plan
+      limit — Takehome does not surprise-bill.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Plan</th>
+          <th>Price</th>
+          <th>Live calculations / month</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          PLANS.live.map((plan) => (
+            <tr>
+              <th scope="row">
+                {plan.name}
+                <div>{plan.blurb}</div>
+              </th>
+              <td>{cadLabel(plan.cad_cents)}</td>
+              <td>{plan.calculations.toLocaleString('en-CA')}</td>
+            </tr>
+          ))
+        }
+        <tr>
+          <th scope="row">
+            Test
+            <div>np_test_ keys. Identical output to live. Unmetered.</div>
+          </th>
+          <td>{cadLabel(PLANS.test.cad_cents)}</td>
+          <td>unlimited</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      Quebec is not calculated and is not billed. A <code>QC</code> request
+      returns <code>jurisdiction_not_supported</code>.
+    </p>
+    <p>
+      Paid tiers are Stripe Checkout in CAD after you have a live key:
+      <code>POST /v1/billing/checkout</code> with <code>starter</code>,
+      <code>growth</code>, or <code>business</code>. There is no sales queue.
+    </p>
+    <p>
+      <a href="/signup/">Get API keys</a>
+    </p>
+  </article>
+</Base>

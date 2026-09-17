@@ -1,6 +1,6 @@
-use netpay_conformance::{check_committed, report_from_repo, require_complete, write_report};
 use std::env;
 use std::process::ExitCode;
+use takehome_conformance::{check_committed, report_from_repo, require_complete, write_report};
 
 fn main() -> ExitCode {
     let mut write = false;
@@ -12,7 +12,7 @@ fn main() -> ExitCode {
             "--check" => check = true,
             "--require-complete" => require = true,
             "--help" | "-h" => {
-                eprintln!("usage: netpay-conformance [--write] [--check] [--require-complete]");
+                eprintln!("usage: takehome-conformance [--write] [--check] [--require-complete]");
                 return ExitCode::SUCCESS;
             }
             other => {
@@ -21,7 +21,7 @@ fn main() -> ExitCode {
             }
         }
     }
-    let root = netpay_conformance::workspace_root();
+    let root = takehome_conformance::workspace_root();
     let report = match report_from_repo() {
         Ok(r) => r,
         Err(err) => {
@@ -53,7 +53,7 @@ fn main() -> ExitCode {
         eprintln!("conformance report is current");
     }
     if !write && !check && !require {
-        match netpay_conformance::render_json(&report) {
+        match takehome_conformance::render_json(&report) {
             Ok(json) => print!("{json}"),
             Err(err) => {
                 eprintln!("{err}");

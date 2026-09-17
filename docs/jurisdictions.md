@@ -1,6 +1,6 @@
 # Jurisdictions
 
-Netpay calculates T4127 payroll deductions for the Table 8.1 jurisdictions
+Takehome calculates T4127 payroll deductions for the Table 8.1 jurisdictions
 plus Outside Canada.
 
 | Code | Name | Status |
@@ -37,5 +37,5 @@ Machine-readable listing:
 GET /v1/jurisdictions
 ```
 
-The payload is [`list_jurisdictions()`](../crates/netpay-core/src/jurisdictions.rs)
-(`netpay jurisdictions` prints the same JSON).
+The payload is [`list_jurisdictions()`](../crates/takehome-core/src/jurisdictions.rs)
+(`takehome jurisdictions` prints the same JSON).

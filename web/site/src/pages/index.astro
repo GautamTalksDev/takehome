@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Calculator from '../components/Calculator.astro';
+import Related from '../components/Related.astro';
+import { intentCopy } from '../lib/copy.js';
+import { provinceBySlug } from '../lib/provinces.js';
+
+const ontario = provinceBySlug('on');
+const copy = intentCopy(
+  {
+    id: 'take-home-pay',
+    path: 'take-home-pay',
+    kind: 'employee',
+  },
+  ontario,
+);
+---
+
+<Base title="Ontario take-home pay — Takehome">
+  <Calculator
+    code="ON"
+    name="Ontario"
+    supported
+    heading={copy.h1}
+    lede={copy.lede}
+    answer={copy.answer}
+    mechanisms={copy.mechanisms}
+    defaultPayPeriod={26}
+    defaultGross="2000.00"
+  />
+  <Related province={ontario} />
+</Base>

@@ -1,0 +1,50 @@
+{
+  "name": "takehome-ca",
+  "version": "0.1.0",
+  "description": "Canadian payroll deductions. Same T4127 engine as native Rust, running in WASM. No network after load.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takehome-ca/takehome.git",
+    "directory": "packages/takehome-js"
+  },
+  "homepage": "https://github.com/takehome-ca/takehome",
+  "bugs": {
+    "url": "https://github.com/takehome-ca/takehome/issues"
+  },
+  "keywords": [
+    "payroll",
+    "canada",
+    "t4127",
+    "cpp",
+    "ei",
+    "wasm"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./src/node.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "node": "./src/node.js",
+      "workerd": "./src/browser.js",
+      "browser": "./src/browser.js",
+      "default": "./src/browser.js"
+    },
+    "./takehome_wasm_bg.wasm": "./wasm/takehome_wasm_bg.wasm"
+  },
+  "files": [
+    "src",
+    "wasm",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "test": "bash scripts/test.sh",
+    "prepublishOnly": "bash scripts/test.sh"
+  }
+}

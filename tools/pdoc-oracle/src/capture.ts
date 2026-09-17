@@ -290,7 +290,7 @@ export async function readResults(page: Page): Promise<CaptureOutput> {
   const cpp2 = (await lineAmount(page, RESULTS.cpp2)) ?? "0.00";
   const ei = await lineAmount(page, RESULTS.ei);
   const total = await lineAmount(page, RESULTS.totalDeductions);
-  const net = await lineAmount(page, RESULTS.netPay);
+  const net = await lineAmount(page, RESULTS.netAmount);
 
   const missing = [
     ["federal_tax", federal],

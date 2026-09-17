@@ -39,7 +39,7 @@ export async function backfillM1(): Promise<{
   const repoRoot = findRepoRoot();
   const path = join(
     repoRoot,
-    "crates/netpay-core/tests/vectors/pdoc_ontario_2026_01.json",
+    "crates/takehome-core/tests/vectors/pdoc_ontario_2026_01.json",
   );
   const file = JSON.parse(await readFile(path, "utf8")) as VectorFile;
   const keys: string[] = [];

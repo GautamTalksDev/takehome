@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="How payroll deductions work in Canada — Takehome">
+  <article class="prose">
+    <h1>How payroll deductions work in Canada</h1>
+    <p class="lede">
+      A Canadian paycheque is not “tax times gross.” CRA T4127 Option 1
+      annualizes this period’s income, computes annual federal and provincial
+      tax, divides by the number of pay periods, then adds CPP, CPP2, and EI
+      calculated on this period’s pensionable and insurable earnings.
+    </p>
+
+    <h2>The five statutory lines</h2>
+    <ol>
+      <li>
+        Federal tax — T4127 Chapter 4 Steps 2–3. Annual T1, then [(T1)/P] + L.
+      </li>
+      <li>
+        Provincial tax — Chapter 4 Step 4–5, including Ontario’s surtax and
+        health premium, Alberta’s K5P, BC’s tax reduction, or Outside Canada’s
+        zero T2 plus a 48% federal surtax.
+      </li>
+      <li>
+        CPP (C) — 5.95% of (pensionable − period exemption), remaining room
+        against the annual maximum. Employer matches.
+      </li>
+      <li>
+        CPP2 (C2) — 4% of pensionable earnings between this year’s YMPE and
+        YAMPE. Employer matches. Zero until year-to-date pensionable earnings
+        pass YMPE.
+      </li>
+      <li>
+        EI — 1.63% of insurable earnings to the annual maximum. Employer pays
+        1.4×. Quebec uses a different EI rate and QPIP; this engine will not
+        calculate that.
+      </li>
+    </ol>
+
+    <h2>Why overtime looks over-taxed</h2>
+    <p>
+      Option 1 assumes this period’s I continues for all P periods. A one-off
+      overtime cheque annualizes into a higher bracket. The extra withholding
+      is usually refunded on the T4 if the overtime did not continue. Option 2
+      (cumulative averaging) damps that; most payroll software remits Option
+      1, which is what this site computes.
+    </p>
+
+    <h2>Claim codes</h2>
+    <p>
+      TD1 claim code 1 is the basic personal amount. Code 0 is no claim —
+      typical on a second job. Code E is exemption. Entering a dollar amount
+      instead of a claim code is a different wire field (federal_tc /
+      provincial_tcp) and is how PDOC’s “total claim amount” box goes wrong
+      on BPAF phase-out.
+    </p>
+
+    <h2>The engine does not read a clock</h2>
+    <p>
+      Which formula applies is the pay date you type. 2026-06-30 is the 122nd
+      edition; 2026-07-01 is the 123rd (BC, NL, PE overlay). There is no
+      “today.” See <a href="/what-is-the-t4127/">what the T4127 is</a> and
+      <a href="/cpp-2027-rate-change/">CPP 2027</a>.
+    </p>
+
+    <p>
+      <a href="/calculators/on/">Calculate an Ontario cheque</a>
+      {' · '}
+      <a href="/conformance/">Conformance against PDOC</a>
+    </p>
+  </article>
+</Base>

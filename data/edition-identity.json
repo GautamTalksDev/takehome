@@ -1,5 +1,5 @@
 {
-  "description": "Which rule-set editions are field-identical for which jurisdictions. Verified by netpay-core test 18 (jurisdiction tables) and ingest test 19 (claim-code files). A PDOC cache record with observed_edition A may satisfy a case keyed to rule_set_version B only when A==B or every jurisdiction the case touches is listed under identical_jurisdictions and its claim-code table under identical_claim_code_tables.",
+  "description": "Which rule-set editions are field-identical for which jurisdictions. Verified by takehome-core test 18 (jurisdiction tables) and ingest test 19 (claim-code files). A PDOC cache record with observed_edition A may satisfy a case keyed to rule_set_version B only when A==B or every jurisdiction the case touches is listed under identical_jurisdictions and its claim-code table under identical_claim_code_tables.",
   "pairs": [
     {
       "a": "2026-01-01",
@@ -30,7 +30,7 @@
         "yt"
       ],
       "verified_by": [
-        "crates/netpay-core/src/rules/loader.rs::ten_inherited_jurisdictions_are_byte_identical",
+        "crates/takehome-core/src/rules/loader.rs::ten_inherited_jurisdictions_are_byte_identical",
         "tools/ingest/tests/july_delta.rs::claim_codes_effective_dated_for_bc_and_nl"
       ]
     }

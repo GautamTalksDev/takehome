@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import { FIRST_CALL_NET_PAY, firstCallCurl } from '../lib/first-call.js';
+
+const curl = firstCallCurl('https://takehome.gautamkhosla.com');
+---
+
+<Base title="API docs — Takehome">
+  <article class="prose">
+    <h1>API docs</h1>
+    <p class="lede">
+      Get a key, make one authenticated call, see <code>{FIRST_CALL_NET_PAY}</code>.
+      Test keys run the same engine as live keys and are not metered.
+    </p>
+
+    <ol>
+      <li>
+        <a href="/signup/">Get a key</a> — email, verify, copy the
+        <code>np_test_</code> key. No sales call.
+      </li>
+      <li>
+        Run the first call. Ontario weekly <code>$1000.00</code> on
+        <code>2026-01-15</code>, claim code 1. <code>employee.net_pay</code>
+        is <code>{FIRST_CALL_NET_PAY}</code>.
+      </li>
+    </ol>
+
+    <pre><code>{curl}</code></pre>
+
+    <p>
+      Replace <code>np_test_YOUR_KEY</code> with the test key from verify.
+      Public listings (<code>/v1/rules</code>, <code>/v1/jurisdictions</code>,
+      <code>/openapi.json</code>) do not need a key.
+    </p>
+    <p>
+      Live keys count calculations, not HTTP requests, and stop at the plan
+      limit. Prices are on <a href="/pricing/">pricing</a>.
+    </p>
+    <p>
+      Job boards can skip the API: one
+      <a href="/embed/"><code>embed.js</code></a> tag runs the same WASM engine
+      in the listing page. No cookie, no salary posted back.
+    </p>
+  </article>
+</Base>

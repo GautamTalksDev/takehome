@@ -87,7 +87,7 @@ pub struct IngestReport {
 
 /// Git sha of this ingest crate, baked at compile time.
 pub fn ingest_git_sha() -> &'static str {
-    env!("NETPAY_INGEST_GIT_SHA")
+    env!("TAKEHOME_INGEST_GIT_SHA")
 }
 
 /// Crate version.

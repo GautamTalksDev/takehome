@@ -1,7 +1,7 @@
-use netpay_ingest::{ingest_archive_with, IngestError, IngestOptions};
 use std::env;
 use std::path::PathBuf;
 use std::process::ExitCode;
+use takehome_ingest::{ingest_archive_with, IngestError, IngestOptions};
 
 fn main() -> ExitCode {
     let mut args = env::args().skip(1);
@@ -14,13 +14,13 @@ fn main() -> ExitCode {
             "--base" => {
                 base = args.next().map(PathBuf::from);
                 if base.is_none() {
-                    eprintln!("usage: netpay-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
+                    eprintln!("usage: takehome-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
                     return ExitCode::from(2);
                 }
             }
             "--no-overlay" => overlay = false,
             "--help" | "-h" => {
-                eprintln!("usage: netpay-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
+                eprintln!("usage: takehome-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
                 return ExitCode::SUCCESS;
             }
             other if other.starts_with('-') => {
@@ -33,7 +33,7 @@ fn main() -> ExitCode {
                 } else if out.is_none() {
                     out = Some(PathBuf::from(other));
                 } else {
-                    eprintln!("usage: netpay-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
+                    eprintln!("usage: takehome-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]");
                     return ExitCode::from(2);
                 }
             }
@@ -41,7 +41,7 @@ fn main() -> ExitCode {
     }
     let (Some(archive), Some(out)) = (archive, out) else {
         eprintln!(
-            "usage: netpay-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]"
+            "usage: takehome-ingest <archive-dir> <out-dir> [--base <rules-dir>] [--no-overlay]"
         );
         return ExitCode::from(2);
     };

@@ -1,5 +1,5 @@
 [package]
-name = "netpay-grid-gen"
+name = "takehome-grid-gen"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -9,11 +9,11 @@ description = "Deterministic T4127 conformance grid (spec §11.2). Same seed, sa
 build = "build.rs"
 
 [[bin]]
-name = "netpay-grid-gen"
+name = "takehome-grid-gen"
 path = "src/main.rs"
 
 [dependencies]
-netpay-core = { path = "../../crates/netpay-core" }
+takehome-core = { path = "../../crates/takehome-core" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sha2 = "0.10"

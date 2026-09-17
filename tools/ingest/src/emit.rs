@@ -1,4 +1,4 @@
-//! Emit rule JSON in the schema netpay-core already loads.
+//! Emit rule JSON in the schema takehome-core already loads.
 
 use crate::archive::ArchiveMeta;
 use crate::error::IngestError;

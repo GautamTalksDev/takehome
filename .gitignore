@@ -19,6 +19,9 @@ web/site/.astro/
 .cursor/
 .venv/
 .pytest_cache/
+__pycache__/
+*.pyc
+*.so
 data/sources/**/*.html
 !data/sources/.gitkeep
 crates/takehome-core/wip/

@@ -37,6 +37,7 @@ const h1 = heading ?? `${name} take-home pay`;
 const intro =
   lede ??
   'Payroll deductions in this browser. Recalculates as you type. No account.';
+const hasAboveNumber = Astro.slots.has('above-number');
 ---
 
 <article>
@@ -143,6 +144,13 @@ const intro =
         </form>
 
         <div class="result" aria-live="polite">
+          <aside
+            class:list={['preview-banner', { hidden: !hasAboveNumber }]}
+            data-testid="preview-banner"
+          >
+            <slot name="above-number" />
+          </aside>
+          <p class="preview-banner hidden" data-testid="proposed-warning" role="status"></p>
           <p class="net-label">Net pay</p>
           <p class="net">
             $<span data-testid="net-pay"></span>

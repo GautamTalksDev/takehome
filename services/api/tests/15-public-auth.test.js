@@ -7,14 +7,20 @@ import { buildOpenApi } from '../src/openapi.js';
 
 const PUBLIC = [
   '/v1/rules',
+  '/v1/rules/diff',
   '/v1/changes',
+  '/v1/changes.rss',
   '/v1/conformance',
   '/openapi.json',
 ];
 
 test('15. public goods do not require auth', async () => {
   for (const path of PUBLIC) {
-    const { status, response } = await call('GET', path);
+    const url =
+      path === '/v1/rules/diff'
+        ? '/v1/rules/diff?from=2026-01-01&to=2026-07-01'
+        : path;
+    const { status, response } = await call('GET', url);
     assert.equal(status, 200, path);
     assert.equal(response.headers.get('www-authenticate'), null, path);
   }

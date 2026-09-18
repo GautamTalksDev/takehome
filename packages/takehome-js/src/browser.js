@@ -7,6 +7,7 @@ import initWasm, {
   calculate as wasmCalculate,
   listJurisdictions as wasmListJurisdictions,
   listRuleSetVersions as wasmListRuleSetVersions,
+  diffRuleSets as wasmDiffRuleSets,
   engineBuildSha as wasmEngineBuildSha,
 } from '../wasm/takehome_wasm.js';
 
@@ -41,6 +42,11 @@ export function listRuleSetVersions() {
   return wasmListRuleSetVersions();
 }
 
+export function diffRuleSets(from, to) {
+  requireInit();
+  return wasmDiffRuleSets(from, to);
+}
+
 export function engineBuildSha() {
   requireInit();
   return wasmEngineBuildSha();
@@ -51,5 +57,6 @@ export default {
   calculate,
   listJurisdictions,
   listRuleSetVersions,
+  diffRuleSets,
   engineBuildSha,
 };

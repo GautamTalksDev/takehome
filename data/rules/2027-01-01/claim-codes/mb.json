@@ -1,0 +1,83 @@
+{
+  "jurisdiction": "MB",
+  "rows": [
+    {
+      "claim_from": "No claim amount",
+      "claim_to": "No claim amount",
+      "code": "0",
+      "k1p": "0.00",
+      "tcp": "0.00"
+    },
+    {
+      "claim_from": "0",
+      "claim_to": "15,780.00",
+      "code": "1",
+      "k1p": "1704.24",
+      "tcp": "15780.00"
+    },
+    {
+      "claim_from": "15,780.01",
+      "claim_to": "17,473.00",
+      "code": "2",
+      "k1p": "1795.66",
+      "tcp": "16626.50"
+    },
+    {
+      "claim_from": "17,473.01",
+      "claim_to": "19,166.00",
+      "code": "3",
+      "k1p": "1978.51",
+      "tcp": "18319.50"
+    },
+    {
+      "claim_from": "19,166.01",
+      "claim_to": "20,859.00",
+      "code": "4",
+      "k1p": "2161.35",
+      "tcp": "20012.50"
+    },
+    {
+      "claim_from": "20,859.01",
+      "claim_to": "22,552.00",
+      "code": "5",
+      "k1p": "2344.19",
+      "tcp": "21705.50"
+    },
+    {
+      "claim_from": "22,552.01",
+      "claim_to": "24,245.00",
+      "code": "6",
+      "k1p": "2527.04",
+      "tcp": "23398.50"
+    },
+    {
+      "claim_from": "24,245.01",
+      "claim_to": "25,938.00",
+      "code": "7",
+      "k1p": "2709.88",
+      "tcp": "25091.50"
+    },
+    {
+      "claim_from": "25,938.01",
+      "claim_to": "27,631.00",
+      "code": "8",
+      "k1p": "2892.73",
+      "tcp": "26784.50"
+    },
+    {
+      "claim_from": "27,631.01",
+      "claim_to": "29,324.00",
+      "code": "9",
+      "k1p": "3075.57",
+      "tcp": "28477.50"
+    },
+    {
+      "claim_from": "29,324.01",
+      "claim_to": "31,017.00",
+      "code": "10",
+      "k1p": "3258.41",
+      "tcp": "30170.50"
+    }
+  ],
+  "title": "Table 8.12 Manitoba claim codes (Using maximum BPAMB)"
+}

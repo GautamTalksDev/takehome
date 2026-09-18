@@ -17,6 +17,7 @@ use thiserror::Error;
 mod tests {
     use super::{
         BasicPersonalAmount, CalculationOption, JurisdictionCode, LoadError, OptionScoped, RuleSet,
+        RuleSetStatus,
     };
     use crate::decimal::Rate;
     use serde_json::Value;
@@ -98,6 +99,9 @@ mod tests {
         assert_eq!(rs.rule_set_version, "2026-01-01");
         assert_eq!(rs.effective_from.to_string(), "2026-01-01");
         assert_eq!(rs.effective_to, None);
+        assert_eq!(rs.status, RuleSetStatus::Enacted);
+        assert_eq!(rs.announcement_source, None);
+        assert_eq!(rs.announcement_date, None);
         let on = rs
             .jurisdictions
             .get(&JurisdictionCode("ON".to_string()))
@@ -108,6 +112,40 @@ mod tests {
             }
             other => panic!("expected Both(Fixed), got {other:?}"),
         }
+    }
+
+    /// Spec open question 5: omitted status is enacted so existing JSON still loads.
+    #[test]
+    fn proposed_status_requires_announcement_source_and_date() {
+        let json = MINIMAL_JSON.replace(
+            "\"source_sha256\"",
+            "\"status\": \"proposed\", \"source_sha256\"",
+        );
+        let err = load(&json).expect_err("proposed without announcement must fail");
+        assert!(err.to_string().contains("announcement"), "got {}", err);
+    }
+
+    #[test]
+    fn proposed_status_loads_with_announcement() {
+        let json = MINIMAL_JSON.replace(
+            "\"source_sha256\"",
+            concat!(
+                "\"status\": \"proposed\", ",
+                "\"announcement_source\": \"Department of Finance Canada, Spring Economic Update 2026\", ",
+                "\"announcement_date\": \"2026-04-28\", ",
+                "\"source_sha256\""
+            ),
+        );
+        let rs = load(&json).expect("proposed with announcement must load");
+        assert_eq!(rs.status, RuleSetStatus::Proposed);
+        assert_eq!(
+            rs.announcement_source.as_deref(),
+            Some("Department of Finance Canada, Spring Economic Update 2026")
+        );
+        assert_eq!(
+            rs.announcement_date.expect("date").to_string(),
+            "2026-04-28"
+        );
     }
 
     /// 2. A JSON *number* for a numeric field is a hard error naming that field.
@@ -526,6 +564,15 @@ where
     Ok(OptionScoped::PerOption { option1, option2 })
 }
 
+/// Whether a rule set is a published T4127 edition or a labelled preview.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RuleSetStatus {
+    #[default]
+    Enacted,
+    Proposed,
+}
+
 /// One effective-dated T4127 rule set (spec §9.1).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -539,6 +586,13 @@ pub struct RuleSet {
     pub source_url: String,
     pub retrieved_at: String,
     pub source_sha256: String,
+    /// Whether this edition is CRA-enacted T4127 or a labelled preview (spec open question 5).
+    #[serde(default)]
+    pub status: RuleSetStatus,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub announcement_source: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub announcement_date: Option<CalendarDate>,
     pub jurisdictions: BTreeMap<JurisdictionCode, Jurisdiction>,
     pub cpp: CppParams,
     pub ei: EiParams,
@@ -570,6 +624,18 @@ impl RuleSet {
                     validate_brackets(code, "option1", option1)?;
                     validate_brackets(code, "option2", option2)?;
                 }
+            }
+        }
+        if self.status == RuleSetStatus::Proposed {
+            let source_ok = self
+                .announcement_source
+                .as_deref()
+                .is_some_and(|source| !source.is_empty());
+            if !source_ok || self.announcement_date.is_none() {
+                return Err(LoadError {
+                    message: "status proposed requires announcement_source and announcement_date"
+                        .to_string(),
+                });
             }
         }
         Ok(())

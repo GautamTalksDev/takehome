@@ -33,7 +33,7 @@ const EMPLOYMENT: &[Province] = &[
     Province::OutsideCanada,
 ];
 
-const RULE_SET_DATES: &[&str] = &["2026-01-01", "2026-07-01"];
+const RULE_SET_DATES: &[&str] = &["2026-01-01", "2026-07-01", "2027-01-01"];
 
 fn money(s: &str) -> Money {
     Money::parse(s).unwrap()
@@ -68,6 +68,7 @@ fn blank_request(
         provincial_tcp: None,
         cpp_months: 12,
         k2_method: K2Method::PdocObserved,
+        bonus_method: crate::request::BonusMethod::Regular,
         rounding_compat: crate::request::RoundingCompat::T4127,
         ytd_pensionable_earnings: None,
         ytd_insurable_earnings: None,
@@ -79,6 +80,16 @@ fn blank_request(
         pay_periods_elapsed: None,
         bonus: None,
         retroactive_pay: None,
+        ytd_bonus: None,
+        f5b_ytd: None,
+        most_recent_i: None,
+        rpp: None,
+        bonus_rrsp: None,
+        ytd_bonus_rrsp: None,
+        ytd_income: None,
+        ytd_rpp: None,
+        ytd_union_dues: None,
+        f5a_ytd: None,
         commission_income: None,
         commission_expenses: None,
         estimated_annual_expenses: None,
@@ -236,7 +247,7 @@ fn assert_invariants(req: &Request, resp: &Response, set: &RuleSet) {
     assert_eq!(
         set.cpp.second_additional_max,
         money("416.00"),
-        "2026 CPP2 annual max is $416; the invariant is C2 ≤ 416 × PM/12"
+        "CPP2 annual max is $416 while YMPE/YAMPE remain at 2026 published dollars; the invariant is C2 ≤ 416 × PM/12"
     );
     assert!(resp.employee.ei <= set.ei.employee_max);
     let l = req.additional_tax_requested.unwrap_or(Money::ZERO);

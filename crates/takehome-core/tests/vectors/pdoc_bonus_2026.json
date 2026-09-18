@@ -1,0 +1,645 @@
+{
+  "corpus": "pdoc-bonus-2026",
+  "notes": "Twenty PDOC bonus cases. Expected amounts are PDOC-only; never fill from the engine. PENDING_PDOC until captured through tools/pdoc-oracle.",
+  "vectors": [
+    {
+      "id": "on-weekly-1000-bonus-2500",
+      "description": "Ontario weekly $1000 + $2500 bonus (CRA example shape, no YTD)",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 52,
+        "gross_pay": "1000.00",
+        "bonus": "2500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-biweekly-2000-bonus-1000",
+      "description": "Ontario biweekly $2000 + $1000 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 26,
+        "gross_pay": "2000.00",
+        "bonus": "1000.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-biweekly-2000-bonus-4999.99",
+      "description": "Ontario biweekly $2000 + $4999.99 bonus (shortcut neighbourhood on B, not A)",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 26,
+        "gross_pay": "2000.00",
+        "bonus": "4999.99",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-biweekly-2000-bonus-5000",
+      "description": "Ontario biweekly $2000 + $5000.00 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 26,
+        "gross_pay": "2000.00",
+        "bonus": "5000.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-biweekly-2000-bonus-5000.01",
+      "description": "Ontario biweekly $2000 + $5000.01 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 26,
+        "gross_pay": "2000.00",
+        "bonus": "5000.01",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "ab-monthly-4000-bonus-2000",
+      "description": "Alberta monthly $4000 + $2000 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "AB",
+        "pay_period": 12,
+        "gross_pay": "4000.00",
+        "bonus": "2000.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "bc-weekly-1200-bonus-800",
+      "description": "British Columbia weekly $1200 + $800 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "BC",
+        "pay_period": 52,
+        "gross_pay": "1200.00",
+        "bonus": "800.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "mb-semimonthly-2500-bonus-1500",
+      "description": "Manitoba semi-monthly $2500 + $1500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "MB",
+        "pay_period": 24,
+        "gross_pay": "2500.00",
+        "bonus": "1500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "sk-weekly-900-bonus-3000",
+      "description": "Saskatchewan weekly $900 + $3000 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "SK",
+        "pay_period": 52,
+        "gross_pay": "900.00",
+        "bonus": "3000.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "ns-biweekly-1800-bonus-2200",
+      "description": "Nova Scotia biweekly $1800 + $2200 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "NS",
+        "pay_period": 26,
+        "gross_pay": "1800.00",
+        "bonus": "2200.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "nb-monthly-3500-bonus-500",
+      "description": "New Brunswick monthly $3500 + $500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "NB",
+        "pay_period": 12,
+        "gross_pay": "3500.00",
+        "bonus": "500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "nl-weekly-1100-bonus-1100",
+      "description": "Newfoundland and Labrador weekly $1100 + $1100 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "NL",
+        "pay_period": 52,
+        "gross_pay": "1100.00",
+        "bonus": "1100.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "pe-biweekly-1600-bonus-4000",
+      "description": "Prince Edward Island biweekly $1600 + $4000 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "PE",
+        "pay_period": 26,
+        "gross_pay": "1600.00",
+        "bonus": "4000.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "nt-monthly-5000-bonus-2500",
+      "description": "Northwest Territories monthly $5000 + $2500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "NT",
+        "pay_period": 12,
+        "gross_pay": "5000.00",
+        "bonus": "2500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "nu-weekly-1300-bonus-700",
+      "description": "Nunavut weekly $1300 + $700 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "NU",
+        "pay_period": 52,
+        "gross_pay": "1300.00",
+        "bonus": "700.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "yt-biweekly-2200-bonus-1800",
+      "description": "Yukon biweekly $2200 + $1800 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "YT",
+        "pay_period": 26,
+        "gross_pay": "2200.00",
+        "bonus": "1800.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "oc-weekly-1000-bonus-2500",
+      "description": "Outside Canada weekly $1000 + $2500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "OutsideCanada",
+        "pay_period": 52,
+        "gross_pay": "1000.00",
+        "bonus": "2500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-27-biweekly-2000-bonus-1500",
+      "description": "Ontario 27-pay biweekly $2000 + $1500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 27,
+        "gross_pay": "2000.00",
+        "bonus": "1500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-53-weekly-1000-bonus-2500",
+      "description": "Ontario 53-week $1000 + $2500 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 53,
+        "gross_pay": "1000.00",
+        "bonus": "2500.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    },
+    {
+      "id": "on-semimonthly-2200-bonus-1800",
+      "description": "Ontario semi-monthly $2200 + $1800 bonus",
+      "request": {
+        "as_of": "2026-07-15",
+        "province": "ON",
+        "pay_period": 24,
+        "gross_pay": "2200.00",
+        "bonus": "1800.00",
+        "cpp_months": 12,
+        "federal_claim_code": 1,
+        "provincial_claim_code": 1
+      },
+      "expected": {
+        "federal_tax": "PENDING_PDOC",
+        "provincial_tax": "PENDING_PDOC",
+        "cpp": "PENDING_PDOC",
+        "cpp2": "PENDING_PDOC",
+        "ei": "PENDING_PDOC",
+        "total_deductions": "PENDING_PDOC",
+        "net_pay": "PENDING_PDOC"
+      },
+      "oracle": {
+        "source": "CRA PDOC",
+        "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
+        "retrieved_at": "PENDING",
+        "pdoc_version_string": "",
+        "observed_edition": "2026-07-01",
+        "browser": "chromium (pdoc-oracle-harness)",
+        "operator": "pdoc-oracle-harness"
+      }
+    }
+  ]
+}

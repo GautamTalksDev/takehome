@@ -41,4 +41,7 @@ def test_listings() -> None:
     assert [row["version"] for row in versions["rule_set_versions"]] == [
         "2026-01-01",
         "2026-07-01",
+        "2027-01-01",
     ]
+    diff = json.loads(takehome_ca.diff_rule_sets("2026-01-01", "2026-07-01"))
+    assert diff["changed"] == ["BC", "NL", "PE"]

@@ -27,7 +27,7 @@ test('23. a 500-item batch that exceeds remaining is not surprise-billed', async
   const requests = Array.from({ length: 500 }, () => ON_WEEKLY);
   const { status, json } = await call(
     'POST',
-    '/v1/deductions',
+    '/v1/deductions/batch',
     { requests },
     { authorization: `Bearer ${world.liveKey}` },
     world,

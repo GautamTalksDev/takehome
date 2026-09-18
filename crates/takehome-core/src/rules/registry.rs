@@ -10,7 +10,9 @@ use thiserror::Error;
 #[cfg(test)]
 mod tests {
     use super::{Registry, RuleError};
-    use crate::rules::schema::{CalendarDate, CppParams, EiParams, QpipParams, RuleSet};
+    use crate::rules::schema::{
+        CalendarDate, CppParams, EiParams, QpipParams, RuleSet, RuleSetStatus,
+    };
     use proptest::prelude::*;
     use std::collections::BTreeMap;
 
@@ -28,6 +30,9 @@ mod tests {
             source_url: "https://www.canada.ca/".to_string(),
             retrieved_at: "2026-01-15T00:00:00Z".to_string(),
             source_sha256: "aa".repeat(32),
+            status: RuleSetStatus::Enacted,
+            announcement_source: None,
+            announcement_date: None,
             jurisdictions: BTreeMap::new(),
             cpp: stub_cpp(),
             ei: stub_ei(),
@@ -278,6 +283,9 @@ pub enum RuleError {
     /// `load` was given no rule sets.
     #[error("no rule sets provided; coverage window is empty")]
     EmptyRegistry,
+    /// Named edition is not in the registry. Never nearest-match another year.
+    #[error("unknown rule set version {version}")]
+    UnknownVersion { version: String },
     /// Only the newest set may have `effective_to: None`.
     #[error(
         "rule set {version} has open-ended effective_to but is not the newest (starts {effective_from}; window [{coverage_from}, {coverage_to:?}))"
@@ -427,5 +435,10 @@ impl Registry {
                 )
             })
             .collect()
+    }
+
+    /// Exact edition lookup. Unknown names are `None`, never a neighbour.
+    pub fn get(&self, version: &str) -> Option<&RuleSet> {
+        self.sets.iter().find(|set| set.rule_set_version == version)
     }
 }

@@ -1,0 +1,39 @@
+{
+  "basic_personal_amount": {
+    "amount": "15000.00",
+    "type": "fixed"
+  },
+  "brackets": [
+    {
+      "constant": "0.00",
+      "rate": "0.0950",
+      "threshold": "0"
+    },
+    {
+      "constant": "1347.00",
+      "rate": "0.1347",
+      "threshold": "33928.00"
+    },
+    {
+      "constant": "3407.00",
+      "rate": "0.1660",
+      "threshold": "65820.00"
+    },
+    {
+      "constant": "4497.00",
+      "rate": "0.1762",
+      "threshold": "106890.00"
+    },
+    {
+      "constant": "6464.00",
+      "rate": "0.1900",
+      "threshold": "142520.00"
+    },
+    {
+      "constant": "8464.00",
+      "rate": "0.2000",
+      "threshold": "200000.00"
+    }
+  ],
+  "lowest_rate": "0.0950"
+}

@@ -4,6 +4,15 @@
 
 ## [Unreleased]
 
+## [0.5.0-m4] - 2026-09-18
+- `POST /v1/deductions/batch`: up to 1000 calculations, results in input order, partial success (`{ok, response}` or `{error}`), 1001 rejected by name, metered as N not 1, over-quota is 402 with usage unchanged, byte-identical replay.
+- `POST /v1/deductions/year`: every pay period in the year with YTD CPP/CPP2/EI carried forward. CPP and EI caps, YMPE crossing, CPP2 start (spec §21.5), BC mid-year rule-set split, 53-week / 27-biweekly exemptions. Federal tax sum vs T1 differs by at most one cent per period because of per-period rounding.
+- T4127 Chapter 5 Option 2 cumulative averaging (§6.12): S1 is an exact pair (`52/1`, `52/2`), A and T use S1 / M / M1, K2 uses the Chapter 5 form, and BC/NL/PE mid-year proration is Option 1 only. PDOC does not expose Option 2; evidence is T4127 worked examples plus invariants, a weaker oracle class that does not inherit the Option 1 PDOC agreement rate.
+- Rule-change detection (§12.3): `rules-watch` pins the T4127 index, edition pages, and CSV bundle; a hash mismatch opens a GitHub issue with the unified diff. `GET /v1/rules/diff` compares two editions field by field. Account webhooks deliver an HMAC-signed `rule_set.changed` payload with retries, a delivery log, and replay.
+- 2027-01-01 PREVIEW rule set (proposed, not enacted): CPP employee total 5.75% (base 4.75%), maximums recalculated against held 2026 YMPE/YAMPE, BC indexation paused at 2026 levels. A 2027 `as_of` returns the set with a `RULE_SET_PROPOSED` warning naming the 2026-04-28 Spring Economic Update. `/cpp-2027-rate-change` computes under it with the uncertainty above the number.
+- Conformance re-run against the M4 engine: overall PDOC rate still `8838/9002`. New classes named: `pdoc-bonus-2026` (20 PENDING_PDOC, excluded from the rate), `year-projection-2026` (invariants), `t4127-option2-2026` (T4127 worked examples; PDOC caveat). All 164 M-003 disagreements remain listed. Integer-cent probe of `rounding_compat: pdoc` found no discriminator; the typed error stays.
+- Five-minute classmate run is still an empty row in `docs/FIVE-MINUTE-TEST.md`. `takehome-ca` is not on npm or PyPI yet.
+
 ## [0.4.0-m3] - 2026-09-17
 - Product renamed from Netpay to Takehome (host `takehome.gautamkhosla.com`).
 - Design day: wordmark, `:root` tokens including dark, navbar, result panel, citations, copy, motion, five equal pricing cards, docs with shiki and copy. Lighthouse performance 1.00 and accessibility 1.00; JS excluding WASM under the 50KB gate.

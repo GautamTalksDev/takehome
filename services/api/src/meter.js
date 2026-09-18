@@ -1,9 +1,19 @@
-export function calculationCount(payload) {
+export const MAX_BATCH = 1000;
+
+export function batchItems(payload) {
   if (Array.isArray(payload)) {
-    return payload.length;
+    return payload;
   }
   if (payload && typeof payload === 'object' && Array.isArray(payload.requests)) {
-    return payload.requests.length;
+    return payload.requests;
+  }
+  return null;
+}
+
+export function calculationCount(payload) {
+  const items = batchItems(payload);
+  if (items) {
+    return items.length;
   }
   if (payload && typeof payload === 'object') {
     return 1;
@@ -12,12 +22,7 @@ export function calculationCount(payload) {
 }
 
 export function isBatch(payload) {
-  if (Array.isArray(payload)) {
-    return true;
-  }
-  return Boolean(
-    payload && typeof payload === 'object' && Array.isArray(payload.requests),
-  );
+  return batchItems(payload) != null;
 }
 
 export function usageHeaders({ kind, limit, used, reset }) {

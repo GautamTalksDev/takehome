@@ -87,14 +87,14 @@ fn calculate_wire_is_byte_identical_across_calls() {
 }
 
 #[test]
-fn list_rule_set_versions_covers_both_2026_editions() {
+fn list_rule_set_versions_covers_embedded_editions() {
     let listing = list_rule_set_versions();
     let versions: Vec<&str> = listing
         .rule_set_versions
         .iter()
         .map(|row| row.version.as_str())
         .collect();
-    assert_eq!(versions, ["2026-01-01", "2026-07-01"]);
+    assert_eq!(versions, ["2026-01-01", "2026-07-01", "2027-01-01"]);
     assert_eq!(
         listing.rule_set_versions[0].effective_from.to_string(),
         "2026-01-01"
@@ -106,5 +106,12 @@ fn list_rule_set_versions_covers_both_2026_editions() {
             .to_string(),
         "2026-07-01"
     );
-    assert!(listing.rule_set_versions[1].effective_to.is_none());
+    assert_eq!(
+        listing.rule_set_versions[1]
+            .effective_to
+            .expect("july closes when the 2027 preview ships")
+            .to_string(),
+        "2027-01-01"
+    );
+    assert!(listing.rule_set_versions[2].effective_to.is_none());
 }

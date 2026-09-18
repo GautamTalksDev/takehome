@@ -39,7 +39,7 @@ export function buildOpenApi() {
           operationId: 'createDeduction',
           summary: 'Calculate T4127 payroll deductions for one pay period.',
           description:
-            'Requires a Bearer np_test_ or np_live_ key. Metering counts calculations, not HTTP requests. A future batch of 500 counts 500. Test keys are free and unmetered. Live keys hard-stop at the plan limit; Takehome does not surprise-bill.',
+            'Requires a Bearer np_test_ or np_live_ key. Metering counts calculations, not HTTP requests. A batch of 1000 on POST /v1/deductions/batch counts 1000. Test keys are free and unmetered. Live keys hard-stop at the plan limit; Takehome does not surprise-bill.',
           requestBody: {
             required: true,
             content: {
@@ -60,6 +60,77 @@ export function buildOpenApi() {
             401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
             402: {
               description: 'Plan calculation limit reached',
+              headers: usageHeaders,
+              ...json('ErrorEnvelope'),
+            },
+            422: {
+              description: 'Jurisdiction not supported',
+              headers: usageHeaders,
+              ...json('ErrorEnvelope'),
+            },
+            429: { description: 'Rate limited', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/deductions/batch': {
+        post: {
+          operationId: 'createDeductionBatch',
+          summary: 'Calculate T4127 payroll deductions for a pay run of up to 1000 employees.',
+          description:
+            'Requires a Bearer np_test_ or np_live_ key. One HTTP call, up to 1000 calculations, metered as N not 1. Each result is {ok, response} or {error}; one bad employee record does not abort the others. If the live plan cannot cover the whole batch, the call is 402 and usage is unchanged.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': { schema: ref('BatchRequest') },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Pay run results, in input order',
+              headers: usageHeaders,
+              ...json('BatchResponse'),
+            },
+            400: {
+              description: 'Rejected request, including batches over 1000',
+              headers: usageHeaders,
+              ...json('ErrorEnvelope'),
+            },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            402: {
+              description: 'Plan calculation limit reached; nothing billed',
+              headers: usageHeaders,
+              ...json('ErrorEnvelope'),
+            },
+            429: { description: 'Rate limited', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/deductions/year': {
+        post: {
+          operationId: 'createDeductionYear',
+          summary: 'Project every pay period in a year with YTD CPP, CPP2, and EI carried forward.',
+          description:
+            'Requires a Bearer np_test_ or np_live_ key. Metered as P calculations, not 1. Identifies the CPP cap period, EI cap period, YMPE crossing, and CPP2 start (spec §21.5). Sum of per-period federal tax versus annual T1 is allowed to differ by one cent per pay period because of per-period rounding.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': { schema: ref('DeductionRequest') },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Year projection',
+              headers: usageHeaders,
+              ...json('YearResponse'),
+            },
+            400: {
+              description: 'Rejected request',
+              headers: usageHeaders,
+              ...json('ErrorEnvelope'),
+            },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            402: {
+              description: 'Plan calculation limit reached; nothing billed',
               headers: usageHeaders,
               ...json('ErrorEnvelope'),
             },
@@ -139,6 +210,93 @@ export function buildOpenApi() {
           },
         },
       },
+      '/v1/webhooks': {
+        get: {
+          operationId: 'listWebhooks',
+          summary: 'Webhook endpoints for this account.',
+          responses: {
+            200: { description: 'Endpoints', ...json('WebhookListResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+        post: {
+          operationId: 'createWebhook',
+          summary: 'Register an HTTPS endpoint. Signing secret is shown once.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['url'],
+                  properties: { url: { type: 'string', format: 'uri' } },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Created', ...json('WebhookCreateResponse') },
+            400: { description: 'Rejected request', ...json('ErrorEnvelope') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/webhooks/dispatch': {
+        post: {
+          operationId: 'dispatchWebhooks',
+          summary: 'Fan out a rule_set.changed event to every endpoint on this account.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['from', 'to'],
+                  properties: {
+                    from: { type: 'string' },
+                    to: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Deliveries', ...json('WebhookDispatchResponse') },
+            400: { description: 'Rejected request', ...json('ErrorEnvelope') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            404: { description: 'Unknown rule set', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/webhooks/deliveries': {
+        get: {
+          operationId: 'listWebhookDeliveries',
+          summary: 'Delivery log for this account.',
+          responses: {
+            200: { description: 'Log', ...json('WebhookDeliveriesResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/webhooks/deliveries/{id}/replay': {
+        post: {
+          operationId: 'replayWebhookDelivery',
+          summary: 'Re-send one signed payload.',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+            },
+          ],
+          responses: {
+            200: { description: 'Replayed', ...json('WebhookReplayResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            404: { description: 'Unknown delivery', ...json('ErrorEnvelope') },
+          },
+        },
+      },
       '/v1/rules': {
         get: {
           operationId: 'listRules',
@@ -146,6 +304,33 @@ export function buildOpenApi() {
           security: [],
           responses: {
             200: { description: 'Rule set list', ...json('RulesListResponse') },
+            429: { description: 'Rate limited', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/rules/diff': {
+        get: {
+          operationId: 'diffRules',
+          summary: 'Field-by-field comparison of two embedded T4127 editions.',
+          security: [],
+          parameters: [
+            {
+              name: 'from',
+              in: 'query',
+              required: true,
+              schema: { type: 'string' },
+            },
+            {
+              name: 'to',
+              in: 'query',
+              required: true,
+              schema: { type: 'string' },
+            },
+          ],
+          responses: {
+            200: { description: 'Rule-set diff', ...json('RulesDiffResponse') },
+            400: { description: 'Missing versions', ...json('ErrorEnvelope') },
+            404: { description: 'Unknown version', ...json('ErrorEnvelope') },
             429: { description: 'Rate limited', ...json('ErrorEnvelope') },
           },
         },
@@ -191,6 +376,22 @@ export function buildOpenApi() {
           security: [],
           responses: {
             200: { description: 'Changes', ...json('ChangesResponse') },
+            429: { description: 'Rate limited', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/changes.rss': {
+        get: {
+          operationId: 'listChangesRss',
+          summary: 'RSS 2.0 change log.',
+          security: [],
+          responses: {
+            200: {
+              description: 'RSS',
+              content: {
+                'application/rss+xml': { schema: { type: 'string' } },
+              },
+            },
             429: { description: 'Rate limited', ...json('ErrorEnvelope') },
           },
         },

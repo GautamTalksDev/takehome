@@ -19,6 +19,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         <li><a href="#first-call">First call</a></li>
         <li><a href="#request">Request</a></li>
         <li><a href="#response">Response</a></li>
+        <li><a href="#year">Year</a></li>
         <li><a href="#auth">Authentication</a></li>
         <li><a href="#public">Public endpoints</a></li>
         <li><a href="#embed">Embed</a></li>
@@ -68,11 +69,34 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         </div>
       </section>
 
+      <section id="year">
+        <h2>Year projection</h2>
+        <p>
+          <code>POST /v1/deductions/year</code> runs every cheque in the year
+          with YTD CPP, CPP2, EI, and pensionable earnings carried forward.
+          That is how the annual maxima bind and how CPP2 waits for YMPE
+          (spec §21.5).
+        </p>
+        <p>
+          The sum of per-period federal tax is not required to equal annual
+          T1. Each cheque rounds <code>(T1)/P</code> to the cent (T4127
+          Chapter 2). That per-period rounding is why the gap exists; the
+          documented tolerance is one cent per pay period
+          (<code>federal_tax_sum_tolerance</code>, <code>0.26</code> on a
+          26-biweekly year).
+        </p>
+      </section>
+
       <section id="auth">
         <h2>Authentication</h2>
         <p>
           Live keys count calculations, not HTTP requests, and stop at the plan
-          limit. Prices are on <a href="/pricing/">pricing</a>.
+          limit. A pay run is <code>POST /v1/deductions/batch</code> with up to
+          1000 employees; that counts as 1000 calculations, not 1. One invalid
+          row returns <code>{'{error}'}</code> for that index and does not abort the
+          rest. If the remaining quota cannot cover the whole batch, the call is
+          402 and usage is unchanged. Prices are on
+          <a href="/pricing/">pricing</a>.
         </p>
       </section>
 

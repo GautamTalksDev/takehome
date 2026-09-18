@@ -1,0 +1,83 @@
+{
+  "jurisdiction": "NL",
+  "rows": [
+    {
+      "claim_from": "No claim amount",
+      "claim_to": "No claim amount",
+      "code": "0",
+      "k1p": "0.00",
+      "tcp": "0.00"
+    },
+    {
+      "claim_from": "0",
+      "claim_to": "15,000.00",
+      "code": "1",
+      "k1p": "1305.00",
+      "tcp": "15000.00"
+    },
+    {
+      "claim_from": "15,000.01",
+      "claim_to": "17,416.00",
+      "code": "2",
+      "k1p": "1410.10",
+      "tcp": "16208.00"
+    },
+    {
+      "claim_from": "17,416.01",
+      "claim_to": "19,832.00",
+      "code": "3",
+      "k1p": "1620.29",
+      "tcp": "18624.00"
+    },
+    {
+      "claim_from": "19,832.01",
+      "claim_to": "22,248.00",
+      "code": "4",
+      "k1p": "1830.48",
+      "tcp": "21040.00"
+    },
+    {
+      "claim_from": "22,248.01",
+      "claim_to": "24,664.00",
+      "code": "5",
+      "k1p": "2040.67",
+      "tcp": "23456.00"
+    },
+    {
+      "claim_from": "24,664.01",
+      "claim_to": "27,080.00",
+      "code": "6",
+      "k1p": "2250.86",
+      "tcp": "25872.00"
+    },
+    {
+      "claim_from": "27,080.01",
+      "claim_to": "29,496.00",
+      "code": "7",
+      "k1p": "2461.06",
+      "tcp": "28288.00"
+    },
+    {
+      "claim_from": "29,496.01",
+      "claim_to": "31,912.00",
+      "code": "8",
+      "k1p": "2671.25",
+      "tcp": "30704.00"
+    },
+    {
+      "claim_from": "31,912.01",
+      "claim_to": "34,328.00",
+      "code": "9",
+      "k1p": "2881.44",
+      "tcp": "33120.00"
+    },
+    {
+      "claim_from": "34,328.01",
+      "claim_to": "36,744.00",
+      "code": "10",
+      "k1p": "3091.63",
+      "tcp": "35536.00"
+    }
+  ],
+  "title": "Table 8.14 Newfoundland and Labrador claim codes (prorated)"
+}

@@ -1,0 +1,146 @@
+{
+  "documents": [
+    {
+      "id": "t4127-index",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas.html",
+      "kind": "html"
+    },
+    {
+      "id": "t4127-jan-2026",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan.html",
+      "kind": "html"
+    },
+    {
+      "id": "t4127-jul-2026",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jul.html",
+      "kind": "html"
+    }
+  ],
+  "csv_bundle": [
+    {
+      "name": "cc-ab-01-26e.csv",
+      "sha256": "986576004e5a5b81613ba6acba315857a5bf358e744b3d0a7a5a6452f5ce200e",
+      "snapshot": "data/sources/t4127-jan-2026/cc-ab-01-26e.csv"
+    },
+    {
+      "name": "cc-bc-01-26e.csv",
+      "sha256": "6d7ca2f23ece88e7472ac662df7784402c4430f915c351ac6aa96445fb5d5710",
+      "snapshot": "data/sources/t4127-jan-2026/cc-bc-01-26e.csv"
+    },
+    {
+      "name": "cc-fd-01-26e.csv",
+      "sha256": "7705beed47551e29d624df121f93da60830148cbc82bb91d964bc04cfcd537bd",
+      "snapshot": "data/sources/t4127-jan-2026/cc-fd-01-26e.csv"
+    },
+    {
+      "name": "cc-mb-01-26e.csv",
+      "sha256": "596b6eced917d0b8d97d7f6932ad1565175d8307d096d3fe92c6357bd5baf954",
+      "snapshot": "data/sources/t4127-jan-2026/cc-mb-01-26e.csv"
+    },
+    {
+      "name": "cc-nb-01-26e.csv",
+      "sha256": "6411372595f9d52fc014a3bcde4c442502e0af937002f53c15731f9648d00c5c",
+      "snapshot": "data/sources/t4127-jan-2026/cc-nb-01-26e.csv"
+    },
+    {
+      "name": "cc-nl-01-26e.csv",
+      "sha256": "aedcf2726ad167eb3b52e6d37bc0ed210e045ed10fe1f5a0bf3d41206814233f",
+      "snapshot": "data/sources/t4127-jan-2026/cc-nl-01-26e.csv"
+    },
+    {
+      "name": "cc-ns-01-26e.csv",
+      "sha256": "12fe0dca756301100a760a6613cd15dfddf5368295895688fe926ea42df3859a",
+      "snapshot": "data/sources/t4127-jan-2026/cc-ns-01-26e.csv"
+    },
+    {
+      "name": "cc-nt-01-26e.csv",
+      "sha256": "98ded8f3a2f18ada16a64acfe03688e7e222cafe04aa16131940faaa5d5ebad0",
+      "snapshot": "data/sources/t4127-jan-2026/cc-nt-01-26e.csv"
+    },
+    {
+      "name": "cc-nv-01-26e.csv",
+      "sha256": "f968a988252ca2dac058aae2e2b5232203fc7bfe074a50433253828968846092",
+      "snapshot": "data/sources/t4127-jan-2026/cc-nv-01-26e.csv"
+    },
+    {
+      "name": "cc-on-01-26e.csv",
+      "sha256": "919e686594ec52fa0225c617da88e010a11a534e62584193bd11d9a78a1c7bb1",
+      "snapshot": "data/sources/t4127-jan-2026/cc-on-01-26e.csv"
+    },
+    {
+      "name": "cc-pei-01-26e.csv",
+      "sha256": "f232e9df84dee9dbdd37cac0825350f63af4b037b0f13f365a4373fc817ff4bc",
+      "snapshot": "data/sources/t4127-jan-2026/cc-pei-01-26e.csv"
+    },
+    {
+      "name": "cc-sk-01-26e.csv",
+      "sha256": "599263a9038e63744474aae7fc5cbee1614435e3f80f1aa71cc171a9ce0ecb6b",
+      "snapshot": "data/sources/t4127-jan-2026/cc-sk-01-26e.csv"
+    },
+    {
+      "name": "cc-yt-01-26e.csv",
+      "sha256": "c7e260a77c068a541bb51eb38812e968b0b1c274f3f3d3aedc45694dbe515918",
+      "snapshot": "data/sources/t4127-jan-2026/cc-yt-01-26e.csv"
+    },
+    {
+      "name": "cpp-qpp-addntl-01-26e.csv",
+      "sha256": "09034ad82010b45dd488813531a0e0c54ae5e1146281cd547fa08aa45c1107fa",
+      "snapshot": "data/sources/t4127-jan-2026/cpp-qpp-addntl-01-26e.csv"
+    },
+    {
+      "name": "cpp-qpp-br-01-26e.csv",
+      "sha256": "6cccca70776e703777ea7f12415a8f4f5b842158eef117a5c94e24129c40699a",
+      "snapshot": "data/sources/t4127-jan-2026/cpp-qpp-br-01-26e.csv"
+    },
+    {
+      "name": "cpp-qpp-scnd-addntl-01-26e.csv",
+      "sha256": "d93f284ac753e5f42d43309e8d9ffa95be0f0ddf058c7baf53cc9e5331092664",
+      "snapshot": "data/sources/t4127-jan-2026/cpp-qpp-scnd-addntl-01-26e.csv"
+    },
+    {
+      "name": "cpp-qpp-ttl-01-26e.csv",
+      "sha256": "cb0c226db6900e01cb06c6ee4bfd9c3bddccf66dd6a11eae6bade999a893b52c",
+      "snapshot": "data/sources/t4127-jan-2026/cpp-qpp-ttl-01-26e.csv"
+    },
+    {
+      "name": "ei-01-26e.csv",
+      "sha256": "43d34e32a745c272b37a54d2926c5e473cb707ba11e14541140bd7e748a012e2",
+      "snapshot": "data/sources/t4127-jan-2026/ei-01-26e.csv"
+    },
+    {
+      "name": "qpip-01-26e.csv",
+      "sha256": "76899f5d2abca68e54d4c78bdd4d1cb0ce3c5522f1cf624ec965b3cc112c800a",
+      "snapshot": "data/sources/t4127-jan-2026/qpip-01-26e.csv"
+    },
+    {
+      "name": "rtsncmtrshldcnstnt-01-26e.csv",
+      "sha256": "9178cec8e48c059818c8d5d5e1e71e101a630b89698d84fe92d0732912fb4811",
+      "snapshot": "data/sources/t4127-jan-2026/rtsncmtrshldcnstnt-01-26e.csv"
+    },
+    {
+      "name": "thrrtsmnts-01-26e.csv",
+      "sha256": "43f59030d3a5a1492554d9bc16a6e1185eb145cafe2d38478b04c1c06b529c40",
+      "snapshot": "data/sources/t4127-jan-2026/thrrtsmnts-01-26e.csv"
+    },
+    {
+      "name": "cc-bc-07-26e.csv",
+      "sha256": "044f91f79418ff891a53f915d78226cb4d31affec571c4f0564f65719b08779f",
+      "snapshot": "data/sources/t4127-jul-2026/cc-bc-07-26e.csv"
+    },
+    {
+      "name": "cc-nl-07-26e.csv",
+      "sha256": "ac7ff46069b59e32312e16da26fc184067d0efdd5c1c1b75288aa98917b6e00f",
+      "snapshot": "data/sources/t4127-jul-2026/cc-nl-07-26e.csv"
+    },
+    {
+      "name": "other-rates-amounts-26e.csv",
+      "sha256": "fa7bca3dfc134101d70bf8e72a122e66879b4f66b16d279aebd681a8f4de4b44",
+      "snapshot": "data/sources/t4127-jul-2026/other-rates-amounts-26e.csv"
+    },
+    {
+      "name": "rates-income-thresholds-constants-26e.csv",
+      "sha256": "d55f3fd4f869dad5bd250eb5ba60bdf54300ada2f62ab21fef42ce75b5dabcad",
+      "snapshot": "data/sources/t4127-jul-2026/rates-income-thresholds-constants-26e.csv"
+    }
+  ]
+}

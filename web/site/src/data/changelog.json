@@ -4,6 +4,27 @@
   "feed_description": "Machine-readable change log for the T4127 engine and the public calculators.",
   "items": [
     {
+      "id": "0.5.0-m4",
+      "title": "0.5.0-m4 — year projection, Option 2, 2027 preview, conformance",
+      "date": "2026-09-18",
+      "link": "https://takehome.gautamkhosla.com/conformance/",
+      "summary": "M4 engine: batch, year projection with CPP/EI caps, Option 2 with a PDOC caveat, signed rule-change webhooks, 2027 preview labelled proposed. Conformance re-run: overall PDOC rate still 8838/9002. New classes named (bonus pending, year invariants, Option 2 worked examples). All 164 M-003 disagreements remain listed. rounding_compat pdoc stays NotImplemented."
+    },
+    {
+      "id": "unreleased-cpp-2027-preview",
+      "title": "Unreleased — 2027 CPP preview rule set",
+      "date": "2026-09-18",
+      "link": "https://takehome.gautamkhosla.com/cpp-2027-rate-change/",
+      "summary": "data/rules/2027-01-01/ ships as a proposed preview: CPP employee total 5.75% (base 4.75%), maximums held against 2026 YMPE, BC indexation paused. A 2027 as_of returns the set with a RULE_SET_PROPOSED warning naming the 2026-04-28 announcement. Do not file from that number."
+    },
+    {
+      "id": "unreleased-rules-watch",
+      "title": "Unreleased — rule-set diff, webhooks, T4127 pin watch",
+      "date": "2026-09-18",
+      "link": "https://takehome.gautamkhosla.com/changes/",
+      "summary": "GET /v1/rules/diff compares two editions field by field. Account webhooks deliver an HMAC-signed rule_set.changed payload with retries and replay. A scheduled rules-watch job pins the T4127 index, edition pages, and CSV bundle and opens an issue with the unified diff on drift."
+    },
+    {
       "id": "unreleased-embed",
       "title": "Unreleased — embeddable take-home widget",
       "date": "2026-09-16",

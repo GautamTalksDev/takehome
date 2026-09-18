@@ -91,6 +91,21 @@
       "definition": "Estimated federal and provincial or territorial tax deductions for the pay period: round((T1+T2)/P)+L. This is the combined Step 6 quotient. It may differ by one cent from employee.total_tax, which is the sum of the separately rounded federal and provincial lines PDOC displays (round(T1/P)+L and round(T2/P)). Compare screen totals to employee.total_tax; keep breakdown.T as the T4127 figure."
     },
     {
+      "symbol": "TB",
+      "t4127_reference": "T4127 Chapter 4, bonuses and retroactive pay",
+      "definition": "Tax on the current bonus or retroactive pay: the difference between annual tax (T1+T2) with the non-periodic payment and without it, floored at zero. If A with the bonus is at or below $5,000, a flat 15% (10% Quebec) of the bonus is used instead."
+    },
+    {
+      "symbol": "M",
+      "t4127_reference": "T4127 Chapter 5",
+      "definition": "Year-to-date federal and provincial tax already deducted on periodic pay (Option 2). Does not include extra tax requested (L) or tax on bonuses (M1)."
+    },
+    {
+      "symbol": "M1",
+      "t4127_reference": "T4127 Chapter 5",
+      "definition": "Accumulated federal and provincial tax deductions on non-periodic payments such as bonuses, to the last pay period (Option 2)."
+    },
+    {
       "symbol": "C",
       "t4127_reference": "T4127 Chapter 6",
       "definition": "Canada (or Quebec) Pension Plan contributions for the pay period."
@@ -189,6 +204,11 @@
       "symbol": "PM",
       "t4127_reference": "T4127 Chapter 6",
       "definition": "Total months during which CPP and/or QPP contributions are required (used to prorate the maximum contribution)."
+    },
+    {
+      "symbol": "S1",
+      "t4127_reference": "T4127 Chapter 5",
+      "definition": "Option 2 cumulative-averaging pair: total pay periods / current pay-period number (for example 52/1, 52/2). Never a binary float. Option 1 serializes as P/1."
     },
     {
       "symbol": "CEA",

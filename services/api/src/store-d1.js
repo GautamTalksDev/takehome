@@ -139,6 +139,127 @@ export class D1Store {
       .bind(id)
       .run();
   }
+
+  async insertWebhook(row) {
+    await this.db
+      .prepare(
+        `INSERT INTO webhook_endpoints (id, account_id, url, secret, created_at)
+         VALUES (?, ?, ?, ?, ?)`,
+      )
+      .bind(row.id, row.account_id, row.url, row.secret, row.created_at)
+      .run();
+    return row;
+  }
+
+  async listWebhooks(accountId) {
+    const { results } = await this.db
+      .prepare(
+        `SELECT id, account_id, url, secret, created_at
+         FROM webhook_endpoints WHERE account_id = ? ORDER BY created_at`,
+      )
+      .bind(accountId)
+      .all();
+    return results ?? [];
+  }
+
+  async getWebhook(id) {
+    return (
+      (await this.db
+        .prepare(
+          `SELECT id, account_id, url, secret, created_at
+           FROM webhook_endpoints WHERE id = ?`,
+        )
+        .bind(id)
+        .first()) ?? null
+    );
+  }
+
+  async deleteWebhook(id, accountId) {
+    const result = await this.db
+      .prepare(`DELETE FROM webhook_endpoints WHERE id = ? AND account_id = ?`)
+      .bind(id, accountId)
+      .run();
+    return (result?.meta?.changes ?? 0) > 0;
+  }
+
+  async insertDelivery(row) {
+    await this.db
+      .prepare(
+        `INSERT INTO webhook_deliveries
+         (id, endpoint_id, event, payload, status, attempts, last_error,
+          last_http_status, replay_of, created_at, delivered_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      )
+      .bind(
+        row.id,
+        row.endpoint_id,
+        row.event,
+        row.payload,
+        row.status,
+        row.attempts,
+        row.last_error ?? null,
+        row.last_http_status ?? null,
+        row.replay_of ?? null,
+        row.created_at,
+        row.delivered_at ?? null,
+      )
+      .run();
+    return row;
+  }
+
+  async getDelivery(id) {
+    return (
+      (await this.db
+        .prepare(
+          `SELECT id, endpoint_id, event, payload, status, attempts, last_error,
+                  last_http_status, replay_of, created_at, delivered_at
+           FROM webhook_deliveries WHERE id = ?`,
+        )
+        .bind(id)
+        .first()) ?? null
+    );
+  }
+
+  async listDeliveries(accountId) {
+    const { results } = await this.db
+      .prepare(
+        `SELECT d.id, d.endpoint_id, d.event, d.payload, d.status, d.attempts,
+                d.last_error, d.last_http_status, d.replay_of, d.created_at,
+                d.delivered_at
+         FROM webhook_deliveries d
+         JOIN webhook_endpoints e ON e.id = d.endpoint_id
+         WHERE e.account_id = ?
+         ORDER BY d.created_at DESC`,
+      )
+      .bind(accountId)
+      .all();
+    return results ?? [];
+  }
+
+  async updateDelivery(id, patch) {
+    const row = await this.getDelivery(id);
+    if (!row) {
+      return null;
+    }
+    const next = { ...row, ...patch };
+    await this.db
+      .prepare(
+        `UPDATE webhook_deliveries
+         SET status = ?, attempts = ?, last_error = ?, last_http_status = ?,
+             delivered_at = ?
+         WHERE id = ?`,
+      )
+      .bind(
+        next.status,
+        next.attempts,
+        next.last_error ?? null,
+        next.last_http_status ?? null,
+        next.delivered_at ?? null,
+        id,
+      )
+      .run();
+    return next;
+  }
 }
 
 function mapAccount(row) {

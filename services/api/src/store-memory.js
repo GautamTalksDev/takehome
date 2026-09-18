@@ -5,6 +5,8 @@ export class MemoryStore {
     this.tokens = new Map();
     this.usage = new Map();
     this.stripeEvents = new Set();
+    this.webhooks = new Map();
+    this.deliveries = new Map();
   }
 
   createAccount({ email, email_verified = false, plan = 'developer' }) {
@@ -89,6 +91,53 @@ export class MemoryStore {
 
   recordStripeEvent(id) {
     this.stripeEvents.add(id);
+  }
+
+  insertWebhook(row) {
+    this.webhooks.set(row.id, { ...row });
+    return this.webhooks.get(row.id);
+  }
+
+  listWebhooks(accountId) {
+    return [...this.webhooks.values()].filter((row) => row.account_id === accountId);
+  }
+
+  getWebhook(id) {
+    return this.webhooks.get(id) ?? null;
+  }
+
+  deleteWebhook(id, accountId) {
+    const row = this.webhooks.get(id);
+    if (!row || row.account_id !== accountId) {
+      return false;
+    }
+    this.webhooks.delete(id);
+    return true;
+  }
+
+  insertDelivery(row) {
+    this.deliveries.set(row.id, { ...row });
+    return this.deliveries.get(row.id);
+  }
+
+  getDelivery(id) {
+    return this.deliveries.get(id) ?? null;
+  }
+
+  listDeliveries(accountId) {
+    const ids = new Set(this.listWebhooks(accountId).map((row) => row.id));
+    return [...this.deliveries.values()]
+      .filter((row) => ids.has(row.endpoint_id))
+      .sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+  }
+
+  updateDelivery(id, patch) {
+    const row = this.deliveries.get(id);
+    if (!row) {
+      return null;
+    }
+    Object.assign(row, patch);
+    return row;
   }
 
   dump() {

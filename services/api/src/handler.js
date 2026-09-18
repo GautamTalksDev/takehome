@@ -1,15 +1,17 @@
 import changelog from './assets/changelog.json' with { type: 'json' };
 import conformance from './assets/conformance.json' with { type: 'json' };
-import { corsHeaders, errorResponse, fromEngineJson, json } from './errors.js';
+import { corsHeaders, errorResponse, fromEngineJson, json, classifyEngineError } from './errors.js';
+import { projectYear } from './year.js';
 import { DOCS } from './schema.js';
 import { latestRuleSetVersion, liveIdentity } from './identity.js';
 import { buildOpenApi } from './openapi.js';
 import { checkRateLimit } from './rate-limit.js';
 import { hashKey, keyKind, mintKey, parseBearer, randomHex } from './keys.js';
-import { calculationCount, isBatch, usageHeaders } from './meter.js';
+import { calculationCount, isBatch, batchItems, MAX_BATCH, usageHeaders } from './meter.js';
 import { livePlan, periodReset, periodStart, PLANS } from './plans.js';
 import { getStore } from './store.js';
 import { stripeClient } from './stripe.js';
+import { deliverWithRetry, webhookPayload } from './webhooks.js';
 
 const PROBE =
   '{"as_of":"2026-01-15","province":"ON","pay_period":52,"gross_pay":"1000.00","federal_claim_code":1,"provincial_claim_code":1}';
@@ -98,11 +100,17 @@ export async function handle(request, env, engine) {
   if (request.method === 'GET' && path === '/v1/changes') {
     return changes(engine);
   }
+  if (request.method === 'GET' && path === '/v1/changes.rss') {
+    return changesRss();
+  }
   if (request.method === 'GET' && path === '/v1/conformance') {
     return conformanceRecord(engine);
   }
   if (request.method === 'GET' && path === '/v1/rules') {
     return rulesList(engine);
+  }
+  if (request.method === 'GET' && path === '/v1/rules/diff') {
+    return rulesDiff(request, engine);
   }
   const ruleMatch = path.match(/^\/v1\/rules\/([^/]+)$/);
   if (request.method === 'GET' && ruleMatch) {
@@ -113,12 +121,36 @@ export async function handle(request, env, engine) {
       return errorResponse(
         engine,
         'method_not_allowed',
-        'POST /v1/deductions. Batch endpoints are M4.',
+        'POST /v1/deductions. A pay run is POST /v1/deductions/batch.',
         405,
         DOCS.method_not_allowed,
       );
     }
     return deductions(request, env, engine);
+  }
+  if (path === '/v1/deductions/batch') {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/deductions/batch with { "requests": [ ... ] }, up to 1000 items.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return deductionsBatch(request, env, engine);
+  }
+  if (path === '/v1/deductions/year') {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/deductions/year with a first pay date, province, pay_period, and gross_pay.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return deductionsYear(request, env, engine);
   }
   if (path === '/v1/signup') {
     if (request.method !== 'POST') {
@@ -168,11 +200,76 @@ export async function handle(request, env, engine) {
     }
     return webhook(request, env, engine);
   }
+  if (path === '/v1/webhooks') {
+    if (request.method === 'GET') {
+      return listWebhookEndpoints(request, env, engine);
+    }
+    if (request.method === 'POST') {
+      return createWebhookEndpoint(request, env, engine);
+    }
+    return errorResponse(
+      engine,
+      'method_not_allowed',
+      'GET or POST /v1/webhooks.',
+      405,
+      DOCS.method_not_allowed,
+    );
+  }
+  if (path === '/v1/webhooks/dispatch') {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/webhooks/dispatch with { from, to }.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return dispatchWebhooks(request, env, engine);
+  }
+  if (path === '/v1/webhooks/deliveries') {
+    if (request.method !== 'GET') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'GET /v1/webhooks/deliveries.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return listWebhookDeliveries(request, env, engine);
+  }
+  const replayMatch = path.match(/^\/v1\/webhooks\/deliveries\/([^/]+)\/replay$/);
+  if (replayMatch) {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/webhooks/deliveries/:id/replay.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return replayWebhookDelivery(request, env, engine, decodeURIComponent(replayMatch[1]));
+  }
+  const webhookMatch = path.match(/^\/v1\/webhooks\/([^/]+)$/);
+  if (webhookMatch) {
+    if (request.method !== 'DELETE') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'DELETE /v1/webhooks/:id.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return deleteWebhookEndpoint(request, env, engine, decodeURIComponent(webhookMatch[1]));
+  }
 
   return errorResponse(
     engine,
     'not_found',
-    `No M3 endpoint at ${path}. Batch and year endpoints are M4.`,
+    `No endpoint at ${path}.`,
     404,
     DOCS.not_found,
   );
@@ -242,15 +339,7 @@ async function deductions(request, env, engine) {
 
   if (kind === 'live') {
     if (used + n > plan.calculations) {
-      const headers = meterContext(env, kind, account, used);
-      return errorResponse(
-        engine,
-        'plan_limit',
-        `Live plan ${plan.name} includes ${plan.calculations} calculations this month. This request is ${n} calculation${n === 1 ? '' : 's'}. Upgrade at ${PLANS.upgrade_url} — Takehome does not surprise-bill.`,
-        402,
-        DOCS.plan_limit,
-        headers,
-      );
+      return planLimitResponse(engine, env, kind, account, used, n, plan);
     }
   }
 
@@ -264,10 +353,10 @@ async function deductions(request, env, engine) {
   if (payload != null && isBatch(payload)) {
     return errorResponse(
       engine,
-      'batch_not_implemented',
-      `A batch of ${n} calculations is M4. Metering already counts ${n}, not one HTTP request.`,
+      'invalid_request',
+      `POST /v1/deductions is one calculation. Send a batch of ${n} to POST /v1/deductions/batch (max ${MAX_BATCH}).`,
       400,
-      DOCS.batch_not_implemented,
+      DOCS.invalid_request,
       headers,
     );
   }
@@ -289,6 +378,179 @@ async function deductions(request, env, engine) {
     billed = await Promise.resolve(store.addUsage(account.id, period, n));
   }
   return fromEngineJson(body, engine, meterContext(env, kind, account, billed));
+}
+
+async function planLimitResponse(engine, env, kind, account, used, n, plan) {
+  const headers = meterContext(env, kind, account, used);
+  return errorResponse(
+    engine,
+    'plan_limit',
+    `Live plan ${plan.name} includes ${plan.calculations} calculations this month. This request is ${n} calculation${n === 1 ? '' : 's'}. Upgrade at ${PLANS.upgrade_url} — Takehome does not surprise-bill.`,
+    402,
+    DOCS.plan_limit,
+    headers,
+  );
+}
+
+function itemError(code, message, docs) {
+  return { error: { code, message, docs } };
+}
+
+async function calculateOne(item, env, engine) {
+  if (item == null || typeof item !== 'object' || Array.isArray(item)) {
+    return itemError(
+      'invalid_request',
+      'Each batch item must be a T4127 deduction request object.',
+      DOCS.invalid_request,
+    );
+  }
+  const payload = item.as_of == null ? { ...item, as_of: utcDate(env) } : item;
+  const body = await Promise.resolve(engine.calculate(JSON.stringify(payload)));
+  const parsed = JSON.parse(body);
+  if (parsed.error) {
+    const mapped = classifyEngineError(parsed.error.code, parsed.error.message);
+    return itemError(mapped.code, parsed.error.message, mapped.docs);
+  }
+  return { ok: true, response: parsed };
+}
+
+async function deductionsBatch(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const { store, account, kind } = auth;
+  const period = periodStart(utcDate(env));
+  const used = await Promise.resolve(store.getUsage(account.id, period));
+  const plan = livePlan(account.plan) ?? livePlan('developer');
+
+  const raw = await request.text();
+  let payload;
+  try {
+    payload = JSON.parse(raw);
+  } catch {
+    return errorResponse(
+      engine,
+      'malformed_json',
+      'Batch expects JSON { "requests": [ ... ] }.',
+      400,
+      DOCS.malformed_json,
+    );
+  }
+  const items = batchItems(payload);
+  if (!items) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'POST /v1/deductions/batch expects { "requests": [ ... ] } with 1 to 1000 calculations.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const n = items.length;
+  if (n < 1 || n > MAX_BATCH) {
+    return errorResponse(
+      engine,
+      n > MAX_BATCH ? 'batch_too_large' : 'invalid_request',
+      n > MAX_BATCH
+        ? `This batch has ${n} calculations. The limit is ${MAX_BATCH} per call.`
+        : `POST /v1/deductions/batch expects { "requests": [ ... ] } with 1 to ${MAX_BATCH} calculations.`,
+      400,
+      n > MAX_BATCH ? DOCS.batch_too_large : DOCS.invalid_request,
+    );
+  }
+
+  if (kind === 'live' && used + n > plan.calculations) {
+    return planLimitResponse(engine, env, kind, account, used, n, plan);
+  }
+
+  const results = [];
+  for (const item of items) {
+    results.push(await calculateOne(item, env, engine));
+  }
+
+  let billed = used;
+  if (kind === 'live') {
+    billed = await Promise.resolve(store.addUsage(account.id, period, n));
+  }
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, results }, meterContext(env, kind, account, billed));
+}
+
+async function deductionsYear(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const { store, account, kind } = auth;
+  const period = periodStart(utcDate(env));
+  const used = await Promise.resolve(store.getUsage(account.id, period));
+  const plan = livePlan(account.plan) ?? livePlan('developer');
+
+  const raw = await request.text();
+  let payload;
+  try {
+    payload = JSON.parse(raw);
+  } catch {
+    return errorResponse(
+      engine,
+      'malformed_json',
+      'Year projection expects JSON with as_of, province, pay_period, and gross_pay.',
+      400,
+      DOCS.malformed_json,
+    );
+  }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'Year projection expects a single T4127 request: first pay date, province, pay_period, gross_pay.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  if (payload.as_of == null) {
+    payload = { ...payload, as_of: utcDate(env) };
+  }
+  const n = Number.parseInt(String(payload.pay_period), 10);
+  if (!Number.isInteger(n) || n < 1) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'pay_period is required so the year knows how many cheques to run.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  if (kind === 'live' && used + n > plan.calculations) {
+    return planLimitResponse(engine, env, kind, account, used, n, plan);
+  }
+
+  const projected = await projectYear(payload, engine);
+  if (projected.error) {
+    const mapped = classifyEngineError(
+      projected.error.code,
+      projected.error.message,
+    );
+    return errorResponse(
+      engine,
+      mapped.code,
+      projected.error.message,
+      mapped.status,
+      mapped.docs,
+    );
+  }
+
+  let billed = used;
+  if (kind === 'live') {
+    billed = await Promise.resolve(store.addUsage(account.id, period, n));
+  }
+  const identity = await liveIdentity(engine, null);
+  return json(
+    200,
+    { ...identity, ...projected },
+    meterContext(env, kind, account, billed),
+  );
 }
 
 async function signup(request, env, engine) {
@@ -633,5 +895,373 @@ async function ruleVersion(engine, version) {
     ...identity,
     effective_from: row.effective_from,
     effective_to: row.effective_to ?? null,
+    status: row.status ?? 'enacted',
   });
 }
+
+async function rulesDiff(request, engine) {
+  const params = new URL(request.url).searchParams;
+  const from = params.get('from');
+  const to = params.get('to');
+  if (!from || !to) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'GET /v1/rules/diff requires from and to rule-set versions (YYYY-MM-DD).',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  if (typeof engine.diffRuleSets !== 'function') {
+    return errorResponse(
+      engine,
+      'engine',
+      'This engine build cannot diff rule sets.',
+      500,
+      DOCS.engine,
+    );
+  }
+  const raw = await Promise.resolve(engine.diffRuleSets(from, to));
+  const parsed = JSON.parse(raw);
+  if (parsed.error) {
+    return errorResponse(
+      engine,
+      'not_found',
+      parsed.error.message,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const identity = await liveIdentity(engine, to);
+  return json(200, { ...identity, ...parsed });
+}
+
+function isoNow(env) {
+  return new Date(nowMs(env)).toISOString().replace(/\.\d{3}Z$/, 'Z');
+}
+
+function unixSec(env) {
+  return Math.floor(nowMs(env) / 1000);
+}
+
+function httpsUrl(value) {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:' && parsed.hostname.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function webhookTransport(env) {
+  return {
+    fetchImpl: env.WEBHOOK_FETCH ?? globalThis.fetch.bind(globalThis),
+    sleep:
+      env.WEBHOOK_SLEEP ??
+      ((ms) =>
+        new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        })),
+  };
+}
+
+function publicWebhook(row) {
+  return {
+    id: row.id,
+    url: row.url,
+    created_at: row.created_at,
+  };
+}
+
+function publicDelivery(row) {
+  return {
+    id: row.id,
+    endpoint_id: row.endpoint_id,
+    event: row.event,
+    status: row.status,
+    attempts: row.attempts,
+    last_error: row.last_error ?? null,
+    replay_of: row.replay_of ?? null,
+    created_at: row.created_at,
+    delivered_at: row.delivered_at ?? null,
+  };
+}
+
+async function createWebhookEndpoint(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  let payload;
+  try {
+    payload = await readBody(request);
+  } catch {
+    return errorResponse(
+      engine,
+      'malformed_json',
+      'Register a webhook with JSON { "url": "https://…" }.',
+      400,
+      DOCS.malformed_json,
+    );
+  }
+  const url = String(payload?.url ?? '');
+  if (!httpsUrl(url)) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'Webhook URL must be https.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const row = {
+    id: `wh_${randomHex(16)}`,
+    account_id: auth.account.id,
+    url,
+    secret: `whsec_${randomHex(24)}`,
+    created_at: isoNow(env),
+  };
+  await Promise.resolve(auth.store.insertWebhook(row));
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, ...publicWebhook(row), secret: row.secret });
+}
+
+async function listWebhookEndpoints(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const rows = await Promise.resolve(auth.store.listWebhooks(auth.account.id));
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, webhooks: rows.map(publicWebhook) });
+}
+
+async function deleteWebhookEndpoint(request, env, engine, id) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const deleted = await Promise.resolve(
+    auth.store.deleteWebhook(id, auth.account.id),
+  );
+  if (!deleted) {
+    return errorResponse(
+      engine,
+      'not_found',
+      `No webhook ${id} on this account.`,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, deleted: true, id });
+}
+
+async function listWebhookDeliveries(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const rows = await Promise.resolve(auth.store.listDeliveries(auth.account.id));
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, deliveries: rows.map(publicDelivery) });
+}
+
+async function dispatchWebhooks(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  let payload;
+  try {
+    payload = await readBody(request);
+  } catch {
+    return errorResponse(
+      engine,
+      'malformed_json',
+      'Dispatch expects JSON { "from": "YYYY-MM-DD", "to": "YYYY-MM-DD" }.',
+      400,
+      DOCS.malformed_json,
+    );
+  }
+  const from = String(payload?.from ?? '');
+  const to = String(payload?.to ?? '');
+  if (!from || !to) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'POST /v1/webhooks/dispatch requires from and to rule-set versions.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const raw = await Promise.resolve(engine.diffRuleSets(from, to));
+  const diff = JSON.parse(raw);
+  if (diff.error) {
+    return errorResponse(
+      engine,
+      'not_found',
+      diff.error.message,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const body = webhookPayload({
+    from,
+    to,
+    changed: diff.changed,
+    occurredAt: isoNow(env),
+  });
+  const endpoints = await Promise.resolve(
+    auth.store.listWebhooks(auth.account.id),
+  );
+  const deliveries = [];
+  for (const endpoint of endpoints) {
+    deliveries.push(await sendWebhook(env, auth.store, endpoint, body, null));
+  }
+  const identity = await liveIdentity(engine, to);
+  return json(200, {
+    ...identity,
+    from,
+    to,
+    changed: diff.changed,
+    deliveries: deliveries.map(publicDelivery),
+  });
+}
+
+async function replayWebhookDelivery(request, env, engine, id) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const original = await Promise.resolve(auth.store.getDelivery(id));
+  if (!original) {
+    return errorResponse(
+      engine,
+      'not_found',
+      `No delivery ${id}.`,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const endpoint = await Promise.resolve(
+    auth.store.getWebhook(original.endpoint_id),
+  );
+  if (!endpoint || endpoint.account_id !== auth.account.id) {
+    return errorResponse(
+      engine,
+      'not_found',
+      `No delivery ${id} on this account.`,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const replayed = await sendWebhook(
+    env,
+    auth.store,
+    endpoint,
+    original.payload,
+    original.id,
+  );
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, ...publicDelivery(replayed) });
+}
+
+async function sendWebhook(env, store, endpoint, body, replayOf) {
+  const createdAt = isoNow(env);
+  const row = {
+    id: `whd_${randomHex(16)}`,
+    endpoint_id: endpoint.id,
+    event: 'rule_set.changed',
+    payload: body,
+    status: 'pending',
+    attempts: 0,
+    last_error: null,
+    last_http_status: null,
+    replay_of: replayOf,
+    created_at: createdAt,
+    delivered_at: null,
+  };
+  await Promise.resolve(store.insertDelivery(row));
+  const { fetchImpl, sleep } = webhookTransport(env);
+  const result = await deliverWithRetry({
+    url: endpoint.url,
+    body,
+    secret: endpoint.secret,
+    timestampSec: unixSec(env),
+    fetchImpl,
+    sleep,
+  });
+  const patch = {
+    status: result.ok ? 'delivered' : 'failed',
+    attempts: result.attempts,
+    last_error: result.error,
+    last_http_status: result.status,
+    delivered_at: result.ok ? isoNow(env) : null,
+  };
+  return (
+    (await Promise.resolve(store.updateDelivery(row.id, patch))) ?? {
+      ...row,
+      ...patch,
+    }
+  );
+}
+
+function changesRss() {
+  const items = changelog.items
+    .map(
+      (item) => `    <item>
+      <title>${escapeXml(item.title)}</title>
+      <link>${escapeXml(item.link)}</link>
+      <guid isPermaLink="false">${escapeXml(item.id)}</guid>
+      <pubDate>${rfc822(item.date)}</pubDate>
+      <description>${escapeXml(item.summary)}</description>
+    </item>`,
+    )
+    .join('\n');
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>${escapeXml(changelog.feed_title)}</title>
+    <link>${escapeXml(changelog.feed_link)}</link>
+    <description>${escapeXml(changelog.feed_description)}</description>
+${items}
+  </channel>
+</rss>
+`;
+  return new Response(body, {
+    headers: {
+      'content-type': 'application/rss+xml; charset=utf-8',
+      ...corsHeaders(),
+    },
+  });
+}
+
+function escapeXml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function rfc822(isoDate) {
+  const [year, month, day] = isoDate.split('-');
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const monthName = months[Number.parseInt(month, 10) - 1];
+  return `${day} ${monthName} ${year} 00:00:00 +0000`;
+}
+

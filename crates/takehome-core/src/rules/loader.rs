@@ -6,6 +6,7 @@
 use crate::rules::registry::{Registry, RuleError};
 use crate::rules::schema::{
     CppParams, EiParams, Jurisdiction, JurisdictionCode, LoadError, QpipParams, RuleSet,
+    RuleSetStatus,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -150,6 +151,27 @@ const QPIP_2026_07_01: &str = include_str!(concat!(
     "/../../data/rules/2026-07-01/qpip.json"
 ));
 
+const MANIFEST_2027_01_01: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/rules/2027-01-01/manifest.json"
+));
+const BC_2027_01_01: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/rules/2027-01-01/bc.json"
+));
+const NL_2027_01_01: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/rules/2027-01-01/nl.json"
+));
+const PE_2027_01_01: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/rules/2027-01-01/pe.json"
+));
+const CPP_2027_01_01: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/rules/2027-01-01/cpp.json"
+));
+
 /// Lazily assembled registry of every embedded rule set.
 pub static EMBEDDED_REGISTRY: LazyLock<Registry> =
     LazyLock::new(|| load_embedded_registry().expect("embedded rule sets must load"));
@@ -166,6 +188,8 @@ pub struct RuleSetVersionStatus {
     pub version: String,
     pub effective_from: crate::rules::schema::CalendarDate,
     pub effective_to: Option<crate::rules::schema::CalendarDate>,
+    /// Spec open question 5: enacted T4127 edition or labelled preview.
+    pub status: RuleSetStatus,
 }
 
 /// Embedded editions in coverage order (spec §9.1).
@@ -178,6 +202,10 @@ pub fn list_embedded_rule_set_versions() -> RuleSetListing {
                 version: version.to_string(),
                 effective_from: from,
                 effective_to: to,
+                status: EMBEDDED_REGISTRY
+                    .get(version)
+                    .map(|set| set.status)
+                    .unwrap_or_default(),
             })
             .collect(),
     }
@@ -224,6 +252,12 @@ struct Manifest {
     #[serde(default)]
     #[allow(dead_code)]
     jurisdiction_origin: BTreeMap<String, String>,
+    #[serde(default)]
+    status: RuleSetStatus,
+    #[serde(default)]
+    announcement_source: Option<String>,
+    #[serde(default)]
+    announcement_date: Option<crate::rules::schema::CalendarDate>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -322,6 +356,34 @@ pub fn load_ruleset_2026_07_01() -> Result<RuleSet, EmbedError> {
     )
 }
 
+/// Build the 2027-01-01 PREVIEW [`RuleSet`] (spec open question 5).
+///
+/// Not a CRA T4127 edition. CPP rates from the Spring Economic Update 2026;
+/// YMPE held at 2026 published dollars; BC indexation paused at 2026 levels.
+pub fn load_ruleset_2027_01_01() -> Result<RuleSet, EmbedError> {
+    assemble_ruleset(
+        MANIFEST_2027_01_01,
+        [
+            ("FED", FEDERAL_2026_07_01),
+            ("AB", AB_2026_07_01),
+            ("BC", BC_2027_01_01),
+            ("MB", MB_2026_07_01),
+            ("NB", NB_2026_07_01),
+            ("NL", NL_2027_01_01),
+            ("NS", NS_2026_07_01),
+            ("NT", NT_2026_07_01),
+            ("NU", NU_2026_07_01),
+            ("ON", ON_2026_07_01),
+            ("PE", PE_2027_01_01),
+            ("SK", SK_2026_07_01),
+            ("YT", YT_2026_07_01),
+        ],
+        CPP_2027_01_01,
+        EI_2026_07_01,
+        QPIP_2026_07_01,
+    )
+}
+
 fn assemble_ruleset(
     manifest_json: &str,
     jurisdiction_files: [(&str, &str); 13],
@@ -382,6 +444,9 @@ fn assemble_ruleset(
         source_url: source.source_url.clone(),
         retrieved_at: source.retrieved_at.clone(),
         source_sha256: source.source_sha256.clone(),
+        status: manifest.status,
+        announcement_source: manifest.announcement_source,
+        announcement_date: manifest.announcement_date,
         jurisdictions,
         cpp,
         ei,
@@ -393,13 +458,20 @@ fn assemble_ruleset(
 
 /// Every embedded rule set, sorted and coverage-checked.
 pub fn load_embedded_registry() -> Result<Registry, EmbedError> {
-    Registry::load(vec![load_ruleset_2026_01_01()?, load_ruleset_2026_07_01()?])
-        .map_err(EmbedError::from)
+    Registry::load(vec![
+        load_ruleset_2026_01_01()?,
+        load_ruleset_2026_07_01()?,
+        load_ruleset_2027_01_01()?,
+    ])
+    .map_err(EmbedError::from)
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{load_ruleset_2026_01_01, load_ruleset_2026_07_01, EMBEDDED_REGISTRY};
+    use super::{
+        load_ruleset_2026_01_01, load_ruleset_2026_07_01, load_ruleset_2027_01_01,
+        EMBEDDED_REGISTRY,
+    };
     use crate::decimal::{Money, Rate};
     use crate::formulas::bpa::resolve_basic_personal_amount;
     use crate::formulas::indexing::{index_claim_amount, IndexError};
@@ -458,6 +530,19 @@ mod tests {
                 .unwrap()
                 .rule_set_version,
             "2026-07-01"
+        );
+        let preview = load_ruleset_2027_01_01().expect("2027-01-01 preview must load");
+        assert_eq!(preview.rule_set_version, "2027-01-01");
+        assert_eq!(
+            preview.status,
+            crate::rules::schema::RuleSetStatus::Proposed
+        );
+        assert_eq!(
+            EMBEDDED_REGISTRY
+                .resolve("2027-01-15".parse().unwrap())
+                .unwrap()
+                .rule_set_version,
+            "2027-01-01"
         );
     }
 
@@ -1208,5 +1293,80 @@ mod tests {
             .collect();
         const INHERITED: &[&str] = &["FED", "AB", "MB", "NB", "NS", "NT", "NU", "ON", "SK", "YT"];
         assert_eq!(listed, INHERITED);
+    }
+
+    /// 48. Preview CPP rates, held YMPE, BC full-year 5.60% (not the 2026 Option 1 prorated 6.14%).
+    #[test]
+    fn preview_2027_cpp_and_bc_are_the_announced_full_year_tables() {
+        let set = load_ruleset_2027_01_01().unwrap();
+        assert_eq!(set.status, crate::rules::schema::RuleSetStatus::Proposed);
+        assert_eq!(
+            set.announcement_date
+                .expect("announcement_date")
+                .to_string(),
+            "2026-04-28"
+        );
+        let cpp = &set.cpp;
+        assert_eq!(cpp.ympe, money("74600.00"));
+        assert_eq!(cpp.yampe, money("85000.00"));
+        assert_eq!(cpp.total_rate, rate("0.0575"));
+        assert_eq!(cpp.base_rate, rate("0.0475"));
+        assert_eq!(cpp.total_max, money("4088.25"));
+        assert_eq!(cpp.base_max, money("3377.25"));
+        assert_eq!(cpp.first_additional_rate, rate("0.0100"));
+        assert_eq!(cpp.first_additional_max, money("711.00"));
+        assert_eq!(cpp.second_additional_max, money("416.00"));
+        let bc = j(&set, "BC");
+        assert_eq!(
+            *bc.lowest_rate.get(CalculationOption::Option1),
+            rate("0.0560")
+        );
+        assert!(!bc.brackets.get(CalculationOption::Option1)[0].prorated);
+        match bc.basic_personal_amount.get(CalculationOption::Option1) {
+            BasicPersonalAmount::Fixed { amount } => assert_eq!(*amount, money("13216.00")),
+            other => panic!("BC BPA: {other:?}"),
+        }
+        let reduction = bc
+            .tax_reduction
+            .as_ref()
+            .unwrap()
+            .get(CalculationOption::Option1);
+        assert_eq!(reduction.basic, money("690.00"));
+        match j(&set, "NL")
+            .basic_personal_amount
+            .get(CalculationOption::Option1)
+        {
+            BasicPersonalAmount::Fixed { amount } => assert_eq!(*amount, money("15000.00")),
+            other => panic!("NL BPA: {other:?}"),
+        }
+        let pe = j(&set, "PE").brackets.get(CalculationOption::Option1);
+        assert_eq!(pe[5].rate, rate("0.2000"));
+        assert!(!pe[5].prorated);
+    }
+
+    #[test]
+    fn preview_2027_inherited_files_match_july_on_disk() {
+        let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data/rules");
+        for name in [
+            "federal.json",
+            "ab.json",
+            "mb.json",
+            "nb.json",
+            "ns.json",
+            "nt.json",
+            "nu.json",
+            "on.json",
+            "sk.json",
+            "yt.json",
+            "ei.json",
+            "qpip.json",
+        ] {
+            let a = std::fs::read(root.join("2026-07-01").join(name)).expect(name);
+            let b = std::fs::read(root.join("2027-01-01").join(name)).expect(name);
+            assert_eq!(
+                a, b,
+                "{name} must stay a July copy until it has its own 2027 table"
+            );
+        }
     }
 }

@@ -20,7 +20,7 @@
       "post": {
         "operationId": "createDeduction",
         "summary": "Calculate T4127 payroll deductions for one pay period.",
-        "description": "Requires a Bearer np_test_ or np_live_ key. Metering counts calculations, not HTTP requests. A future batch of 500 counts 500. Test keys are free and unmetered. Live keys hard-stop at the plan limit; Takehome does not surprise-bill.",
+        "description": "Requires a Bearer np_test_ or np_live_ key. Metering counts calculations, not HTTP requests. A batch of 1000 on POST /v1/deductions/batch counts 1000. Test keys are free and unmetered. Live keys hard-stop at the plan limit; Takehome does not surprise-bill.",
         "requestBody": {
           "required": true,
           "content": {
@@ -104,6 +104,294 @@
           },
           "402": {
             "description": "Plan calculation limit reached",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Jurisdiction not supported",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/deductions/batch": {
+      "post": {
+        "operationId": "createDeductionBatch",
+        "summary": "Calculate T4127 payroll deductions for a pay run of up to 1000 employees.",
+        "description": "Requires a Bearer np_test_ or np_live_ key. One HTTP call, up to 1000 calculations, metered as N not 1. Each result is {ok, response} or {error}; one bad employee record does not abort the others. If the live plan cannot cover the whole batch, the call is 402 and usage is unchanged.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Pay run results, in input order",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request, including batches over 1000",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Plan calculation limit reached; nothing billed",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/deductions/year": {
+      "post": {
+        "operationId": "createDeductionYear",
+        "summary": "Project every pay period in a year with YTD CPP, CPP2, and EI carried forward.",
+        "description": "Requires a Bearer np_test_ or np_live_ key. Metered as P calculations, not 1. Identifies the CPP cap period, EI cap period, YMPE crossing, and CPP2 start (spec §21.5). Sum of per-period federal tax versus annual T1 is allowed to differ by one cent per pay period because of per-period rounding.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeductionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Year projection",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/YearResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "headers": {
+              "X-Usage-Limit": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Monthly live calculation cap, or unlimited for np_test_ keys."
+              },
+              "X-Usage-Remaining": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Calculations remaining this UTC month, or unlimited."
+              },
+              "X-Usage-Reset": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Next UTC month start, when the live meter resets."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Plan calculation limit reached; nothing billed",
             "headers": {
               "X-Usage-Limit": {
                 "schema": {
@@ -360,6 +648,235 @@
         }
       }
     },
+    "/v1/webhooks": {
+      "get": {
+        "operationId": "listWebhooks",
+        "summary": "Webhook endpoints for this account.",
+        "responses": {
+          "200": {
+            "description": "Endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createWebhook",
+        "summary": "Register an HTTPS endpoint. Signing secret is shown once.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookCreateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/dispatch": {
+      "post": {
+        "operationId": "dispatchWebhooks",
+        "summary": "Fan out a rule_set.changed event to every endpoint on this account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "properties": {
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deliveries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDispatchResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown rule set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/deliveries": {
+      "get": {
+        "operationId": "listWebhookDeliveries",
+        "summary": "Delivery log for this account.",
+        "responses": {
+          "200": {
+            "description": "Log",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDeliveriesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/deliveries/{id}/replay": {
+      "post": {
+        "operationId": "replayWebhookDelivery",
+        "summary": "Re-send one signed payload.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Replayed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookReplayResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown delivery",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/rules": {
       "get": {
         "operationId": "listRules",
@@ -372,6 +889,73 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RulesListResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rules/diff": {
+      "get": {
+        "operationId": "diffRules",
+        "summary": "Field-by-field comparison of two embedded T4127 editions.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rule-set diff",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulesDiffResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing versions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
                 }
               }
             }
@@ -479,6 +1063,35 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChangesResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/changes.rss": {
+      "get": {
+        "operationId": "listChangesRss",
+        "summary": "RSS 2.0 change log.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "RSS",
+            "content": {
+              "application/rss+xml": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -765,6 +1378,59 @@
             "pattern": "^-?\\d+\\.\\d{2}$",
             "description": "Decimal money as a lexical string. Never a JSON number."
           },
+          "bonus_method": {
+            "type": "string"
+          },
+          "ytd_bonus": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "f5b_ytd": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "most_recent_i": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "rpp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "bonus_rrsp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_bonus_rrsp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_income": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_rpp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_union_dues": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "f5a_ytd": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
           "commission_income": {
             "type": "string",
             "pattern": "^-?\\d+\\.\\d{2}$",
@@ -899,6 +1565,247 @@
           }
         }
       },
+      "BatchRequest": {
+        "type": "object",
+        "required": [
+          "requests"
+        ],
+        "additionalProperties": false,
+        "description": "Up to 1000 T4127 calculations. Partial success: each result is {ok, response} or {error}. Item failures do not abort the pay run.",
+        "properties": {
+          "requests": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1000,
+            "items": {
+              "$ref": "#/components/schemas/DeductionRequest"
+            }
+          }
+        }
+      },
+      "BatchItemSuccess": {
+        "type": "object",
+        "required": [
+          "ok",
+          "response"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "response": {
+            "$ref": "#/components/schemas/DeductionResponse"
+          }
+        }
+      },
+      "BatchItemError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorBody"
+          }
+        }
+      },
+      "BatchResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "results"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/BatchItemSuccess"
+                },
+                {
+                  "$ref": "#/components/schemas/BatchItemError"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "YearPeriod": {
+        "type": "object",
+        "required": [
+          "period",
+          "as_of",
+          "cpp_basic_exemption",
+          "ytd_pensionable_earnings_before",
+          "ytd_pensionable_earnings_after",
+          "response"
+        ],
+        "properties": {
+          "period": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date"
+          },
+          "cpp_basic_exemption": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_pensionable_earnings_before": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_pensionable_earnings_after": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_cpp_after": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ytd_ei_after": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "response": {
+            "$ref": "#/components/schemas/DeductionResponse"
+          }
+        }
+      },
+      "YearTotals": {
+        "type": "object",
+        "required": [
+          "federal_tax",
+          "cpp",
+          "cpp2",
+          "ei"
+        ],
+        "properties": {
+          "federal_tax": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "cpp": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "cpp2": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "ei": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          }
+        }
+      },
+      "YearResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "periods",
+          "totals",
+          "annual_t1",
+          "federal_tax_sum_tolerance"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/YearPeriod"
+            }
+          },
+          "totals": {
+            "$ref": "#/components/schemas/YearTotals"
+          },
+          "annual_t1": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "federal_tax_sum_tolerance": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          },
+          "cpp_cap_period": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "ei_cap_period": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "cpp2_start_period": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "ympe_cross_period": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "ympe": {
+            "type": "string",
+            "pattern": "^-?\\d+\\.\\d{2}$",
+            "description": "Decimal money as a lexical string. Never a JSON number."
+          }
+        }
+      },
       "JurisdictionStatus": {
         "type": "object",
         "required": [
@@ -955,7 +1862,8 @@
         "type": "object",
         "required": [
           "version",
-          "effective_from"
+          "effective_from",
+          "status"
         ],
         "properties": {
           "version": {
@@ -968,6 +1876,13 @@
             "type": [
               "string",
               "null"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "enacted",
+              "proposed"
             ]
           }
         }
@@ -1005,7 +1920,8 @@
           "rule_set_version",
           "engine_version",
           "engine_build_sha256",
-          "effective_from"
+          "effective_from",
+          "status"
         ],
         "properties": {
           "rule_set_version": {
@@ -1022,6 +1938,355 @@
             "type": "string"
           },
           "effective_to": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "enacted",
+              "proposed"
+            ]
+          }
+        }
+      },
+      "RulesDiffResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "from",
+          "to",
+          "changed",
+          "fields",
+          "cpp",
+          "ei",
+          "qpip"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "changed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fields": {
+            "type": "object"
+          },
+          "cpp": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ei": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "qpip": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "WebhookEndpoint": {
+        "type": "object",
+        "required": [
+          "id",
+          "url",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "secret": {
+            "type": "string"
+          }
+        }
+      },
+      "WebhookDelivery": {
+        "type": "object",
+        "required": [
+          "id",
+          "endpoint_id",
+          "event",
+          "status",
+          "attempts",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "endpoint_id": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "last_error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "replay_of": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "delivered_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "WebhookCreateResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "id",
+          "url",
+          "secret",
+          "created_at"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "secret": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "WebhookListResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "webhooks"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEndpoint"
+            }
+          }
+        }
+      },
+      "WebhookDeliveriesResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "deliveries"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "deliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookDelivery"
+            }
+          }
+        }
+      },
+      "WebhookDispatchResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "from",
+          "to",
+          "changed",
+          "deliveries"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "changed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deliveries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookDelivery"
+            }
+          }
+        }
+      },
+      "WebhookReplayResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "id",
+          "status",
+          "attempts"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "id": {
+            "type": "string"
+          },
+          "endpoint_id": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "last_error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "replay_of": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "delivered_at": {
             "type": [
               "string",
               "null"

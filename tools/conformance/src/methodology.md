@@ -86,3 +86,9 @@ Product: [`ADR-003`](docs/ADR-003-rounding-compat.md) — `rounding_compat`
 
 Full write-up:
 [`docs/findings/002-pdoc-midpoint-direction.md`](docs/findings/002-pdoc-midpoint-direction.md).
+
+### M4 named classes (not folded into 8838/9002)
+
+- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors. Expected amounts stay `PENDING_PDOC` until captured through `tools/pdoc-oracle`; never filled from the engine. Named pending; excluded from the overall Option 1 PDOC rate.
+- **`year-projection-2026`**: engine invariants (API tests 22–29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
+- **`t4127-option2-2026`**: T4127 Chapter 5 worked examples plus invariants. Live PDOC has no Option 2 control. Weaker evidence than PDOC; does not inherit the Option 1 agreement rate.

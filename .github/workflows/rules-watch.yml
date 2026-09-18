@@ -1,0 +1,32 @@
+# .github/workflows/rules-watch.yml
+# Spec §12.3: pin the T4127 index, current edition pages, and CSV bundle.
+# Fetch, canonicalize, hash, open an issue with the unified diff on drift.
+name: rules-watch
+
+on:
+  schedule:
+    - cron: "17 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: rules-watch
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Compare T4127 pins
+        working-directory: tools/rules-watch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node src/cli.js

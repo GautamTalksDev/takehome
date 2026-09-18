@@ -15,5 +15,8 @@ export function listJurisdictions(): string;
 /** Embedded rule-set editions in coverage order. */
 export function listRuleSetVersions(): string;
 
+/** Field-by-field comparison of two embedded T4127 editions (spec §12.3). */
+export function diffRuleSets(from: string, to: string): string;
+
 /** SHA-256 of the takehome-core source tree. Same value as the native engine. */
 export function engineBuildSha(): string;

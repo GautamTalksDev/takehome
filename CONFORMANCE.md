@@ -102,6 +102,12 @@ Product: [`ADR-003`](docs/ADR-003-rounding-compat.md) — `rounding_compat`
 Full write-up:
 [`docs/findings/002-pdoc-midpoint-direction.md`](docs/findings/002-pdoc-midpoint-direction.md).
 
+### M4 named classes (not folded into 8838/9002)
+
+- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors. Expected amounts stay `PENDING_PDOC` until captured through `tools/pdoc-oracle`; never filled from the engine. Named pending; excluded from the overall Option 1 PDOC rate.
+- **`year-projection-2026`**: engine invariants (API tests 22–29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
+- **`t4127-option2-2026`**: T4127 Chapter 5 worked examples plus invariants. Live PDOC has no Option 2 control. Weaker evidence than PDOC; does not inherit the Option 1 agreement rate.
+
 ## Sampling design
 
 Published PDOC queue: every **distinct** July live-edition boundary
@@ -121,13 +127,13 @@ PDOC; the interior log-ladder and the uncapturable class do not.**
 | | |
 |--|--|
 | grid_version | `2026.1` |
-| grid cells | 842304 |
+| grid cells | 1263636 |
 | unique July boundary forms, all 14 legal P (superseded) | 15264 |
 | **PDOC queue (10 capturable P, distinct after dedup)** | **9762** |
 | unique July uncapturable forms | 5502 |
 | wall clock at 3 s / uncached form | 8h 8m |
 | overnight 8 h capacity | 9600 |
-| log-ladder cells (invariants only) | 748896 |
+| log-ladder cells (invariants only) | 1123344 |
 | DateBeforeCoverage cells (engine error) | 140354 |
 
 Grid cells collapse heavily onto PDOC fingerprints; the finished capture
@@ -139,9 +145,9 @@ cache hits from overlapping forms).
 | | |
 |--|--|
 | grid_version | `2026.1` |
-| engine_build_sha256 | `a9539a4b50fc366572a3c1d3f2fb3c2dda1cc81128a30ce8ca409a139333748b` |
-| rule_set_versions | `2026-01-01`, `2026-07-01` |
-| rule_set_sha256 | `b4ff871759d97fdf910b4d39a1ef36c2923fd306d1d954e64d0e2d69e5a84a73` |
+| engine_build_sha256 | `b793f5379e9b1cfa268c3eea3472fd31921565ea1766b980f77652e646dd2134` |
+| rule_set_versions | `2026-01-01`, `2026-07-01`, `2027-01-01` |
+| rule_set_sha256 | `d864a7e991a770ece4649bad21be4aa7db7e9f4a331d8c2e87ac0de5e4aa52d2` |
 | PDOC identity | `2026-06-11 (M1); form:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (grid queue)` |
 | browser | chromium 153.0.8010.12 |
 | harness | pdoc-oracle-harness |
@@ -157,29 +163,29 @@ form; the queue size is the unique-form count above, not the cell count.
 |--|--|--|--|--|
 | AB | 1 | `2026-01-01` | invariants | 2328 |
 | AB | 1 | `2026-01-01` | uncapturable | 396 |
-| AB | 1 | `2026-07-01` | invariants | 1552 |
-| AB | 1 | `2026-07-01` | uncapturable | 264 |
+| AB | 1 | `2026-07-01` | invariants | 2328 |
+| AB | 1 | `2026-07-01` | uncapturable | 396 |
+| AB | 1 | `2027-01-01` | invariants | 1552 |
+| AB | 1 | `2027-01-01` | uncapturable | 264 |
 | AB | 1 | `none` | engine_error | 908 |
 | AB | 2 | `2026-01-01` | invariants | 2328 |
 | AB | 2 | `2026-01-01` | uncapturable | 324 |
-| AB | 2 | `2026-07-01` | invariants | 1552 |
-| AB | 2 | `2026-07-01` | uncapturable | 216 |
+| AB | 2 | `2026-07-01` | invariants | 2328 |
+| AB | 2 | `2026-07-01` | uncapturable | 324 |
+| AB | 2 | `2027-01-01` | invariants | 1552 |
+| AB | 2 | `2027-01-01` | uncapturable | 216 |
 | AB | 2 | `none` | engine_error | 884 |
 | AB | 4 | `2026-01-01` | invariants | 2322 |
 | AB | 4 | `2026-01-01` | uncapturable | 246 |
-| AB | 4 | `2026-07-01` | invariants | 1548 |
-| AB | 4 | `2026-07-01` | uncapturable | 164 |
+| AB | 4 | `2026-07-01` | invariants | 2322 |
+| AB | 4 | `2026-07-01` | uncapturable | 246 |
+| AB | 4 | `2027-01-01` | invariants | 1548 |
+| AB | 4 | `2027-01-01` | uncapturable | 164 |
 | AB | 4 | `none` | engine_error | 856 |
 | AB | 10 | `2026-01-01` | pdoc | 234 |
 | AB | 10 | `2026-01-01` | invariants | 2256 |
 | AB | 10 | `2026-01-01` | uncapturable | 12 |
-| AB | 10 | `2026-07-01` | pdoc | 156 |
-| AB | 10 | `2026-07-01` | invariants | 1504 |
-| AB | 10 | `2026-07-01` | uncapturable | 8 |
-| AB | 10 | `none` | engine_error | 834 |
-| AB | 12 | `2026-01-01` | pdoc | 234 |
-| AB | 12 | `2026-01-01` | invariants | 2232 |
-| … | … | … | … | 1146 more slices in `conformance.json` |
+| … | … | … | … | 1640 more slices in `conformance.json` |
 
 Full slice table: [`conformance.json`](conformance.json) `census`.
 
@@ -195,6 +201,39 @@ Full slice table: [`conformance.json`](conformance.json) `census`.
 | pending | 0 |
 | exact matches | 20 |
 | agreement rate | `20/20` |
+
+### `pdoc-bonus-2026`
+
+| | |
+|--|--|
+| oracle class | `pdoc` |
+| defined | 20 |
+| measured | 0 |
+| pending | 20 |
+| exact matches | 0 |
+| agreement rate | *named pending class; expected amounts stay PENDING_PDOC until capture. Not in the overall Option 1 PDOC rate.*
+
+### `year-projection-2026`
+
+| | |
+|--|--|
+| oracle class | `invariants` |
+| defined | 8 |
+| measured | 8 |
+| pending | 0 |
+| exact matches | 8 |
+| agreement rate | *not a PDOC corpus; year-projection invariants (API tests 22–29), not per-cell PDOC* |
+
+### `t4127-option2-2026`
+
+| | |
+|--|--|
+| oracle class | `t4127_worked_examples` |
+| defined | 3 |
+| measured | 3 |
+| pending | 0 |
+| exact matches | 3 |
+| agreement rate | *not a PDOC corpus; T4127 Chapter 5 worked examples + invariants. Weaker evidence than PDOC. Does not inherit the Option 1 PDOC agreement rate.* |
 
 ### `grid-2026.1-pdoc-boundary`
 
@@ -223,9 +262,9 @@ Full slice table: [`conformance.json`](conformance.json) `census`.
 | | |
 |--|--|
 | oracle class | `invariants` |
-| defined | 751080 |
+| defined | 1126620 |
 | measured | 0 |
-| pending | 751080 |
+| pending | 1126620 |
 | exact matches | 0 |
 | agreement rate | *not a PDOC corpus; invariants + differential oracle (§16.2), not per-cell PDOC* |
 
@@ -1085,9 +1124,11 @@ M-002 remains a selectable `k2_method` difference under the default.
 - Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle — same as the interior ladder. Live PDOC salary UI cannot enter them.
 - Grid PDOC stratum: 9762 distinct capturable July forms (fingerprint-deduped). Queue finished: 8818 match, 164 M-003 1¢ disagreements (counted), 780 PDOC step-2 would not advance (named, not in the rate). Superseded all-14-P count was 15264.
 - January-only BC/NL/PE amounts retired from live PDOC: invariants + differential vs July sibling.
-- Option 2 cumulative averaging: not in this grid (Option 1 only).
+- PDOC does not expose Option 2 (cumulative averaging). Live PDOC (observed 2026-06-11, screen WLCM) offers Salary, Commission, Pension, and CPP/EI verification only; there is no Option 2 / S1 / cumulative-averaging control, so no PDOC vectors were captured. Option 2 is a distinct oracle class `t4127_worked_examples` (T4127 Chapter 5 worked examples plus invariants) with weaker evidence than PDOC. It does not inherit the Option 1 PDOC agreement rate.
 - DateBeforeCoverage cells: engine error path, not a PDOC form.
 - M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented.
+- PDOC bonus class `pdoc-bonus-2026`: 20 defined cases. Expected amounts stay PENDING_PDOC until captured through tools/pdoc-oracle; never filled from the engine. Named pending; not in the overall Option 1 PDOC rate.
+- Year projection `year-projection-2026`: oracle class `invariants` (API tests 22–29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md.
 
 ## M1 measured results (complete corpus)
 
@@ -1109,6 +1150,23 @@ All twenty match. See `crates/takehome-core/tests/vectors/pdoc_ontario_2026_01.j
 | Conformance report with the real number and every disagreement | **this file** |
 | Findings 001 (K2) and M-001 discontinuity written up | yes |
 | Tagged `v0.3.0-m2` | after this report is committed |
+
+## M4 exit checklist
+
+| Criterion | State |
+|--|--|
+| Batch endpoint, 1000 items, partial success, metering | yes |
+| Year projection CPP/EI caps on the annual maximum | yes |
+| CRA bonus worked example TB = 323.54 | yes |
+| Option 2 BC/NL/PE proration (PDOC does not expose Option 2) | yes |
+| Rule-change detection; signed retrying webhooks | yes |
+| 2027 preview rule set, proposed, warning asserted | yes |
+| Conformance re-run, no PDOC regression, new classes named | **this file** |
+| `pdoc-bonus-2026` named pending, not in 8838/9002 | yes |
+| `rounding_compat: pdoc` still typed NotImplemented | yes (finding 002) |
+| Tagged `v0.5.0-m4` | after this report is committed |
+| Five-minute classmate on production | **open** (`docs/FIVE-MINUTE-TEST.md`) |
+| npm / PyPI `takehome-ca` | **open** (no publish tokens here) |
 
 ## M0 arithmetic canaries
 

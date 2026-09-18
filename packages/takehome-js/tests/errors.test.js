@@ -27,6 +27,8 @@ test('listJurisdictions and listRuleSetVersions are JSON', async () => {
   const versions = JSON.parse(engine.listRuleSetVersions());
   assert.deepEqual(
     versions.rule_set_versions.map((row) => row.version),
-    ['2026-01-01', '2026-07-01'],
+    ['2026-01-01', '2026-07-01', '2027-01-01'],
   );
+  const diff = JSON.parse(engine.diffRuleSets('2026-01-01', '2026-07-01'));
+  assert.deepEqual(diff.changed, ['BC', 'NL', 'PE']);
 });

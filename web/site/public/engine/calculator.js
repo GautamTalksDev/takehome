@@ -2,6 +2,10 @@ import init, { calculate, listRuleSetVersions } from './takehome_wasm.js';
 
 const OPTIONAL_MONEY = [
   'bonus',
+  'retroactive_pay',
+  'ytd_bonus',
+  'f5b_ytd',
+  'most_recent_i',
   'ytd_cpp',
   'ytd_cpp2',
   'ytd_ei',
@@ -60,7 +64,7 @@ function reduceMotion() {
 
 let netAnim = 0;
 
-function setNetPay(next) {
+function setDisplayedNet(next) {
   const node = document.querySelector('[data-testid="net-pay"]');
   if (!node) {
     return;
@@ -184,7 +188,7 @@ function headlineNote(mode) {
 function renderSuccess(response, listing, gross, mode) {
   const employee = response.employee;
   const employer = response.employer;
-  setNetPay(employee.net_pay);
+  setDisplayedNet(employee.net_pay);
   text('federal-tax', employee.federal_tax);
   text('provincial-tax', employee.provincial_tax);
   text('cpp', employee.cpp);
@@ -197,6 +201,14 @@ function renderSuccess(response, listing, gross, mode) {
   text('employer-cost', employerCost(gross, employer));
   text('headline-note', headlineNote(mode));
   text('rule-set', editionLine(response.rule_set_version, listing));
+  const proposed = (response.warnings || []).find(
+    (warning) => warning.code === 'RULE_SET_PROPOSED',
+  );
+  const proposedNode = document.querySelector('[data-testid="proposed-warning"]');
+  if (proposedNode) {
+    proposedNode.textContent = proposed ? proposed.message : '';
+    proposedNode.classList.toggle('hidden', !proposed);
+  }
   const prorated = (response.warnings || []).find(
     (warning) => warning.code === 'PRORATED_RECONCILIATION',
   );
@@ -235,6 +247,17 @@ function requestFromForm(form) {
     }
   }
   return request;
+}
+
+function chequeGross(request) {
+  let total = request.gross_pay;
+  if (request.bonus) {
+    total = addMoney(total, request.bonus);
+  }
+  if (request.retroactive_pay) {
+    total = addMoney(total, request.retroactive_pay);
+  }
+  return total;
 }
 
 function runCalculate(request) {
@@ -323,7 +346,7 @@ async function main() {
       text('rule-set', parsed.error.message);
       return;
     }
-    renderSuccess(parsed, listing, request.gross_pay, mode);
+  renderSuccess(parsed, listing, chequeGross(request), mode);
     form.dataset.ready = 'true';
   };
 

@@ -3,7 +3,7 @@
 //! `as_of` has no default inside core (no clock). Callers must supply it; the API
 //! service layer may default it to today and must say so.
 
-use crate::decimal::Money;
+use crate::decimal::{DecimalError, Money};
 use crate::rules::schema::{CalculationOption, CalendarDate};
 use serde::de::{self, Deserializer};
 use serde::{Deserialize, Serialize};
@@ -13,8 +13,8 @@ use thiserror::Error;
 #[cfg(test)]
 mod tests {
     use super::{
-        CalculationOption, ClaimCode, K2Method, PayPeriod, Province, Request, RequestError,
-        RoundingCompat,
+        BonusMethod, CalculationOption, ClaimCode, K2Method, PayPeriod, Province, Request,
+        RequestError, RoundingCompat,
     };
 
     fn minimal_json() -> String {
@@ -89,9 +89,10 @@ mod tests {
         assert_eq!(req.calculation_option, CalculationOption::Option1);
         assert_eq!(req.cpp_months, 12);
         assert_eq!(req.k2_method, K2Method::PdocObserved);
+        assert_eq!(req.bonus_method, BonusMethod::Regular);
         assert_eq!(req.rounding_compat, RoundingCompat::T4127);
-        assert_eq!(req.pensionable_earnings(), &req.gross_pay);
-        assert_eq!(req.insurable_earnings(), &req.gross_pay);
+        assert_eq!(req.pensionable_earnings(), req.gross_pay);
+        assert_eq!(req.insurable_earnings(), req.gross_pay);
         assert!(req.as_of.to_string() == "2026-03-15");
         assert_eq!(req.dependants_under_19, None);
         assert_eq!(req.dependants_disabled, None);
@@ -115,6 +116,24 @@ mod tests {
         assert_eq!(parse("annualized"), K2Method::PdocObserved);
         assert_eq!(parse("t4127_literal"), K2Method::T4127Literal);
         assert_eq!(parse("year_to_date"), K2Method::YearToDate);
+    }
+
+    #[test]
+    fn bonus_method_wire_names_default_regular() {
+        fn parse(method: &str) -> BonusMethod {
+            let json = format!(
+                r#"{{
+                    "as_of": "2026-03-15",
+                    "province": "ON",
+                    "pay_period": 26,
+                    "gross_pay": "2500.00",
+                    "bonus_method": "{method}"
+                }}"#
+            );
+            Request::from_json(&json).expect(method).bonus_method
+        }
+        assert_eq!(parse("regular"), BonusMethod::Regular);
+        assert_eq!(parse("year_to_date"), BonusMethod::YearToDate);
     }
 
     #[test]
@@ -485,6 +504,19 @@ pub enum RoundingCompat {
     Pdoc,
 }
 
+/// How annual taxable income A is projected when a bonus or retroactive amount is paid.
+///
+/// T4127 Chapter 4. Wire: `regular` (default; PDOC) and `year_to_date`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum BonusMethod {
+    /// Regular bonus calculation: annualize current I with P; add B and B1 once.
+    #[default]
+    Regular,
+    /// Optional year-to-date form: YTD periodic income plus PR × current I.
+    YearToDate,
+}
+
 fn default_option1() -> CalculationOption {
     CalculationOption::Option1
 }
@@ -530,6 +562,9 @@ pub struct Request {
     pub cpp_months: u8,
     #[serde(default)]
     pub k2_method: K2Method,
+    /// Bonus / retro A projection. Default `regular` (PDOC).
+    #[serde(default)]
+    pub bonus_method: BonusMethod,
     /// Period rounding when T4127 and PDOC diverge (ADR-003). Default `t4127`.
     #[serde(default)]
     pub rounding_compat: RoundingCompat,
@@ -555,8 +590,39 @@ pub struct Request {
     // --- Bonus / retro / commission --------------------------------------
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bonus: Option<Money>,
+    /// Non-periodic retroactive pay. Same path as [`Self::bonus`] (T4127 factor B).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retroactive_pay: Option<Money>,
+    /// Year-to-date non-periodic payments before this period (factor B1).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ytd_bonus: Option<Money>,
+    /// F5B already deducted on prior bonuses (F5B_YTD).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub f5b_ytd: Option<Money>,
+    /// Most recent I, used when this period’s I is 0 (T4127 Chapter 4).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub most_recent_i: Option<Money>,
+    /// Registered pension plan this period (factor F).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rpp: Option<Money>,
+    /// RRSP / RPP withheld from the current bonus (factor F3).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bonus_rrsp: Option<Money>,
+    /// RRSP / RPP withheld from prior bonuses (factor F4).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ytd_bonus_rrsp: Option<Money>,
+    /// Year-to-date periodic income I_YTD (YTD bonus method).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ytd_income: Option<Money>,
+    /// Year-to-date RPP F_YTD (YTD bonus method).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ytd_rpp: Option<Money>,
+    /// Year-to-date union dues U1_YTD (YTD bonus method).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ytd_union_dues: Option<Money>,
+    /// Year-to-date F5A (YTD bonus method).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub f5a_ytd: Option<Money>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commission_income: Option<Money>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -631,15 +697,58 @@ impl Request {
         Ok(())
     }
 
-    /// Pensionable earnings for the period; defaults to gross pay.
-    pub fn pensionable_earnings(&self) -> &Money {
-        self.pensionable_earnings
-            .as_ref()
-            .unwrap_or(&self.gross_pay)
+    /// Pensionable earnings for the period; defaults to gross pay, plus
+    /// bonus and retroactive pay when those are present and this field is omitted.
+    pub fn pensionable_earnings(&self) -> Money {
+        if let Some(value) = self.pensionable_earnings {
+            return value;
+        }
+        match self.non_periodic_pay() {
+            Ok(extra) if !extra.is_zero() => {
+                self.gross_pay.checked_add(extra).unwrap_or(self.gross_pay)
+            }
+            _ => self.gross_pay,
+        }
     }
 
-    /// Insurable earnings for the period; defaults to gross pay.
-    pub fn insurable_earnings(&self) -> &Money {
-        self.insurable_earnings.as_ref().unwrap_or(&self.gross_pay)
+    /// Insurable earnings for the period; defaults like [`Self::pensionable_earnings`].
+    pub fn insurable_earnings(&self) -> Money {
+        if let Some(value) = self.insurable_earnings {
+            return value;
+        }
+        match self.non_periodic_pay() {
+            Ok(extra) if !extra.is_zero() => {
+                self.gross_pay.checked_add(extra).unwrap_or(self.gross_pay)
+            }
+            _ => self.gross_pay,
+        }
+    }
+
+    /// Current non-periodic payment B = bonus + retroactive_pay.
+    pub fn non_periodic_pay(&self) -> Result<Money, DecimalError> {
+        self.bonus
+            .unwrap_or(Money::ZERO)
+            .checked_add(self.retroactive_pay.unwrap_or(Money::ZERO))
+    }
+
+    /// I used in the A formula: this period’s remuneration, or [`Self::most_recent_i`] when I = 0.
+    pub fn periodic_income_for_a(&self) -> Money {
+        let benefits = self.taxable_benefits.unwrap_or(Money::ZERO);
+        let current = match self.gross_pay.checked_add(benefits) {
+            Ok(v) => v,
+            Err(_) => self.gross_pay,
+        };
+        if current.is_zero() {
+            self.most_recent_i.unwrap_or(Money::ZERO)
+        } else {
+            current
+        }
+    }
+
+    /// Gross of this cheque: regular pay plus bonus and retroactive pay.
+    pub fn cheque_gross(&self) -> Result<Money, DecimalError> {
+        self.gross_pay
+            .checked_add(self.bonus.unwrap_or(Money::ZERO))?
+            .checked_add(self.retroactive_pay.unwrap_or(Money::ZERO))
     }
 }

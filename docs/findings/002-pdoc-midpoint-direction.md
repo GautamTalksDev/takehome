@@ -80,6 +80,14 @@ shape on the 8% flat.
 | One named midpoint direction | **No.** Up and down both occur. |
 | A `rounding_compat: pdoc` arm we can ship | **Not yet.** No discriminator that turns 164 into 0 without a silent float alias. |
 
+M4 (tag `v0.5.0-m4`) re-ran the 164-case corpus as an integer-cent probe.
+T2/P half-cent provincials are uniformly engine-higher, so a half-cent-down
+arm on that subset would not fight mixed direction there — but it would
+still leave the 81 CPP-only rows, the 31 provincial misses that are not
+engine T2/P half-cents, and the mixed-direction tax rows that live off-half.
+No discriminator. `rounding_compat: pdoc` remains
+`RequestError::RoundingCompatPdocNotImplemented`.
+
 ## Open question
 
 **What holds PDOC’s displayed line one gross-cent later (or earlier) than

@@ -7,6 +7,7 @@ const IDENTITY = ['rule_set_version', 'engine_version', 'engine_build_sha256'];
 const PUBLIC_GETS = [
   '/v1/rules',
   '/v1/rules/2026-01-01',
+  '/v1/rules/diff?from=2026-01-01&to=2026-07-01',
   '/v1/jurisdictions',
   '/v1/changes',
   '/v1/conformance',

@@ -180,12 +180,23 @@ pub fn render(report: &Report, methodology: &str) -> String {
         writeln!(out, "| exact matches | {} |", corpus.exact_matches).ok();
         match &corpus.agreement_rate {
             Some(rate) => writeln!(out, "| agreement rate | `{rate}` |").ok(),
-            None if corpus.oracle_class == "invariants" || corpus.oracle_class == "uncapturable" => {
-                writeln!(
-                    out,
-                    "| agreement rate | *not a PDOC corpus; invariants + differential oracle (§16.2), not per-cell PDOC* |"
-                )
-                .ok()
+            None if corpus.id == "pdoc-bonus-2026" => writeln!(
+                out,
+                "| agreement rate | *named pending class; expected amounts stay PENDING_PDOC until capture. Not in the overall Option 1 PDOC rate.*"
+            )
+            .ok(),
+            None if corpus.oracle_class == "invariants"
+                || corpus.oracle_class == "uncapturable"
+                || corpus.oracle_class == "t4127_worked_examples" =>
+            {
+                let note = if corpus.oracle_class == "t4127_worked_examples" {
+                    "*not a PDOC corpus; T4127 Chapter 5 worked examples + invariants. Weaker evidence than PDOC. Does not inherit the Option 1 PDOC agreement rate.*"
+                } else if corpus.id == "year-projection-2026" {
+                    "*not a PDOC corpus; year-projection invariants (API tests 22–29), not per-cell PDOC*"
+                } else {
+                    "*not a PDOC corpus; invariants + differential oracle (§16.2), not per-cell PDOC*"
+                };
+                writeln!(out, "| agreement rate | {note} |").ok()
             }
             None => writeln!(
                 out,
@@ -277,6 +288,23 @@ pub fn render(report: &Report, methodology: &str) -> String {
     );
     out.push_str("| Findings 001 (K2) and M-001 discontinuity written up | yes |\n");
     out.push_str("| Tagged `v0.3.0-m2` | after this report is committed |\n\n");
+
+    out.push_str("## M4 exit checklist\n\n");
+    out.push_str("| Criterion | State |\n|--|--|\n");
+    out.push_str("| Batch endpoint, 1000 items, partial success, metering | yes |\n");
+    out.push_str("| Year projection CPP/EI caps on the annual maximum | yes |\n");
+    out.push_str("| CRA bonus worked example TB = 323.54 | yes |\n");
+    out.push_str("| Option 2 BC/NL/PE proration (PDOC does not expose Option 2) | yes |\n");
+    out.push_str("| Rule-change detection; signed retrying webhooks | yes |\n");
+    out.push_str("| 2027 preview rule set, proposed, warning asserted | yes |\n");
+    out.push_str("| Conformance re-run, no PDOC regression, new classes named | **this file** |\n");
+    out.push_str("| `pdoc-bonus-2026` named pending, not in 8838/9002 | yes |\n");
+    out.push_str("| `rounding_compat: pdoc` still typed NotImplemented | yes (finding 002) |\n");
+    out.push_str("| Tagged `v0.5.0-m4` | after this report is committed |\n");
+    out.push_str(
+        "| Five-minute classmate on production | **open** (`docs/FIVE-MINUTE-TEST.md`) |\n",
+    );
+    out.push_str("| npm / PyPI `takehome-ca` | **open** (no publish tokens here) |\n\n");
 
     out.push_str("## M0 arithmetic canaries\n\n");
     out.push_str("- `truncate_exemption_to_cent(3500/12) == 291.66`\n");

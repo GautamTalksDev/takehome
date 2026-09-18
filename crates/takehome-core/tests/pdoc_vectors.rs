@@ -201,3 +201,94 @@ fn twenty_pdoc_ontario_vectors_match_to_the_cent() {
         pending.len()
     );
 }
+
+fn bonus_vector_path() -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/vectors/pdoc_bonus_2026.json")
+}
+
+/// 37. Twenty PDOC bonus cases as their own class. Pending until the harness
+/// fills `expected` from PDOC — never from the engine.
+#[test]
+fn twenty_pdoc_bonus_vectors_are_their_own_class() {
+    let raw = std::fs::read_to_string(bonus_vector_path()).expect("read bonus vector file");
+    let file: VectorFile = serde_json::from_str(&raw).expect("parse bonus vector file");
+    assert_eq!(file.vectors.len(), 20, "bonus corpus is twenty PDOC cases");
+
+    let mut pending = Vec::new();
+    let mut compared = 0usize;
+    let mut mismatches = Vec::new();
+
+    for v in &file.vectors {
+        assert_eq!(v.oracle.source, "CRA PDOC");
+        assert!(
+            v.request.get("bonus").is_some(),
+            "vector {}: bonus corpus requires request.bonus",
+            v.id
+        );
+        if v.expected.is_pending() {
+            pending.push(v.id.clone());
+            continue;
+        }
+        assert!(
+            !v.oracle.retrieved_at.is_empty() && v.oracle.retrieved_at != "PENDING",
+            "vector {}: filled expected requires oracle.retrieved_at",
+            v.id
+        );
+        let req_json = serde_json::to_string(&v.request).unwrap();
+        let req = Request::from_json(&req_json).unwrap_or_else(|e| {
+            panic!(
+                "vector {}: request deserialise failed: {e}\n{}",
+                v.id, req_json
+            )
+        });
+        let resp: Response = calculate(&req, &EMBEDDED_REGISTRY)
+            .unwrap_or_else(|e| panic!("vector {}: calculate failed: {e}", v.id));
+        for m in [
+            field_mismatch(
+                &v.id,
+                "federal_tax",
+                &resp.employee.federal_tax,
+                &v.expected.federal_tax,
+            ),
+            field_mismatch(
+                &v.id,
+                "provincial_tax",
+                &resp.employee.provincial_tax,
+                &v.expected.provincial_tax,
+            ),
+            field_mismatch(&v.id, "cpp", &resp.employee.cpp, &v.expected.cpp),
+            field_mismatch(&v.id, "cpp2", &resp.employee.cpp2, &v.expected.cpp2),
+            field_mismatch(&v.id, "ei", &resp.employee.ei, &v.expected.ei),
+            field_mismatch(
+                &v.id,
+                "total_deductions",
+                &resp.employee.total_deductions,
+                &v.expected.total_deductions,
+            ),
+            field_mismatch(
+                &v.id,
+                "net_pay",
+                &resp.employee.net_pay,
+                &v.expected.net_pay,
+            ),
+        ]
+        .into_iter()
+        .flatten()
+        {
+            mismatches.push(m);
+        }
+        compared += 1;
+    }
+
+    eprintln!(
+        "pdoc_bonus_vectors: {compared} / 20 compared; pending={}",
+        pending.len()
+    );
+    if !mismatches.is_empty() {
+        panic!(
+            "{} field mismatch(es) vs PDOC — do NOT edit expected to match the engine:\n{}",
+            mismatches.len(),
+            mismatches.join("\n")
+        );
+    }
+}

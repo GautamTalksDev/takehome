@@ -42,16 +42,35 @@ test('every calculator computes (test 10)', async ({ page }) => {
   expect(failures, failures.join('\n')).toEqual([]);
 });
 
-test('cpp 2027 page answers the 2027 rate query above the fold', async ({
+test('cpp 2027 page puts the proposed warning above the number', async ({
   page,
 }) => {
   await page.goto('/cpp-2027-rate-change/');
   const title = await page.locator('h1').textContent();
   expect(title).toMatch(/CPP/i);
   expect(title).toMatch(/2027/);
+  const banner = page.getByTestId('preview-banner');
+  await expect(banner).toBeVisible();
+  await expect(banner).toContainText('not yet enacted');
+  await expect(banner).toContainText('2026-04-28');
   await expect(page.locator('main')).toContainText('YMPE');
-  await expect(page.locator('main')).toContainText('5.95');
+  await expect(page.locator('main')).toContainText('4.75');
   await expect(page.locator('main')).toContainText('YAMPE');
+  await waitForEngine(page);
+  const warning = page.getByTestId('proposed-warning');
+  await expect(warning).toBeVisible();
+  await expect(warning).toContainText('2026-04-28');
+  await expect(warning).toContainText('not yet enacted');
+  const net = page.getByTestId('net-pay');
+  await expect(net).toHaveText(/^\d+\.\d{2}$/);
+  const bannerBox = await banner.boundingBox();
+  const warningBox = await warning.boundingBox();
+  const netBox = await net.boundingBox();
+  expect(bannerBox).toBeTruthy();
+  expect(warningBox).toBeTruthy();
+  expect(netBox).toBeTruthy();
+  expect(bannerBox.y).toBeLessThan(netBox.y);
+  expect(warningBox.y).toBeLessThan(netBox.y);
 });
 
 test('conformance page keeps the 164 disagreements', async ({ page }) => {

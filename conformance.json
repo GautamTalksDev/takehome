@@ -1,31 +1,32 @@
 {
   "status": "complete",
   "grid_version": "2026.1",
-  "engine_build_sha256": "a9539a4b50fc366572a3c1d3f2fb3c2dda1cc81128a30ce8ca409a139333748b",
+  "engine_build_sha256": "b793f5379e9b1cfa268c3eea3472fd31921565ea1766b980f77652e646dd2134",
   "rule_set_versions": [
     "2026-01-01",
-    "2026-07-01"
+    "2026-07-01",
+    "2027-01-01"
   ],
-  "rule_set_sha256": "b4ff871759d97fdf910b4d39a1ef36c2923fd306d1d954e64d0e2d69e5a84a73",
+  "rule_set_sha256": "d864a7e991a770ece4649bad21be4aa7db7e9f4a331d8c2e87ac0de5e4aa52d2",
   "pdoc_identity": "2026-06-11 (M1); form:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (grid queue)",
   "browser": "chromium 153.0.8010.12",
   "harness_git_sha": "pdoc-oracle-harness",
   "latest_pdoc_retrieved_at": "2026-09-15T03:41:47.438Z",
   "sampling": {
     "grid_version": "2026.1",
-    "grid_cases": 842304,
+    "grid_cases": 1263636,
     "by_class": {
-      "boundary": 91224,
-      "date_anchor": 2184,
-      "log_ladder": 748896
+      "boundary": 137016,
+      "date_anchor": 3276,
+      "log_ladder": 1123344
     },
     "unresolvable_as_of": 140354,
-    "resolvable": 701950,
-    "boundary_resolvable": 76050,
+    "resolvable": 1123282,
+    "boundary_resolvable": 121842,
     "unique_form_all_resolvable": 140790,
     "unique_form_log_resolvable": 125068,
     "unique_form_boundary_ignoring_as_of": 15358,
-    "unique_form_boundary_with_rule_set": 30438,
+    "unique_form_boundary_with_rule_set": 45702,
     "unique_form_boundary_january": 15174,
     "unique_form_boundary_july_all_legal_p": 15264,
     "unique_form_boundary_july": 9762,
@@ -47,7 +48,7 @@
       "SK": 612,
       "YT": 548
     },
-    "hours_at_3s_full_grid": "701h 55m",
+    "hours_at_3s_full_grid": "1053h 1m",
     "hours_at_3s_unique_form_all": "117h 19m",
     "hours_at_3s_unique_boundary_form": "12h 47m",
     "hours_at_3s_july_boundary": "8h 8m",
@@ -84,12 +85,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1552
+      "cells": 2328
     },
     {
       "jurisdiction": "AB",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 396
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1552
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 264
     },
@@ -119,12 +134,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1552
+      "cells": 2328
     },
     {
       "jurisdiction": "AB",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 324
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1552
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 216
     },
@@ -154,12 +183,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1548
+      "cells": 2322
     },
     {
       "jurisdiction": "AB",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 246
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1548
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 164
     },
@@ -196,19 +239,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1504
+      "cells": 2256
     },
     {
       "jurisdiction": "AB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1504
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -245,19 +309,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1488
+      "cells": 2232
     },
     {
       "jurisdiction": "AB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1488
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -294,19 +379,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 164
+      "cells": 246
     },
     {
       "jurisdiction": "AB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1480
+      "cells": 2220
     },
     {
       "jurisdiction": "AB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 164
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1480
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -343,19 +449,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1428
+      "cells": 2142
     },
     {
       "jurisdiction": "AB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1428
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -392,19 +519,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 164
+      "cells": 246
     },
     {
       "jurisdiction": "AB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1416
+      "cells": 2124
     },
     {
       "jurisdiction": "AB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 164
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1416
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -441,19 +589,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "AB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1412
+      "cells": 2118
     },
     {
       "jurisdiction": "AB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1412
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -490,19 +659,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "AB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "AB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -539,19 +729,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1328
+      "cells": 1992
     },
     {
       "jurisdiction": "AB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1328
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -588,19 +799,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1324
+      "cells": 1986
     },
     {
       "jurisdiction": "AB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1324
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -637,19 +869,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "AB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1136
+      "cells": 1704
     },
     {
       "jurisdiction": "AB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1136
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -679,12 +932,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 868
+      "cells": 1302
     },
     {
       "jurisdiction": "AB",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 246
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 868
+    },
+    {
+      "jurisdiction": "AB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 164
     },
@@ -714,12 +981,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1492
+      "cells": 2238
     },
     {
       "jurisdiction": "BC",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 486
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1492
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 324
     },
@@ -749,12 +1030,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1492
+      "cells": 2238
     },
     {
       "jurisdiction": "BC",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 396
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1492
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 264
     },
@@ -784,12 +1079,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1488
+      "cells": 2232
     },
     {
       "jurisdiction": "BC",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 300
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1488
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 200
     },
@@ -826,19 +1135,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 192
+      "cells": 288
     },
     {
       "jurisdiction": "BC",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1444
+      "cells": 2166
     },
     {
       "jurisdiction": "BC",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1444
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -875,19 +1205,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 192
+      "cells": 288
     },
     {
       "jurisdiction": "BC",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1428
+      "cells": 2142
     },
     {
       "jurisdiction": "BC",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1428
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -924,19 +1275,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 196
+      "cells": 294
     },
     {
       "jurisdiction": "BC",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1420
+      "cells": 2130
     },
     {
       "jurisdiction": "BC",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 196
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1420
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -973,19 +1345,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 192
+      "cells": 288
     },
     {
       "jurisdiction": "BC",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1368
+      "cells": 2052
     },
     {
       "jurisdiction": "BC",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1368
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1022,19 +1415,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 200
+      "cells": 300
     },
     {
       "jurisdiction": "BC",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1356
+      "cells": 2034
     },
     {
       "jurisdiction": "BC",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 200
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1356
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1071,19 +1485,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 196
+      "cells": 294
     },
     {
       "jurisdiction": "BC",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1352
+      "cells": 2028
     },
     {
       "jurisdiction": "BC",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 196
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1352
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1120,19 +1555,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 196
+      "cells": 294
     },
     {
       "jurisdiction": "BC",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1344
+      "cells": 2016
     },
     {
       "jurisdiction": "BC",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 196
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1344
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1169,19 +1625,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 192
+      "cells": 288
     },
     {
       "jurisdiction": "BC",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1268
+      "cells": 1902
     },
     {
       "jurisdiction": "BC",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1268
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1218,19 +1695,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 192
+      "cells": 288
     },
     {
       "jurisdiction": "BC",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1264
+      "cells": 1896
     },
     {
       "jurisdiction": "BC",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1264
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1267,19 +1765,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 196
+      "cells": 294
     },
     {
       "jurisdiction": "BC",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1076
+      "cells": 1614
     },
     {
       "jurisdiction": "BC",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 196
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1076
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1309,12 +1828,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 808
+      "cells": 1212
     },
     {
       "jurisdiction": "BC",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 312
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 808
+    },
+    {
+      "jurisdiction": "BC",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 208
     },
@@ -1344,12 +1877,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1564
+      "cells": 2346
     },
     {
       "jurisdiction": "MB",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 366
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1564
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 244
     },
@@ -1379,12 +1926,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1564
+      "cells": 2346
     },
     {
       "jurisdiction": "MB",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 300
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1564
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 200
     },
@@ -1414,12 +1975,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1560
+      "cells": 2340
     },
     {
       "jurisdiction": "MB",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1560
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 152
     },
@@ -1456,19 +2031,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "MB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1516
+      "cells": 2274
     },
     {
       "jurisdiction": "MB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1516
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1505,19 +2101,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "MB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1500
+      "cells": 2250
     },
     {
       "jurisdiction": "MB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1500
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1554,19 +2171,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "MB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1492
+      "cells": 2238
     },
     {
       "jurisdiction": "MB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1492
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1603,19 +2241,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "MB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1440
+      "cells": 2160
     },
     {
       "jurisdiction": "MB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1440
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1652,19 +2311,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "MB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1428
+      "cells": 2142
     },
     {
       "jurisdiction": "MB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1428
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1701,19 +2381,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "MB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1424
+      "cells": 2136
     },
     {
       "jurisdiction": "MB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1424
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1750,19 +2451,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 152
+      "cells": 228
     },
     {
       "jurisdiction": "MB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1416
+      "cells": 2124
     },
     {
       "jurisdiction": "MB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 152
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1416
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1799,19 +2521,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "MB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1340
+      "cells": 2010
     },
     {
       "jurisdiction": "MB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1340
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1848,19 +2591,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "MB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1336
+      "cells": 2004
     },
     {
       "jurisdiction": "MB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1336
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1897,19 +2661,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "MB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1148
+      "cells": 1722
     },
     {
       "jurisdiction": "MB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1148
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -1939,12 +2724,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 880
+      "cells": 1320
     },
     {
       "jurisdiction": "MB",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 880
+    },
+    {
+      "jurisdiction": "MB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 152
     },
@@ -1974,12 +2773,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "NB",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 336
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 224
     },
@@ -2009,12 +2822,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "NB",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 276
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 184
     },
@@ -2044,12 +2871,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1524
+      "cells": 2286
     },
     {
       "jurisdiction": "NB",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 210
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1524
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 140
     },
@@ -2086,19 +2927,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1480
+      "cells": 2220
     },
     {
       "jurisdiction": "NB",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1480
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2135,19 +2997,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "NB",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2184,19 +3067,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "NB",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2233,19 +3137,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "NB",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2282,19 +3207,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "NB",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2331,19 +3277,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1388
+      "cells": 2082
     },
     {
       "jurisdiction": "NB",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1388
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2380,19 +3347,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "NB",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2429,19 +3417,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1304
+      "cells": 1956
     },
     {
       "jurisdiction": "NB",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1304
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2478,19 +3487,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1300
+      "cells": 1950
     },
     {
       "jurisdiction": "NB",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1300
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2527,19 +3557,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1112
+      "cells": 1668
     },
     {
       "jurisdiction": "NB",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1112
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2569,12 +3620,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 844
+      "cells": 1266
     },
     {
       "jurisdiction": "NB",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 210
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 844
+    },
+    {
+      "jurisdiction": "NB",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 140
     },
@@ -2604,12 +3669,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1684
+      "cells": 2526
     },
     {
       "jurisdiction": "NL",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 456
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1684
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 304
     },
@@ -2639,12 +3718,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1684
+      "cells": 2526
     },
     {
       "jurisdiction": "NL",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 372
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1684
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 248
     },
@@ -2674,12 +3767,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1680
+      "cells": 2520
     },
     {
       "jurisdiction": "NL",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 282
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1680
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 188
     },
@@ -2716,19 +3823,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1636
+      "cells": 2454
     },
     {
       "jurisdiction": "NL",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1636
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2765,19 +3893,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1620
+      "cells": 2430
     },
     {
       "jurisdiction": "NL",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1620
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2814,19 +3963,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 200
+      "cells": 300
     },
     {
       "jurisdiction": "NL",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1612
+      "cells": 2418
     },
     {
       "jurisdiction": "NL",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 200
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1612
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2863,19 +4033,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1560
+      "cells": 2340
     },
     {
       "jurisdiction": "NL",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1560
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2912,19 +4103,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 188
+      "cells": 282
     },
     {
       "jurisdiction": "NL",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1548
+      "cells": 2322
     },
     {
       "jurisdiction": "NL",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 188
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1548
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -2961,19 +4173,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 188
+      "cells": 282
     },
     {
       "jurisdiction": "NL",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1544
+      "cells": 2316
     },
     {
       "jurisdiction": "NL",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 188
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1544
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3010,19 +4243,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 184
+      "cells": 276
     },
     {
       "jurisdiction": "NL",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1536
+      "cells": 2304
     },
     {
       "jurisdiction": "NL",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 184
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1536
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3059,19 +4313,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1460
+      "cells": 2190
     },
     {
       "jurisdiction": "NL",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1460
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3108,19 +4383,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "NL",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3157,19 +4453,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 180
+      "cells": 270
     },
     {
       "jurisdiction": "NL",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1268
+      "cells": 1902
     },
     {
       "jurisdiction": "NL",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 180
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1268
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3199,12 +4516,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1000
+      "cells": 1500
     },
     {
       "jurisdiction": "NL",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 282
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1000
+    },
+    {
+      "jurisdiction": "NL",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 188
     },
@@ -3234,12 +4565,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1504
+      "cells": 2256
     },
     {
       "jurisdiction": "NS",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 366
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1504
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 244
     },
@@ -3269,12 +4614,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1504
+      "cells": 2256
     },
     {
       "jurisdiction": "NS",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 300
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1504
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 200
     },
@@ -3304,12 +4663,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1500
+      "cells": 2250
     },
     {
       "jurisdiction": "NS",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1500
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 152
     },
@@ -3346,19 +4719,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "NS",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3395,19 +4789,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1440
+      "cells": 2160
     },
     {
       "jurisdiction": "NS",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1440
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3444,19 +4859,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 152
+      "cells": 228
     },
     {
       "jurisdiction": "NS",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1432
+      "cells": 2148
     },
     {
       "jurisdiction": "NS",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 152
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1432
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3493,19 +4929,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "NS",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3542,19 +4999,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "NS",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1368
+      "cells": 2052
     },
     {
       "jurisdiction": "NS",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1368
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3591,19 +5069,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "NS",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1364
+      "cells": 2046
     },
     {
       "jurisdiction": "NS",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1364
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3640,19 +5139,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 148
+      "cells": 222
     },
     {
       "jurisdiction": "NS",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1356
+      "cells": 2034
     },
     {
       "jurisdiction": "NS",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 148
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1356
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3689,19 +5209,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1280
+      "cells": 1920
     },
     {
       "jurisdiction": "NS",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1280
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3738,19 +5279,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1276
+      "cells": 1914
     },
     {
       "jurisdiction": "NS",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1276
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3787,19 +5349,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 144
+      "cells": 216
     },
     {
       "jurisdiction": "NS",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1088
+      "cells": 1632
     },
     {
       "jurisdiction": "NS",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 144
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1088
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -3829,12 +5412,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 820
+      "cells": 1230
     },
     {
       "jurisdiction": "NS",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 820
+    },
+    {
+      "jurisdiction": "NS",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 152
     },
@@ -3864,12 +5461,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "NT",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 336
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 224
     },
@@ -3899,12 +5510,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "NT",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 276
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 184
     },
@@ -3934,12 +5559,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1524
+      "cells": 2286
     },
     {
       "jurisdiction": "NT",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 210
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1524
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 140
     },
@@ -3976,19 +5615,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1480
+      "cells": 2220
     },
     {
       "jurisdiction": "NT",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1480
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4025,19 +5685,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "NT",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4074,19 +5755,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 140
+      "cells": 210
     },
     {
       "jurisdiction": "NT",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "NT",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 140
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4123,19 +5825,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "NT",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4172,19 +5895,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NT",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "NT",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4221,19 +5965,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NT",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1388
+      "cells": 2082
     },
     {
       "jurisdiction": "NT",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1388
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4270,19 +6035,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 140
+      "cells": 210
     },
     {
       "jurisdiction": "NT",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "NT",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 140
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4319,19 +6105,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1304
+      "cells": 1956
     },
     {
       "jurisdiction": "NT",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1304
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4368,19 +6175,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1300
+      "cells": 1950
     },
     {
       "jurisdiction": "NT",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1300
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4417,19 +6245,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NT",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1112
+      "cells": 1668
     },
     {
       "jurisdiction": "NT",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1112
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4459,12 +6308,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 844
+      "cells": 1266
     },
     {
       "jurisdiction": "NT",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 210
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 844
+    },
+    {
+      "jurisdiction": "NT",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 140
     },
@@ -4494,12 +6357,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1516
+      "cells": 2274
     },
     {
       "jurisdiction": "NU",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 336
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1516
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 224
     },
@@ -4529,12 +6406,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1516
+      "cells": 2274
     },
     {
       "jurisdiction": "NU",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 276
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1516
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 184
     },
@@ -4564,12 +6455,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1512
+      "cells": 2268
     },
     {
       "jurisdiction": "NU",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 210
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1512
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 140
     },
@@ -4606,19 +6511,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NU",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1468
+      "cells": 2202
     },
     {
       "jurisdiction": "NU",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1468
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4655,19 +6581,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NU",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1452
+      "cells": 2178
     },
     {
       "jurisdiction": "NU",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1452
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4704,19 +6651,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 140
+      "cells": 210
     },
     {
       "jurisdiction": "NU",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1444
+      "cells": 2166
     },
     {
       "jurisdiction": "NU",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 140
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1444
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4753,19 +6721,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 132
+      "cells": 198
     },
     {
       "jurisdiction": "NU",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "NU",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 132
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4802,19 +6791,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NU",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "NU",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4851,19 +6861,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 140
+      "cells": 210
     },
     {
       "jurisdiction": "NU",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1376
+      "cells": 2064
     },
     {
       "jurisdiction": "NU",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 140
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1376
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4900,19 +6931,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 136
+      "cells": 204
     },
     {
       "jurisdiction": "NU",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1368
+      "cells": 2052
     },
     {
       "jurisdiction": "NU",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 136
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1368
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4949,19 +7001,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 128
+      "cells": 192
     },
     {
       "jurisdiction": "NU",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1292
+      "cells": 1938
     },
     {
       "jurisdiction": "NU",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 128
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1292
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -4998,19 +7071,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 128
+      "cells": 192
     },
     {
       "jurisdiction": "NU",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1288
+      "cells": 1932
     },
     {
       "jurisdiction": "NU",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 128
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1288
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5047,19 +7141,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "NU",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1100
+      "cells": 1650
     },
     {
       "jurisdiction": "NU",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1100
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5089,12 +7204,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 832
+      "cells": 1248
     },
     {
       "jurisdiction": "NU",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 832
+    },
+    {
+      "jurisdiction": "NU",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 128
     },
@@ -5124,12 +7253,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1468
+      "cells": 2202
     },
     {
       "jurisdiction": "ON",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 576
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1468
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 384
     },
@@ -5159,12 +7302,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1468
+      "cells": 2202
     },
     {
       "jurisdiction": "ON",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 468
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1468
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 312
     },
@@ -5194,12 +7351,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "ON",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 354
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 236
     },
@@ -5236,19 +7407,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 228
+      "cells": 342
     },
     {
       "jurisdiction": "ON",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1420
+      "cells": 2130
     },
     {
       "jurisdiction": "ON",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1420
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5285,19 +7477,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 228
+      "cells": 342
     },
     {
       "jurisdiction": "ON",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "ON",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5334,19 +7547,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 236
+      "cells": 354
     },
     {
       "jurisdiction": "ON",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1396
+      "cells": 2094
     },
     {
       "jurisdiction": "ON",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 236
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1396
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5383,19 +7617,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 236
+      "cells": 354
     },
     {
       "jurisdiction": "ON",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1344
+      "cells": 2016
     },
     {
       "jurisdiction": "ON",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 236
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1344
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5432,19 +7687,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 232
+      "cells": 348
     },
     {
       "jurisdiction": "ON",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1332
+      "cells": 1998
     },
     {
       "jurisdiction": "ON",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 232
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1332
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5481,19 +7757,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 236
+      "cells": 354
     },
     {
       "jurisdiction": "ON",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1328
+      "cells": 1992
     },
     {
       "jurisdiction": "ON",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 236
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1328
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5530,19 +7827,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 232
+      "cells": 348
     },
     {
       "jurisdiction": "ON",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1320
+      "cells": 1980
     },
     {
       "jurisdiction": "ON",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 232
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1320
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5579,19 +7897,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 228
+      "cells": 342
     },
     {
       "jurisdiction": "ON",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1244
+      "cells": 1866
     },
     {
       "jurisdiction": "ON",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1244
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5628,19 +7967,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 232
+      "cells": 348
     },
     {
       "jurisdiction": "ON",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1240
+      "cells": 1860
     },
     {
       "jurisdiction": "ON",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 232
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1240
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5677,19 +8037,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 232
+      "cells": 348
     },
     {
       "jurisdiction": "ON",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1052
+      "cells": 1578
     },
     {
       "jurisdiction": "ON",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 232
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1052
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5719,12 +8100,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 784
+      "cells": 1176
     },
     {
       "jurisdiction": "ON",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 354
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 784
+    },
+    {
+      "jurisdiction": "ON",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 236
     },
@@ -5754,12 +8149,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 246
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 164
     },
@@ -5789,12 +8198,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 204
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 136
     },
@@ -5824,12 +8247,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1524
+      "cells": 2286
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1524
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 104
     },
@@ -5866,19 +8303,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1480
+      "cells": 2220
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1480
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5915,19 +8373,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -5964,19 +8443,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 100
+      "cells": 150
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 100
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6013,19 +8513,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6062,19 +8583,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 100
+      "cells": 150
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 100
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6111,19 +8653,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 100
+      "cells": 150
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1388
+      "cells": 2082
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 100
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1388
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6160,19 +8723,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 100
+      "cells": 150
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 100
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6209,19 +8793,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1304
+      "cells": 1956
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1304
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6258,19 +8863,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1300
+      "cells": 1950
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1300
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6307,19 +8933,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 96
+      "cells": 144
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1112
+      "cells": 1668
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 96
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1112
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6349,12 +8996,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 844
+      "cells": 1266
     },
     {
       "jurisdiction": "OutsideCanada",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 844
+    },
+    {
+      "jurisdiction": "OutsideCanada",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 104
     },
@@ -6384,12 +9045,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1516
+      "cells": 2274
     },
     {
       "jurisdiction": "PE",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 396
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1516
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 264
     },
@@ -6419,12 +9094,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1516
+      "cells": 2274
     },
     {
       "jurisdiction": "PE",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 324
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1516
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 216
     },
@@ -6454,12 +9143,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1512
+      "cells": 2268
     },
     {
       "jurisdiction": "PE",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 246
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1512
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 164
     },
@@ -6496,19 +9199,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "PE",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1468
+      "cells": 2202
     },
     {
       "jurisdiction": "PE",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1468
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6545,19 +9269,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "PE",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1452
+      "cells": 2178
     },
     {
       "jurisdiction": "PE",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1452
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6594,19 +9339,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 164
+      "cells": 246
     },
     {
       "jurisdiction": "PE",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1444
+      "cells": 2166
     },
     {
       "jurisdiction": "PE",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 164
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1444
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6643,19 +9409,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "PE",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "PE",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6692,19 +9479,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "PE",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "PE",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6741,19 +9549,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "PE",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1376
+      "cells": 2064
     },
     {
       "jurisdiction": "PE",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1376
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6790,19 +9619,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "PE",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1368
+      "cells": 2052
     },
     {
       "jurisdiction": "PE",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1368
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6839,19 +9689,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 156
+      "cells": 234
     },
     {
       "jurisdiction": "PE",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1292
+      "cells": 1938
     },
     {
       "jurisdiction": "PE",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 156
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1292
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6888,19 +9759,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "PE",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1288
+      "cells": 1932
     },
     {
       "jurisdiction": "PE",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1288
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6937,19 +9829,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 160
+      "cells": 240
     },
     {
       "jurisdiction": "PE",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1100
+      "cells": 1650
     },
     {
       "jurisdiction": "PE",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 160
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1100
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -6979,12 +9892,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 832
+      "cells": 1248
     },
     {
       "jurisdiction": "PE",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 252
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 832
+    },
+    {
+      "jurisdiction": "PE",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 168
     },
@@ -7014,12 +9941,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "SK",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 306
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 204
     },
@@ -7049,12 +9990,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "SK",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 252
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 168
     },
@@ -7084,12 +10039,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1524
+      "cells": 2286
     },
     {
       "jurisdiction": "SK",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1524
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 128
     },
@@ -7126,19 +10095,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1480
+      "cells": 2220
     },
     {
       "jurisdiction": "SK",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1480
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7175,19 +10165,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "SK",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7224,19 +10235,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 124
+      "cells": 186
     },
     {
       "jurisdiction": "SK",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1456
+      "cells": 2184
     },
     {
       "jurisdiction": "SK",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 124
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1456
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7273,19 +10305,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1404
+      "cells": 2106
     },
     {
       "jurisdiction": "SK",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1404
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7322,19 +10375,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 128
+      "cells": 192
     },
     {
       "jurisdiction": "SK",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1392
+      "cells": 2088
     },
     {
       "jurisdiction": "SK",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 128
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1392
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7371,19 +10445,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 128
+      "cells": 192
     },
     {
       "jurisdiction": "SK",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1388
+      "cells": 2082
     },
     {
       "jurisdiction": "SK",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 128
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1388
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7420,19 +10515,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 124
+      "cells": 186
     },
     {
       "jurisdiction": "SK",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1380
+      "cells": 2070
     },
     {
       "jurisdiction": "SK",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 124
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1380
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7469,19 +10585,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1304
+      "cells": 1956
     },
     {
       "jurisdiction": "SK",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1304
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7518,19 +10655,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1300
+      "cells": 1950
     },
     {
       "jurisdiction": "SK",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1300
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7567,19 +10725,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 120
+      "cells": 180
     },
     {
       "jurisdiction": "SK",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1112
+      "cells": 1668
     },
     {
       "jurisdiction": "SK",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 120
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1112
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7609,12 +10788,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 836
+      "cells": 1254
     },
     {
       "jurisdiction": "SK",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 192
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 836
+    },
+    {
+      "jurisdiction": "SK",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 128
     },
@@ -7644,12 +10837,26 @@
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1600
+      "cells": 2400
     },
     {
       "jurisdiction": "YT",
       "pay_period": 1,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 276
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1600
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 1,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 184
     },
@@ -7679,12 +10886,26 @@
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1600
+      "cells": 2400
     },
     {
       "jurisdiction": "YT",
       "pay_period": 2,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 228
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1600
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 2,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 152
     },
@@ -7714,12 +10935,26 @@
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1596
+      "cells": 2394
     },
     {
       "jurisdiction": "YT",
       "pay_period": 4,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 174
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1596
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 4,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 116
     },
@@ -7756,19 +10991,40 @@
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1552
+      "cells": 2328
     },
     {
       "jurisdiction": "YT",
       "pay_period": 10,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1552
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 10,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7805,19 +11061,40 @@
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1536
+      "cells": 2304
     },
     {
       "jurisdiction": "YT",
       "pay_period": 12,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1536
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 12,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7854,19 +11131,40 @@
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 112
+      "cells": 168
     },
     {
       "jurisdiction": "YT",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1528
+      "cells": 2292
     },
     {
       "jurisdiction": "YT",
       "pay_period": 13,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 112
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1528
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 13,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7903,19 +11201,40 @@
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1476
+      "cells": 2214
     },
     {
       "jurisdiction": "YT",
       "pay_period": 22,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1476
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 22,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -7952,19 +11271,40 @@
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 112
+      "cells": 168
     },
     {
       "jurisdiction": "YT",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1464
+      "cells": 2196
     },
     {
       "jurisdiction": "YT",
       "pay_period": 24,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 112
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1464
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 24,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8001,19 +11341,40 @@
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 112
+      "cells": 168
     },
     {
       "jurisdiction": "YT",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1460
+      "cells": 2190
     },
     {
       "jurisdiction": "YT",
       "pay_period": 26,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 112
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1460
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 26,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8050,19 +11411,40 @@
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 112
+      "cells": 168
     },
     {
       "jurisdiction": "YT",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1452
+      "cells": 2178
     },
     {
       "jurisdiction": "YT",
       "pay_period": 27,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 112
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1452
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 27,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8099,19 +11481,40 @@
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1376
+      "cells": 2064
     },
     {
       "jurisdiction": "YT",
       "pay_period": 52,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1376
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 52,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8148,19 +11551,40 @@
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1372
+      "cells": 2058
     },
     {
       "jurisdiction": "YT",
       "pay_period": 53,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1372
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 53,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8197,19 +11621,40 @@
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "pdoc",
-      "cells": 108
+      "cells": 162
     },
     {
       "jurisdiction": "YT",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 1184
+      "cells": 1776
     },
     {
       "jurisdiction": "YT",
       "pay_period": 240,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 12
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "pdoc",
+      "cells": 108
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 1184
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 240,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 8
     },
@@ -8239,12 +11684,26 @@
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
       "oracle_class": "invariants",
-      "cells": 916
+      "cells": 1374
     },
     {
       "jurisdiction": "YT",
       "pay_period": 2000,
       "rule_set_version": "2026-07-01",
+      "oracle_class": "uncapturable",
+      "cells": 174
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
+      "oracle_class": "invariants",
+      "cells": 916
+    },
+    {
+      "jurisdiction": "YT",
+      "pay_period": 2000,
+      "rule_set_version": "2027-01-01",
       "oracle_class": "uncapturable",
       "cells": 116
     },
@@ -8266,6 +11725,33 @@
       "exact_matches": 20,
       "disagreements": [],
       "agreement_rate": "20/20"
+    },
+    {
+      "id": "pdoc-bonus-2026",
+      "oracle_class": "pdoc",
+      "cases_defined": 20,
+      "cases_measured": 0,
+      "pending": 20,
+      "exact_matches": 0,
+      "disagreements": []
+    },
+    {
+      "id": "year-projection-2026",
+      "oracle_class": "invariants",
+      "cases_defined": 8,
+      "cases_measured": 8,
+      "pending": 0,
+      "exact_matches": 8,
+      "disagreements": []
+    },
+    {
+      "id": "t4127-option2-2026",
+      "oracle_class": "t4127_worked_examples",
+      "cases_defined": 3,
+      "cases_measured": 3,
+      "pending": 0,
+      "exact_matches": 3,
+      "disagreements": []
     },
     {
       "id": "grid-2026.1-pdoc-boundary",
@@ -14192,9 +17678,9 @@
     {
       "id": "grid-2026.1-interior-invariants",
       "oracle_class": "invariants",
-      "cases_defined": 751080,
+      "cases_defined": 1126620,
       "cases_measured": 0,
-      "pending": 751080,
+      "pending": 1126620,
       "exact_matches": 0,
       "disagreements": []
     }
@@ -14206,9 +17692,11 @@
     "Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle — same as the interior ladder. Live PDOC salary UI cannot enter them.",
     "Grid PDOC stratum: 9762 distinct capturable July forms (fingerprint-deduped). Queue finished: 8818 match, 164 M-003 1¢ disagreements (counted), 780 PDOC step-2 would not advance (named, not in the rate). Superseded all-14-P count was 15264.",
     "January-only BC/NL/PE amounts retired from live PDOC: invariants + differential vs July sibling.",
-    "Option 2 cumulative averaging: not in this grid (Option 1 only).",
+    "PDOC does not expose Option 2 (cumulative averaging). Live PDOC (observed 2026-06-11, screen WLCM) offers Salary, Commission, Pension, and CPP/EI verification only; there is no Option 2 / S1 / cumulative-averaging control, so no PDOC vectors were captured. Option 2 is a distinct oracle class `t4127_worked_examples` (T4127 Chapter 5 worked examples plus invariants) with weaker evidence than PDOC. It does not inherit the Option 1 PDOC agreement rate.",
     "DateBeforeCoverage cells: engine error path, not a PDOC form.",
-    "M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented."
+    "M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented.",
+    "PDOC bonus class `pdoc-bonus-2026`: 20 defined cases. Expected amounts stay PENDING_PDOC until captured through tools/pdoc-oracle; never filled from the engine. Named pending; not in the overall Option 1 PDOC rate.",
+    "Year projection `year-projection-2026`: oracle class `invariants` (API tests 22–29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md."
   ],
   "methodology": [
     "defect-vs-disagreement",

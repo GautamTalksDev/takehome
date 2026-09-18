@@ -211,6 +211,19 @@ jobs:
         working-directory: services/api
         run: npm ci && npm test
 
+  rules-watch:
+    # Spec §12.3: pin T4127 sources, canonicalize, hash, issue on drift.
+    needs: [float-ban, name-ban]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Rules-watch fixture tests
+        working-directory: tools/rules-watch
+        run: npm test
+
   deny:
     needs: [float-ban, name-ban]
     runs-on: ubuntu-latest

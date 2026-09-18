@@ -1,6 +1,7 @@
 //! Deduction response (spec §9.3). Stable field order; money always as JSON strings.
 
 use crate::decimal::{Money, Rate};
+use crate::formulas::option2::S1;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -347,6 +348,12 @@ pub struct Breakdown {
     pub t2: Money,
     #[serde(rename = "T")]
     pub t: Money,
+    #[serde(rename = "TB")]
+    pub tb: Money,
+    #[serde(rename = "M")]
+    pub m: Money,
+    #[serde(rename = "M1")]
+    pub m1: Money,
     #[serde(rename = "C")]
     pub c: Money,
     #[serde(rename = "C2")]
@@ -387,6 +394,8 @@ pub struct Breakdown {
     pub pr: Count,
     #[serde(rename = "PM")]
     pub pm: Count,
+    #[serde(rename = "S1")]
+    pub s1: S1,
     #[serde(rename = "CEA")]
     pub cea: Money,
     #[serde(rename = "TC")]
@@ -435,8 +444,9 @@ impl Breakdown {
     /// Canonical factor key set (spec §9.3). Order matches struct fields.
     pub const FACTOR_KEYS: &'static [&'static str] = &[
         "A", "R", "K", "K1", "K2", "K4", "T3", "T1", "V", "KP", "K1P", "K2P", "T4", "V1", "V2",
-        "S", "T2", "T", "C", "C2", "EI", "F5", "BPAF", "K3", "K3P", "K4P", "K5P", "LCF", "LCP",
-        "Y", "F5A", "F5B", "D", "D1", "D2", "P", "PR", "PM", "CEA", "TC", "TCP", "IE", "QPIP",
+        "S", "T2", "T", "TB", "M", "M1", "C", "C2", "EI", "F5", "BPAF", "K3", "K3P", "K4P", "K5P",
+        "LCF", "LCP", "Y", "F5A", "F5B", "D", "D1", "D2", "P", "PR", "PM", "S1", "CEA", "TC",
+        "TCP", "IE", "QPIP",
     ];
 
     /// All factors zero — the honest "not yet computed" filled shape for tests.
@@ -463,6 +473,9 @@ impl Breakdown {
             s: z,
             t2: z,
             t: z,
+            tb: z,
+            m: z,
+            m1: z,
             c: z,
             c2: z,
             ei: z,
@@ -483,6 +496,7 @@ impl Breakdown {
             p: zc,
             pr: zc,
             pm: zc,
+            s1: S1::zero_placeholder(),
             cea: z,
             tc: z,
             tcp: z,

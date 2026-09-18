@@ -491,11 +491,11 @@ export function intentCopy(intent, province) {
 export const SITUATION_COPY = {
   'bonus-tax-calculator': {
     h1: 'Bonus tax calculator (T4127)',
-    lede: 'A bonus is taxed with the rest of this paycheque, not at a special bonus rate. Enter regular pay plus the bonus, and the bonus amount in its own field.',
+    lede: 'A bonus is taxed with a two-pass: tax on annual income including the bonus, minus tax without it. That difference (TB) is withheld this period. PDOC uses the regular method, which is the default here.',
     answer:
-      'The engine does not yet run a fully separate “tax on A+B minus tax on A” two-pass as a second response. It annualizes this period’s gross (which should include the bonus) and uses bonus for the F5A/F5B split in Chapter 4 Step 1. If you leave bonus at 0, F5B is 0 and all of F5 reduces A through F5A.',
+      'Regular pay is I; the bonus is B. Chapter 4 computes A with the bonus and A without it, using the same F5A and F5B both times. TB is withheld now, not spread over the remaining periods. If annual taxable income with the bonus is $5,000.00 or less, the engine withholds a flat 15% of the bonus (10% in Quebec) instead of the two-pass.',
     extraLabels: {
-      bonus: 'Bonus included in this period’s gross',
+      bonus: 'Bonus this period (not included in regular pay)',
     },
   },
   'severance-pay-calculator': {
@@ -509,11 +509,11 @@ export const SITUATION_COPY = {
   },
   'retroactive-pay-calculator': {
     h1: 'Retroactive pay calculator',
-    lede: 'Back pay is taxed with this cheque, the same way a bonus is. Enter the retro amount in the bonus field and include it in this period’s gross.',
+    lede: 'Back pay is taxed the same way as a bonus: factor B, two-pass TB, withheld on this cheque.',
     answer:
-      'The request field retroactive_pay is reserved on the wire and not yet applied; enter the retro amount in bonus. That is an honest limitation, not a silent drop. Using bonus for the F5 split matches Chapter 4’s B in F5A/F5B. It does not re-open prior periods or recompute YTD tax.',
+      'Enter regular pay in gross and the retro amount in retroactive_pay. The engine adds it to B with any bonus and runs the Chapter 4 non-periodic path. It does not re-open prior periods.',
     extraLabels: {
-      bonus: 'Retroactive pay included in this period’s gross',
+      retroactive_pay: 'Retroactive pay this period',
     },
   },
   'vacation-pay-calculator': {
@@ -582,6 +582,7 @@ export function extraFieldDefs(situation) {
   const copy = SITUATION_COPY[situation.id];
   const values = {
     bonus: situation.defaultBonus ?? '',
+    retroactive_pay: situation.defaultRetro ?? '',
     estimated_annual_expenses: '5000.00',
     target_net: '1500.00',
     ytd_cpp: '0.00',

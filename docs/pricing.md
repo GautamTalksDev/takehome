@@ -24,9 +24,11 @@ roadmap; until it ships, do not treat a Takehome total as Quebec payroll tax.
 
 Test keys (`np_test_`) run the same engine, are $0, and are not metered.
 
-Live keys (`np_live_`) count **calculations**, not HTTP requests. A future batch
-of 500 counts 500. At the plan limit the API returns `plan_limit` (402) with an
-upgrade link. There is no overage and no surprise bill.
+Live keys (`np_live_`) count **calculations**, not HTTP requests. A batch of
+500 on `POST /v1/deductions/batch` counts 500. At the plan limit the API returns
+`plan_limit` (402) with an upgrade link. A batch that would exceed remaining
+quota is rejected whole — nothing is billed. There is no overage and no surprise
+bill.
 
 Upgrade: `POST /v1/billing/checkout` with a Bearer live key and
 `{ "plan": "starter" | "growth" | "business" }`. Stripe Checkout is CAD.

@@ -4,7 +4,8 @@
 //! with no network after the wasm bytes themselves have loaded.
 
 use takehome_core::{
-    calculate_wire, jurisdictions_json, rule_set_versions_json, ENGINE_BUILD_SHA256,
+    calculate_wire, diff_rule_sets_json, jurisdictions_json, rule_set_versions_json,
+    ENGINE_BUILD_SHA256,
 };
 
 #[cfg(target_arch = "wasm32")]
@@ -38,6 +39,16 @@ pub fn list_jurisdictions() -> String {
 )]
 pub fn list_rule_set_versions() -> String {
     rule_set_versions_json()
+}
+
+/// Field-by-field comparison of two embedded T4127 editions (spec §12.3).
+#[must_use]
+#[cfg_attr(
+    target_arch = "wasm32",
+    wasm_bindgen(js_name = diffRuleSets)
+)]
+pub fn diff_rule_sets(from: &str, to: &str) -> String {
+    diff_rule_sets_json(from, to)
 }
 
 /// Source digest of `takehome-core` (spec §5.4). Same value as native [`ENGINE_BUILD_SHA256`].

@@ -154,6 +154,18 @@ export async function fillSalaryForm(
   await fillLabeled(page, /Salary or wages income per pay period/i, input.grossPay);
   if (input.bonus) {
     await clickNamed(page, "A bonus payment");
+    const bonusBoxes = page.getByLabel(/bonus/i);
+    const n = await bonusBoxes.count();
+    // Radio is labelled "A bonus payment"; the amount box is a later control.
+    if (n > 1) {
+      const box = bonusBoxes.nth(n - 1);
+      await box.click({ force: true });
+      await box.fill("");
+      await box.pressSequentially(input.bonus, { delay: 15 });
+      await box.blur();
+    } else {
+      await fillLabeled(page, /bonus payment amount|amount of (the )?bonus/i, input.bonus);
+    }
   } else {
     await clickNamed(page, "No bonus or retroactive payment");
   }

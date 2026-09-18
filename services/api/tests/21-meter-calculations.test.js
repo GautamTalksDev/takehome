@@ -33,20 +33,19 @@ test('21. two successful live calls increment calculations by 2, not by a batch 
   assert.equal(used, 2);
 });
 
-test('21. a 500-item batch is metered as 500 even though batch is M4', async () => {
+test('21. a 500-item batch is metered as 500, not one HTTP request', async () => {
   const world = createWorld();
   const requests = Array.from({ length: 500 }, () => ON_WEEKLY);
   const { status, json } = await call(
     'POST',
-    '/v1/deductions',
+    '/v1/deductions/batch',
     { requests },
     { authorization: `Bearer ${world.liveKey}` },
     world,
   );
-  assert.equal(status, 400);
-  assert.equal(json.error.code, 'batch_not_implemented');
-  assert.match(json.error.message, /500/);
-  assert.equal(world.store.getUsage(world.account.id, '2026-09-01'), 0);
+  assert.equal(status, 200);
+  assert.equal(json.results.length, 500);
+  assert.equal(world.store.getUsage(world.account.id, '2026-09-01'), 500);
 });
 
 test('21. test keys are not metered', async () => {

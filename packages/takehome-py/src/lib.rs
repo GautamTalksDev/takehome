@@ -23,6 +23,12 @@ fn list_rule_set_versions() -> String {
     takehome_core::rule_set_versions_json()
 }
 
+/// Field-by-field comparison of two embedded T4127 editions (spec §12.3).
+#[pyfunction]
+fn diff_rule_sets(from: &str, to: &str) -> String {
+    takehome_core::diff_rule_sets_json(from, to)
+}
+
 /// Source digest of `takehome-core` (spec §5.4). Same value as the native engine.
 #[pyfunction]
 fn engine_build_sha() -> String {
@@ -34,6 +40,7 @@ fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(calculate, m)?)?;
     m.add_function(wrap_pyfunction!(list_jurisdictions, m)?)?;
     m.add_function(wrap_pyfunction!(list_rule_set_versions, m)?)?;
+    m.add_function(wrap_pyfunction!(diff_rule_sets, m)?)?;
     m.add_function(wrap_pyfunction!(engine_build_sha, m)?)?;
     Ok(())
 }

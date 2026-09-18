@@ -101,21 +101,21 @@ export const SITUATIONS = [
     id: 'bonus-tax-calculator',
     extra: ['bonus'],
     defaultBonus: '2500.00',
-    defaultGross: '4500.00',
+    defaultGross: '2000.00',
     payPeriod: 26,
   },
   {
     id: 'severance-pay-calculator',
     extra: ['bonus'],
     defaultBonus: '10000.00',
-    defaultGross: '12000.00',
+    defaultGross: '2000.00',
     payPeriod: 26,
   },
   {
     id: 'retroactive-pay-calculator',
-    extra: ['bonus'],
-    defaultBonus: '1500.00',
-    defaultGross: '3500.00',
+    extra: ['retroactive_pay'],
+    defaultRetro: '1500.00',
+    defaultGross: '2000.00',
     payPeriod: 26,
   },
   {
@@ -187,7 +187,11 @@ export const REFERENCE_PAGES = [
     id: 'how-payroll-deductions-work-in-canada',
   },
   { path: '/what-is-the-t4127/', id: 'what-is-the-t4127' },
-  { path: '/cpp-2027-rate-change/', id: 'cpp-2027-rate-change' },
+  {
+    path: '/cpp-2027-rate-change/',
+    id: 'cpp-2027-rate-change',
+    hasCalculator: true,
+  },
   { path: '/docs/', id: 'docs' },
   { path: '/embed/', id: 'embed' },
   { path: '/pricing/', id: 'pricing' },
@@ -271,7 +275,7 @@ export function catalog() {
     pages.push({
       path: ref.path,
       template: 'D',
-      hasCalculator: false,
+      hasCalculator: Boolean(ref.hasCalculator),
       id: ref.id,
     });
   }

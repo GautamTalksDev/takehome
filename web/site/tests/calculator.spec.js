@@ -37,7 +37,7 @@ test('show the working lists every T4127 factor', async ({ page }) => {
   await waitForEngine(page);
   await page.getByTestId('working').locator('summary').click();
   const rows = page.getByTestId('factor-row');
-  await expect(rows).toHaveCount(43);
+  await expect(rows).toHaveCount(46);
   await expect(page.getByTestId('factor-A')).toBeVisible();
   await expect(page.getByTestId('factor-T')).toBeVisible();
   await expect(page.getByTestId('factor-QPIP')).toBeVisible();

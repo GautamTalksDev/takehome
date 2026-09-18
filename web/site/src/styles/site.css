@@ -331,6 +331,31 @@ button:focus-visible {
   padding-left: 0.75rem;
 }
 
+.preview-banner {
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  border: 2px solid var(--warning);
+  color: var(--grey-1);
+  padding: 0.85rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.preview-banner p {
+  margin: 0 0 0.4rem;
+}
+
+.preview-banner p:last-child {
+  margin: 0;
+}
+
+.preview-banner strong {
+  display: block;
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
 .unsupported {
   color: var(--error);
 }

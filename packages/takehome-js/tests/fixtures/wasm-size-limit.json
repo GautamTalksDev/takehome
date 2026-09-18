@@ -1,5 +1,5 @@
 {
-  "recorded_gzip_bytes": 141104,
-  "gzip_bytes_max": 160000,
+  "recorded_gzip_bytes": 164189,
+  "gzip_bytes_max": 180000,
   "note": "gzipSync level 9 of packages/takehome-js/wasm/takehome_wasm_bg.wasm as measured by tests/size.test.js. CI fails if gzipped size exceeds gzip_bytes_max."
 }

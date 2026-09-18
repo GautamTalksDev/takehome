@@ -58,9 +58,34 @@ test('18. Worker responses validate against openapi.json', async () => {
       status: 422,
     },
     {
+      path: '/v1/deductions/batch',
+      method: 'post',
+      call: () =>
+        call('POST', '/v1/deductions/batch', { requests: [ON_WEEKLY] }),
+      status: 200,
+    },
+    {
+      path: '/v1/deductions/year',
+      method: 'post',
+      call: () =>
+        call('POST', '/v1/deductions/year', {
+          ...ON_WEEKLY,
+          as_of: '2026-01-01',
+          pay_period: 26,
+          gross_pay: '2000.00',
+        }),
+      status: 200,
+    },
+    {
       path: '/v1/rules',
       method: 'get',
       call: () => call('GET', '/v1/rules'),
+      status: 200,
+    },
+    {
+      path: '/v1/rules/diff',
+      method: 'get',
+      call: () => call('GET', '/v1/rules/diff?from=2026-01-01&to=2026-07-01'),
       status: 200,
     },
     {

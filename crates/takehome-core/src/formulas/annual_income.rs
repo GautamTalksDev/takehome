@@ -2,7 +2,7 @@
 //!
 //! ```text
 //! A  = [P × (I − F − F2 − F5A − U1)] − HD − F1     (negative → T = L, done)
-//! F5 = C × (0.0100 / 0.0595) + C2
+//! F5 = C × (first additional CPP rate / total CPP rate from the rule set) + C2
 //! F5A = F5 × ((PI − B) / PI);  F5B = F5 × (B / PI)
 //! ```
 

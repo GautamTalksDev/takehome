@@ -1,0 +1,31 @@
+{
+  "brackets": [
+    { "threshold": "0", "rate": "0.0505", "constant": "0.00" },
+    { "threshold": "53891.00", "rate": "0.0915", "constant": "2210.00" },
+    { "threshold": "107785.00", "rate": "0.1116", "constant": "4376.00" },
+    { "threshold": "150000.00", "rate": "0.1216", "constant": "5876.00" },
+    { "threshold": "220000.00", "rate": "0.1316", "constant": "8076.00" }
+  ],
+  "lowest_rate": "0.0505",
+  "basic_personal_amount": {
+    "type": "fixed",
+    "amount": "12989.00"
+  },
+  "index_rate": "0.019",
+  "tax_reduction": {
+    "basic": "300.00",
+    "dependant": "554.00"
+  },
+  "surtax": [
+    { "threshold": "5818.00", "rate": "0.20" },
+    { "threshold": "7446.00", "rate": "0.36" }
+  ],
+  "health_premium": [
+    { "threshold": "0.00", "rate": "0.00", "base": "0.00", "cap": "0.00" },
+    { "threshold": "20000.00", "rate": "0.06", "base": "0.00", "cap": "300.00" },
+    { "threshold": "36000.00", "rate": "0.06", "base": "300.00", "cap": "450.00" },
+    { "threshold": "48000.00", "rate": "0.25", "base": "450.00", "cap": "600.00" },
+    { "threshold": "72000.00", "rate": "0.25", "base": "600.00", "cap": "750.00" },
+    { "threshold": "200000.00", "rate": "0.25", "base": "750.00", "cap": "900.00" }
+  ]
+}

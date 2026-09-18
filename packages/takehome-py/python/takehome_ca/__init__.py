@@ -2,6 +2,7 @@
 
 from takehome_ca._native import (
     calculate,
+    diff_rule_sets,
     engine_build_sha,
     list_jurisdictions,
     list_rule_set_versions,
@@ -9,6 +10,7 @@ from takehome_ca._native import (
 
 __all__ = [
     "calculate",
+    "diff_rule_sets",
     "engine_build_sha",
     "list_jurisdictions",
     "list_rule_set_versions",

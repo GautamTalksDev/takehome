@@ -41,7 +41,10 @@ test('show the working lists every T4127 factor', async ({ page }) => {
   await expect(page.getByTestId('factor-A')).toBeVisible();
   await expect(page.getByTestId('factor-T')).toBeVisible();
   await expect(page.getByTestId('factor-QPIP')).toBeVisible();
-  await expect(page.getByTestId('citations').locator('a[href^="http"]')).not.toHaveCount(0);
+  const citations = page.getByTestId('citations').locator('a[href^="http"]');
+  await expect(citations).not.toHaveCount(0);
+  await expect(citations.first()).toContainText(' — ');
+  await expect(citations.first()).toHaveAttribute('href', /#toc\d+/);
 });
 
 test('quebec page is a typed refusal, not a federal-only result', async ({

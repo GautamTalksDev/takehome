@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { engineCalculate } from './helpers.js';
@@ -18,8 +18,38 @@ const ANNUAL_ON_75000 = {
 
 test('29. embed.js is a small classic script, not a bundle', () => {
   const file = path.join(ROOT, 'public', 'embed.js');
+  const src = readFileSync(file, 'utf8');
   const bytes = statSync(file).size;
   expect(bytes, `embed.js ${bytes} bytes`).toBeLessThanOrEqual(4096);
+  expect(src).toMatch(/attachShadow/);
+});
+
+test('29. shadow root isolates host and widget styles', async ({ page }) => {
+  await page.goto('/embed-isolate.html');
+  const widget = page.locator('[data-testid="takehome-embed"]');
+  await expect(widget).toHaveAttribute('data-ready', 'true', { timeout: 30_000 });
+  const isolation = await widget.evaluate((el) => {
+    const root = el.shadowRoot;
+    const net = root && root.querySelector('[data-testid="takehome-embed-net"]');
+    const hostH1 = document.querySelector('h1');
+    const hostP = document.querySelector('body > p');
+    return {
+      shadow: Boolean(root),
+      netText: net ? net.textContent : '',
+      netColor: net ? getComputedStyle(net).color : '',
+      netSize: net ? getComputedStyle(net).fontSize : '',
+      h1Color: hostH1 ? getComputedStyle(hostH1).color : '',
+      h1Size: hostH1 ? getComputedStyle(hostH1).fontSize : '',
+      hostPColor: hostP ? getComputedStyle(hostP).color : '',
+    };
+  });
+  expect(isolation.shadow).toBe(true);
+  expect(isolation.netText).toMatch(/^\d/);
+  expect(isolation.netColor).not.toBe('rgb(255, 0, 0)');
+  expect(isolation.netSize).not.toBe('80px');
+  expect(isolation.h1Color).toBe('rgb(255, 0, 0)');
+  expect(isolation.h1Size).toBe('80px');
+  expect(isolation.hostPColor).toBe('rgb(255, 0, 0)');
 });
 
 test('29. spec one-liner renders ON $75000 take-home matching the engine', async ({

@@ -17,26 +17,54 @@ const { title, engine = true } = Astro.props;
       content="Canadian payroll deductions from the T4127 formulas, in the browser. No salary figure leaves the browser."
     />
     <link rel="alternate" type="application/rss+xml" title="Takehome changes" href="/changes.xml" />
+    <style is:inline>
+      .nav-menu > ul {
+        display: none;
+      }
+      .site-nav a,
+      .nav-menu > summary {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
     <header>
-      <p><a href="/">Takehome</a> — Shows its work.</p>
-      <nav aria-label="API">
-        <ul>
+      <a class="wordmark" href="/" aria-label="Takehome">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 8 28"
+          width="8"
+          height="28"
+          aria-hidden="true"
+        >
+          <title>Takehome</title>
+          <rect width="2.5" height="16" x="0" y="6" fill="currentColor"></rect>
+        </svg>
+        <span>Takehome</span>
+      </a>
+      <nav aria-label="Site">
+        <ul class="site-nav">
+          <li>
+            <details class="nav-menu">
+              <summary>Calculators</summary>
+              <ul>
+                <li><a href="/calculators/">All calculators</a></li>
+                {
+                  PROVINCES.map((row) => (
+                    <li>
+                      <a href={`/calculators/${row.slug}/`}>{row.name}</a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </details>
+          </li>
           <li><a href="/docs/">Docs</a></li>
-          <li><a href="/signup/">API keys</a></li>
           <li><a href="/pricing/">Pricing</a></li>
-        </ul>
-      </nav>
-      <nav aria-label="Calculators">
-        <ul>
-          {
-            PROVINCES.map((row) => (
-              <li>
-                <a href={`/calculators/${row.slug}/`}>{row.code}</a>
-              </li>
-            ))
-          }
+          <li><a href="/conformance/">Conformance</a></li>
+          <li><a class="cta" href="/signup/">Get API keys</a></li>
         </ul>
       </nav>
     </header>
@@ -47,7 +75,7 @@ const { title, engine = true } = Astro.props;
       <p>
         Takehome is a calculation of CRA T4127 formulas. It is not a payroll
         provider and does not file returns. The CRA Payroll Deductions Online
-        Calculator is the authoritative source.
+        Calculator is the authoritative source. Shows its work.
       </p>
       <nav aria-label="Reference">
         <ul>
@@ -62,7 +90,7 @@ const { title, engine = true } = Astro.props;
           <li><a href="/embed/">Embed</a></li>
           <li><a href="/docs/">Docs</a></li>
           <li><a href="/pricing/">Pricing</a></li>
-          <li><a href="/signup/">API keys</a></li>
+          <li><a href="/signup/">Get API keys</a></li>
           <li><a href="/sitemap.xml">Sitemap</a></li>
         </ul>
       </nav>

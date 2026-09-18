@@ -10,9 +10,20 @@ command = "node scripts/sync-data.js"
 RATE_LIMIT_MAX = "120"
 RATE_LIMIT_WINDOW_MS = "60000"
 PUBLIC_SITE = "https://takehome.gautamkhosla.com"
+ECHO_VERIFY_URL = "1"
+
+[[routes]]
+pattern = "takehome.gautamkhosla.com"
+custom_domain = true
+
+[assets]
+directory = "../../web/site/dist"
+binding = "ASSETS"
+html_handling = "force-trailing-slash"
+run_worker_first = ["/v1*", "/health"]
 
 [[d1_databases]]
 binding = "DB"
 database_name = "takehome"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "3cfd409e-441b-434a-a2a0-1192562156e8"
 migrations_dir = "migrations"

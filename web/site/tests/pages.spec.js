@@ -78,14 +78,16 @@ test('ontario take-home page is not a province-name swap of alberta', async ({
   page,
 }) => {
   await page.goto('/take-home-pay/on/');
-  await expect(page.locator('.lede')).toContainText('surtax');
+  await expect(page.locator('.lede')).not.toContainText('K5P');
+  await expect(page.locator('.prose')).toContainText('surtax');
   await expect(page.locator('.prose')).toContainText('Health Premium');
   await page.goto('/take-home-pay/ab/');
-  await expect(page.locator('.lede')).toContainText('K5P');
+  await expect(page.locator('.prose')).toContainText('K5P');
   await expect(page.locator('.lede')).not.toContainText('Health Premium');
   await expect(page.locator('.prose h2').first()).toContainText('not flat');
   await page.goto('/take-home-pay/bc/');
-  await expect(page.locator('.lede')).toContainText('tax reduction');
+  await expect(page.locator('.lede')).not.toContainText('T4127');
+  await expect(page.locator('.prose')).toContainText('tax reduction');
   await expect(page.locator('.prose')).toContainText('prorat');
 });
 
@@ -114,7 +116,7 @@ test('26. five-minute path: Docs in the header, first call, get a key', async ({
   await expect(page.locator('h1')).toContainText('API docs');
   await expect(page.locator('main')).toContainText('800.79');
   await expect(page.locator('main')).toContainText('authorization: Bearer');
-  await expect(page.locator('main').getByRole('link', { name: 'Get a key' })).toBeVisible();
+  await expect(page.locator('#first-call').getByRole('link', { name: 'Get a key' })).toBeVisible();
 });
 
 test('existing ontario weekly engine match still holds on a generated page', async ({

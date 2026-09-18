@@ -1,7 +1,7 @@
 {
   "url": "/calculators/on/",
-  "performance": 0.9,
-  "accessibility": 0.95,
+  "performance": 0.99,
+  "accessibility": 0.99,
   "recorded_performance": 1,
   "recorded_accessibility": 1,
   "note": "Lighthouse category scores. recorded_* is what this tree scored locally. CI fails below the floors."

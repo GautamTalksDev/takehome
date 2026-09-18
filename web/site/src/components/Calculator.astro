@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { citationIndex } from '../lib/citations.js';
 import { CLAIM_CODES, PAY_PERIODS, PROVINCES } from '../lib/provinces.js';
 
 const factors = JSON.parse(
@@ -20,6 +21,7 @@ const {
   heading,
   lede,
   answer,
+  t2Line,
   mechanisms = [],
   extraFields = [],
   defaultPayPeriod = 26,
@@ -30,16 +32,16 @@ const {
   resultMode = 'net',
 } = Astro.props;
 const factorDefs = factors.factors;
+const factorLookup = citationIndex(factorDefs);
 const h1 = heading ?? `${name} take-home pay`;
 const intro =
   lede ??
-  'T4127 payroll deductions in this browser. Recalculates as you type. No account.';
+  'Payroll deductions in this browser. Recalculates as you type. No account.';
 ---
 
 <article>
   <h1>{h1}</h1>
   <p class="lede">{intro}</p>
-  {answer ? <p class="answer">{answer}</p> : null}
 
   {
     supported ? (
@@ -141,54 +143,67 @@ const intro =
         </form>
 
         <div class="result" aria-live="polite">
+          <p class="net-label">Net pay</p>
           <p class="net">
             $<span data-testid="net-pay"></span>
           </p>
           <p class="headline-note" data-testid="headline-note"></p>
-          <div class="lines">
-            <div>
-              <span>Federal tax</span>
-              <span data-testid="federal-tax"></span>
-            </div>
-            <div>
-              <span>Provincial tax</span>
-              <span data-testid="provincial-tax"></span>
-            </div>
-            <div>
-              <span>CPP</span>
-              <span data-testid="cpp"></span>
-            </div>
-            <div>
-              <span>CPP2</span>
-              <span data-testid="cpp2"></span>
-            </div>
-            <div>
-              <span>EI</span>
-              <span data-testid="ei"></span>
-            </div>
-            <div>
-              <span>Total deductions</span>
-              <span data-testid="total-deductions"></span>
-            </div>
-            <div>
-              <span>Employer CPP</span>
-              <span data-testid="employer-cpp"></span>
-            </div>
-            <div>
-              <span>Employer CPP2</span>
-              <span data-testid="employer-cpp2"></span>
-            </div>
-            <div>
-              <span>Employer EI</span>
-              <span data-testid="employer-ei"></span>
-            </div>
-            <div>
-              <span>Employer cost (gross + premiums)</span>
-              <span data-testid="employer-cost"></span>
-            </div>
-          </div>
-          <p class="rule-set" data-testid="rule-set"></p>
           <p class="warning hidden" data-testid="prorated-warning"></p>
+          <section class="deductions" aria-labelledby="deductions-heading">
+            <h2 id="deductions-heading">Your deductions</h2>
+            <div class="lines">
+              <div>
+                <span>Federal tax</span>
+                <span data-testid="federal-tax"></span>
+              </div>
+              <div>
+                <span>Provincial tax</span>
+                <span data-testid="provincial-tax"></span>
+              </div>
+              <div>
+                <span>CPP</span>
+                <span data-testid="cpp"></span>
+              </div>
+              <div>
+                <span>CPP2</span>
+                <span data-testid="cpp2"></span>
+              </div>
+              <div>
+                <span>EI</span>
+                <span data-testid="ei"></span>
+              </div>
+              <div>
+                <span>Total</span>
+                <span data-testid="total-deductions"></span>
+              </div>
+            </div>
+          </section>
+          <details class="employer-block" data-testid="employer-block">
+            <summary>Employer pays</summary>
+            <p class="employer-note">
+              These amounts are not withheld from you. They are the employer’s
+              statutory CPP and EI premiums on this pay.
+            </p>
+            <div class="lines">
+              <div>
+                <span>Employer CPP</span>
+                <span data-testid="employer-cpp"></span>
+              </div>
+              <div>
+                <span>Employer CPP2</span>
+                <span data-testid="employer-cpp2"></span>
+              </div>
+              <div>
+                <span>Employer EI</span>
+                <span data-testid="employer-ei"></span>
+              </div>
+              <div>
+                <span>Employer cost (gross + premiums)</span>
+                <span data-testid="employer-cost"></span>
+              </div>
+            </div>
+          </details>
+          <p class="rule-set" data-testid="rule-set"></p>
           <p class="privacy" data-testid="privacy">
             No salary figure leaves the browser.
           </p>
@@ -234,6 +249,7 @@ const intro =
         </details>
         <section>
           <h2>Sources</h2>
+          <pre id="factor-index" class="hidden">{JSON.stringify(factorLookup)}</pre>
           <ul data-testid="citations"></ul>
         </section>
       </>
@@ -241,8 +257,10 @@ const intro =
   }
 
   {
-    mechanisms.length > 0 ? (
+    answer || t2Line || mechanisms.length > 0 ? (
       <section class="prose">
+        {answer ? <p class="answer">{answer}</p> : null}
+        {t2Line ? <p>{t2Line}</p> : null}
         {mechanisms.map((row) => (
           <>
             <h2>{row.h2}</h2>

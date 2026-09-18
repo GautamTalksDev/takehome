@@ -420,62 +420,59 @@ export function intentCopy(intent, province) {
   const byId = {
     'take-home-pay': {
       h1: `${name} take-home pay`,
-      lede: `Net pay this period in ${name} is gross minus federal tax, provincial tax, CPP, CPP2, and EI. ${f.t2Line}`,
+      lede: `Type an ${name} gross, how often you are paid, and a pay date. Takehome subtracts federal tax, provincial tax, CPP, and EI, and shows what you keep this period.`,
       answer:
-        'The figure on the right is T4127 net pay for the pay date, frequency, gross, and claim codes you typed. It recalculates in this browser. No salary figure leaves the device.',
+        'This is T4127 Option 1 net pay for the pay date, frequency, gross, and claim codes you typed. It recalculates in this browser. No salary figure leaves the device.',
     },
     'paycheque-calculator': {
       h1: `${name} paycheque calculator`,
-      lede: `A ${name} paycheque is this period’s gross minus the T4127 withholdings that belong on the stub: T1/P, T2/P, C, C2, EI. ${f.t2Line}`,
+      lede: `This is one ${name} pay stub: gross in, tax, CPP, and EI out. Change a number and the stub updates in this browser.`,
       answer:
         'Change gross or P and the stub lines update. This is a calculation of CRA formulas, not a payroll run, and it does not file a remittance.',
     },
     'salary-calculator': {
       h1: `${name} salary calculator`,
-      lede: `Enter an annual ${name} salary with P = 1. The net is annual take-home after T4127 deductions at that salary. Switch P to 26 or 52 to see a period cheque from the same annual A. ${f.t2Line}`,
+      lede: `Enter a yearly ${name} salary. The result is take-home after a year of the same payroll deductions. Switch the pay frequency to see one cheque.`,
       answer:
         'Option 1 annualizes whatever you put in the gross box: A ≈ P × I. With P = 1, I is the salary. This is not a tax-return projection (no RRSP F, no credits beyond TD1 claim codes).',
     },
     'weekly-pay': {
       h1: `${name} weekly take-home pay`,
-      lede: `P = 52. The CPP basic exemption on a weekly cheque is truncated to the cent: $3,500 / 52 → $67.30, not $67.31. ${f.t2Line}`,
+      lede: `Weekly take-home in ${name}. Enter this week’s gross; the deductions are the ones that belong on a weekly stub.`,
       answer:
-        'Weekly payroll manufactures more rounding events than monthly. Finding 002’s one-cent PDOC disagreements are denser on weekly and daily P. The number on the right is the T4127 half-up result.',
+        'Weekly payroll manufactures more rounding events than monthly. Finding 002’s one-cent PDOC disagreements are denser on weekly and daily P. The number is the T4127 half-up result. The CPP basic exemption on a weekly cheque is truncated to the cent: $3,500 / 52 → $67.30, not $67.31.',
     },
     'biweekly-pay': {
       h1: `${name} biweekly take-home pay`,
-      lede: `P = 26, the frequency most Canadian employers actually run. ${f.t2Line}`,
+      lede: `Most Canadian employers pay every two weeks. Enter this period’s ${name} gross to see take-home on that cycle.`,
       answer:
         'Biweekly A = 26 × this period’s I. A 27-period year is a different P (27) — do not reuse this page’s default if your calendar has 27 deposits.',
     },
     'monthly-pay': {
       h1: `${name} monthly take-home pay`,
-      lede: `P = 12. The monthly CPP exemption is $291.66 (truncate $3,500/12), not $291.67. ${f.t2Line}`,
+      lede: `Monthly take-home in ${name}. Enter this month’s gross to see tax, CPP, and EI for a monthly cheque.`,
       answer:
-        `Monthly cheques have fewer period-rounding steps, but annual T3/T4 still jump by up to $1.00 at published K thresholds (M-001). Crossing a ${name} bracket on A can move T2 more than the extra dollar of gross.`,
+        `Monthly cheques have fewer period-rounding steps, but annual T3/T4 still jump by up to $1.00 at published K thresholds (M-001). Crossing a ${name} bracket on A can move T2 more than the extra dollar of gross. The monthly CPP exemption is $291.66 (truncate $3,500/12), not $291.67.`,
     },
     'payroll-deductions': {
       h1: `${name} payroll deductions`,
-      lede: `What to withhold this period for a ${name} employment: federal tax, provincial tax, employee CPP, CPP2, and EI. ${f.t2Line}`,
+      lede: `The amounts to withhold from a ${name} paycheque this period: federal tax, provincial tax, employee CPP, and EI.`,
       answer: f.employer,
     },
     cpp: {
       h1: `${name} CPP calculator`,
-      lede: `Employee C and C2, and the employer match, for a ${name} paycheque. ${FEDERAL.cpp} ${f.cppNote}`,
-      answer:
-        'CPP is federal. The province changes the K2/K2P credit against tax, not the premium table — except Quebec, which this engine will not calculate. Enter YTD C on a later page (/second-job-payroll-calculator/) when the annual maximum is in play.',
+      lede: `CPP deducted from a ${name} paycheque this period, and the matching amount the employer remits.`,
+      answer: `CPP is federal. ${FEDERAL.cpp} ${f.cppNote} The province changes the K2/K2P credit against tax, not the premium table — except Quebec, which this engine will not calculate. Enter YTD C on a later page (/second-job-payroll-calculator/) when the annual maximum is in play.`,
     },
     ei: {
       h1: `${name} EI calculator`,
-      lede: `Employee EI and the 1.4× employer premium for a ${name} employment. ${FEDERAL.ei} ${f.eiNote}`,
-      answer:
-        'EI is federal. Insurable earnings default to gross. Reduce insurable_earnings on the wire if a portion of the pay is not insurable. Quebec EI is not this table.',
+      lede: `Employment insurance on a ${name} paycheque this period, and the employer’s 1.4× premium.`,
+      answer: `EI is federal. ${FEDERAL.ei} ${f.eiNote} Insurable earnings default to gross. Reduce insurable_earnings on the wire if a portion of the pay is not insurable. Quebec EI is not this table.`,
     },
     'employer-cost': {
       h1: `${name} employer payroll cost`,
-      lede: `Gross plus employer CPP, employer CPP2, and employer EI for a ${name} employee. ${f.employer}`,
-      answer:
-        'This is not a fully loaded cost: no WCB, no EHT, no RSP match, no vacation accrual. It is the T4127 statutory employer premiums on this period’s pensionable and insurable earnings.',
+      lede: `What it costs to pay a ${name} employee this period: wages plus the employer’s CPP and EI.`,
+      answer: `${f.employer} This is not a fully loaded cost: no WCB, no EHT, no RSP match, no vacation accrual. It is the T4127 statutory employer premiums on this period’s pensionable and insurable earnings.`,
     },
   };
   const block = byId[intent.id];
@@ -484,6 +481,7 @@ export function intentCopy(intent, province) {
     h1: block.h1,
     lede: block.lede,
     answer: block.answer,
+    t2Line: f.t2Line,
     mechanisms: commonAfter,
     federal: FEDERAL,
     name,
@@ -493,7 +491,7 @@ export function intentCopy(intent, province) {
 export const SITUATION_COPY = {
   'bonus-tax-calculator': {
     h1: 'Bonus tax calculator (T4127)',
-    lede: 'T4127 Chapter 6 treats a bonus by splitting F5 into F5A (regular) and F5B (bonus) and annualizing the combined income. This page uses that wire: put regular + bonus in gross, and the bonus amount in the bonus field so F5B is non-zero.',
+    lede: 'A bonus is taxed with the rest of this paycheque, not at a special bonus rate. Enter regular pay plus the bonus, and the bonus amount in its own field.',
     answer:
       'The engine does not yet run a fully separate “tax on A+B minus tax on A” two-pass as a second response. It annualizes this period’s gross (which should include the bonus) and uses bonus for the F5A/F5B split in Chapter 4 Step 1. If you leave bonus at 0, F5B is 0 and all of F5 reduces A through F5A.',
     extraLabels: {
@@ -502,7 +500,7 @@ export const SITUATION_COPY = {
   },
   'severance-pay-calculator': {
     h1: 'Severance pay calculator',
-    lede: 'A retiring allowance is not ordinary salary. CRA lump-sum withholding rates (the 5/10/15/20/30% table) are not T4127 Option 1, and this engine does not implement that table.',
+    lede: 'If this is ordinary wages paid as a lump, enter it as pay. A true retiring allowance uses different CRA rates; this calculator will not invent those.',
     answer:
       'If the amount is taxable employment income paid on a regular paycheque (salary continuance), enter it as gross — with the lump in the bonus field so F5B splits. If it is a retiring allowance, do not use this number as the withholding; use CRA’s lump-sum rates or PDOC’s retiring-allowance path. We will not pretend those rates are T4127 Chapter 4.',
     extraLabels: {
@@ -511,30 +509,30 @@ export const SITUATION_COPY = {
   },
   'retroactive-pay-calculator': {
     h1: 'Retroactive pay calculator',
-    lede: 'T4127 groups retroactive payments with bonuses for the F5B split. The request field retroactive_pay is reserved on the wire and not yet applied; enter the retro amount in bonus and include it in this period’s gross.',
+    lede: 'Back pay is taxed with this cheque, the same way a bonus is. Enter the retro amount in the bonus field and include it in this period’s gross.',
     answer:
-      'That is an honest limitation, not a silent drop. Using bonus for the F5 split matches Chapter 4’s B in F5A/F5B. It does not re-open prior periods or recompute YTD tax.',
+      'The request field retroactive_pay is reserved on the wire and not yet applied; enter the retro amount in bonus. That is an honest limitation, not a silent drop. Using bonus for the F5 split matches Chapter 4’s B in F5A/F5B. It does not re-open prior periods or recompute YTD tax.',
     extraLabels: {
       bonus: 'Retroactive pay included in this period’s gross',
     },
   },
   'vacation-pay-calculator': {
     h1: 'Vacation pay calculator',
-    lede: 'Vacation pay paid as wages is ordinary employment income. There is no T4127 “vacation rate.” A 4% or 6% ESA accrual becoming a lump on this cheque is just a larger I.',
+    lede: 'Vacation paid as wages is just a larger paycheque. There is no separate vacation tax rate. A 4% or 6% lump on this cheque is more gross, then the usual deductions.',
     answer:
       'Default gross $2,300.00 is an ordinary biweekly $2,000 plus a $300 vacation lump. Change it. If vacation is paid on every cheque as a percent, that percent is already in I — do not add it twice. CPP and EI apply if the amount is pensionable and insurable.',
     extraLabels: {},
   },
   'overtime-pay-calculator': {
     h1: 'Overtime pay calculator',
-    lede: 'Overtime is employment income. T4127 does not have an overtime bracket. A time-and-a-half cheque is a larger I, which annualizes to a larger A, which may cross a federal or provincial threshold that the regular cheque would not.',
+    lede: 'Overtime is ordinary employment income. Time-and-a-half means a larger cheque, which can push annualized income into a higher tax band.',
     answer:
       'That annualization is why overtime can look “taxed more” on the stub: Option 1 assumes the higher I continues all year. It usually does not. Option 2 (cumulative) is the method that damps that; this page runs Option 1, which is what most payroll software remits.',
     extraLabels: {},
   },
   'commission-tax-calculator': {
     h1: 'Commission tax calculator',
-    lede: 'TD1X commission employees can deduct estimated annual expenses. That is T4127 factor HD / estimated_annual_expenses, which this engine subtracts from A. The dedicated commission_income field is on the wire and not yet a separate income path.',
+    lede: 'Commission paid this period is entered as gross. If the employee filed a TD1X, put estimated annual expenses in the extra field.',
     answer:
       'Enter this period’s commission draw as gross (Option 1 will annualize it). Put estimated annual expenses in the extra field if the employee filed TD1X. Do not use this page as a full TD1X commission worksheet; it will not replace PDOC’s commission form.',
     extraLabels: {
@@ -543,7 +541,7 @@ export const SITUATION_COPY = {
   },
   'gross-up-calculator': {
     h1: 'Gross-up calculator',
-    lede: 'Given a target net, this page searches integer cents of gross until T4127 net pay meets the target. The search runs in this browser against the same WASM engine. It does not leave the device.',
+    lede: 'Type the take-home you need. This page searches for the smallest gross that produces that net, in this browser, against the same engine.',
     answer:
       'Gross-up is not a T4127 formula. It is repeated Option 1 calculations. Ties resolve to the smallest gross (in cents) whose net is at least the target. Claim codes, P, and province all move the answer. Quebec is not available.',
     extraLabels: {
@@ -552,7 +550,7 @@ export const SITUATION_COPY = {
   },
   'second-job-payroll-calculator': {
     h1: 'Second-job payroll calculator',
-    lede: 'A second employer usually uses claim code 0 (no personal amounts) and must not ignore CPP/EI already withheld by the first employer. Enter YTD C, C2, EI, and pensionable earnings from the other job.',
+    lede: 'A second job usually has no personal amounts (claim code 0) and must count CPP and EI already withheld elsewhere. Enter year-to-date amounts from the other job.',
     answer:
       'Claim code 0 sets TC/TCP to $0. YTD fields reduce remaining room against YMPE, YAMPE, and MIE. This is still Option 1 on this job’s I; it is not a combined T4. If the first job already hit the CPP maximum, C on this cheque should go to $0.00 once YTD C ≥ $4,230.45 (2026, PM = 12).',
     extraLabels: {
@@ -564,7 +562,7 @@ export const SITUATION_COPY = {
   },
   'rrsp-payroll-calculator': {
     h1: 'RRSP payroll calculator',
-    lede: 'T4127 factor F is registered pension plan contributions, which reduce A. This engine currently hard-codes F = 0. A group RRSP deducted from pay is often after-tax and does not reduce A unless it is an RPP.',
+    lede: 'A group RRSP taken from pay is usually after-tax and does not reduce taxable income here. This page will not subtract an RRSP and call it a pension contribution.',
     answer:
       'We will not subtract your RRSP from A and call it F. That would be a silent wrong number. What this page will do: compute T4127 net, and optionally add additional tax requested (L) if you asked the employer to withhold extra toward a tax bill. Union dues (U1) are a different field and are not an RRSP.',
     extraLabels: {
@@ -573,7 +571,7 @@ export const SITUATION_COPY = {
   },
   'maternity-top-up-calculator': {
     h1: 'Maternity top-up calculator',
-    lede: 'An employer maternity or parental top-up is employment income. EI maternity benefits themselves are not computed by T4127. Enter only the top-up (and any wages) paid this period.',
+    lede: 'Enter only the top-up (and any wages) paid this period. EI maternity benefits themselves are not a payroll deduction formula.',
     answer:
       'Default $800.00 is a stand-in for a weekly top-up, not an EI benefit. CPP applies if the top-up is pensionable; EI applies if it is insurable. Supplementary unemployment benefits can have different insurable treatment — set insurable earnings on the wire if the SUB plan is not insurable. This page does not calculate EI benefit rates, waiting periods, or RQAP.',
     extraLabels: {},

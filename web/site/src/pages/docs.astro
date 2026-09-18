@@ -1,45 +1,107 @@
 ---
 import Base from '../layouts/Base.astro';
-import { FIRST_CALL_NET_PAY, firstCallCurl } from '../lib/first-call.js';
+import {
+  FIRST_CALL_NET_PAY,
+  FIRST_CALL_RESPONSE,
+  firstCallCurl,
+} from '../lib/first-call.js';
+import { highlight } from '../lib/highlight.js';
 
 const curl = firstCallCurl('https://takehome.gautamkhosla.com');
+const curlHtml = await highlight(curl, 'bash');
+const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
 ---
 
-<Base title="API docs — Takehome">
-  <article class="prose">
-    <h1>API docs</h1>
-    <p class="lede">
-      Get a key, make one authenticated call, see <code>{FIRST_CALL_NET_PAY}</code>.
-      Test keys run the same engine as live keys and are not metered.
-    </p>
+<Base title="API docs — Takehome" engine={false}>
+  <div class="docs">
+    <nav class="docs-nav" aria-label="Docs">
+      <ul>
+        <li><a href="#first-call">First call</a></li>
+        <li><a href="#request">Request</a></li>
+        <li><a href="#response">Response</a></li>
+        <li><a href="#auth">Authentication</a></li>
+        <li><a href="#public">Public endpoints</a></li>
+        <li><a href="#embed">Embed</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/signup/">Sign up</a></li>
+      </ul>
+    </nav>
+    <article class="prose">
+      <h1>API docs</h1>
+      <p class="lede">
+        Get a key, make one authenticated call, see <code>{FIRST_CALL_NET_PAY}</code>.
+        Test keys run the same engine as live keys and are not metered.
+      </p>
 
-    <ol>
-      <li>
-        <a href="/signup/">Get a key</a> — email, verify, copy the
-        <code>np_test_</code> key. No sales call.
-      </li>
-      <li>
-        Run the first call. Ontario weekly <code>$1000.00</code> on
-        <code>2026-01-15</code>, claim code 1. <code>employee.net_pay</code>
-        is <code>{FIRST_CALL_NET_PAY}</code>.
-      </li>
-    </ol>
+      <section id="first-call">
+        <h2>First call</h2>
+        <p>
+          <a href="/signup/">Get a key</a> — email, verify, copy the
+          <code>np_test_</code> key. No sales call. Then run this. Ontario weekly
+          <code>$1000.00</code> on <code>2026-01-15</code>, claim code 1.
+          <code>employee.net_pay</code> is <code>{FIRST_CALL_NET_PAY}</code>.
+        </p>
+        <div class="code-block">
+          <button type="button" class="copy" data-copy="curl-source" onclick="window.takehomeCopy(this)">Copy</button>
+          <Fragment set:html={curlHtml} />
+          <pre id="curl-source" class="hidden">{curl}</pre>
+        </div>
+      </section>
 
-    <pre><code>{curl}</code></pre>
+      <section id="request">
+        <h2>Request</h2>
+        <p>
+          <code>POST /v1/deductions</code> with
+          <code>content-type: application/json</code> and
+          <code>authorization: Bearer</code>. Replace
+          <code>np_test_YOUR_KEY</code> with the test key from verify.
+        </p>
+      </section>
 
-    <p>
-      Replace <code>np_test_YOUR_KEY</code> with the test key from verify.
-      Public listings (<code>/v1/rules</code>, <code>/v1/jurisdictions</code>,
-      <code>/openapi.json</code>) do not need a key.
-    </p>
-    <p>
-      Live keys count calculations, not HTTP requests, and stop at the plan
-      limit. Prices are on <a href="/pricing/">pricing</a>.
-    </p>
-    <p>
-      Job boards can skip the API: one
-      <a href="/embed/"><code>embed.js</code></a> tag runs the same WASM engine
-      in the listing page. No cookie, no salary posted back.
-    </p>
-  </article>
+      <section id="response">
+        <h2>Response</h2>
+        <p>Trimmed body for the first call. Cents are strings, never binary floats.</p>
+        <div class="code-block">
+          <button type="button" class="copy" data-copy="response-source" onclick="window.takehomeCopy(this)">Copy</button>
+          <Fragment set:html={responseHtml} />
+          <pre id="response-source" class="hidden">{FIRST_CALL_RESPONSE}</pre>
+        </div>
+      </section>
+
+      <section id="auth">
+        <h2>Authentication</h2>
+        <p>
+          Live keys count calculations, not HTTP requests, and stop at the plan
+          limit. Prices are on <a href="/pricing/">pricing</a>.
+        </p>
+      </section>
+
+      <section id="public">
+        <h2>Public endpoints</h2>
+        <p>
+          Public listings (<code>/v1/rules</code>, <code>/v1/jurisdictions</code>,
+          <code>/openapi.json</code>) do not need a key.
+        </p>
+      </section>
+
+      <section id="embed">
+        <h2>Embed</h2>
+        <p>
+          Job boards can skip the API: one
+          <a href="/embed/"><code>embed.js</code></a> tag runs the same WASM engine
+          in the listing page. No cookie, no salary posted back.
+        </p>
+      </section>
+    </article>
+  </div>
+  <script is:inline>
+    window.takehomeCopy = function (button) {
+      const source = document.getElementById(button.getAttribute('data-copy'));
+      const text = source ? source.textContent : '';
+      button.textContent = 'Copied';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(function () {});
+      }
+    };
+  </script>
 </Base>

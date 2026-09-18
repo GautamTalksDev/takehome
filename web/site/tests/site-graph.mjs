@@ -153,8 +153,29 @@ assert.match(docs, /\/signup\//);
 
 const home = readFileSync(distFileFor('/'), 'utf8');
 assert.match(home, /href="\/docs\/"/);
+assert.match(home, /Get API keys/);
+assert.match(home, /<svg[\s\S]*Takehome/);
+
+const pricingHtml = pricing;
+assert.match(pricingHtml, /class="plan"/);
+assert.equal((pricingHtml.match(/class="plan"/g) || []).length, 5);
+
+const docsHtml = docs;
+assert.match(docsHtml, /aria-label="Docs"/);
+assert.match(docsHtml, /class="shiki/);
+assert.match(docsHtml, /data-copy/);
+
+const css = readFileSync(path.join(ROOT, 'src/styles/site.css'), 'utf8');
+const withoutTokens = css.replace(/:root\s*\{[^{}]*\}/g, '');
+assert.equal(
+  withoutTokens.match(/#[0-9a-fA-F]{3,8}\b/g),
+  null,
+  'literal hex belongs on :root tokens only',
+);
 
 assert.ok(existsSync(path.join(DIST, 'embed.js')), 'embed.js missing from dist');
+const embedSrc = readFileSync(path.join(DIST, 'embed.js'), 'utf8');
+assert.match(embedSrc, /attachShadow/);
 const embedPage = readFileSync(distFileFor('/embed/'), 'utf8');
 assert.match(embedPage, /https:\/\/takehome\.gautamkhosla\.com\/embed\.js/);
 assert.match(embedPage, /job board/i);

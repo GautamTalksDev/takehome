@@ -27,8 +27,9 @@ function moneyToken(raw) {
 }
 
 function moneyToCents(token) {
-  const [dollars, cents = '00'] = token.split('.');
-  return Number.parseInt(dollars, 10) * 100 + Number.parseInt(cents, 10);
+  const [dollars, cents = '00'] = String(token).replace(/^-/, '').split('.');
+  const value = Number.parseInt(dollars, 10) * 100 + Number.parseInt(cents, 10);
+  return String(token).startsWith('-') ? -value : value;
 }
 
 function centsToMoney(cents) {
@@ -53,6 +54,46 @@ function text(id, value) {
   }
 }
 
+function reduceMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+let netAnim = 0;
+
+function setNetPay(next) {
+  const node = document.querySelector('[data-testid="net-pay"]');
+  if (!node) {
+    return;
+  }
+  const target = String(next);
+  if (!node.textContent || reduceMotion()) {
+    node.textContent = target;
+    return;
+  }
+  const from = moneyToCents(node.textContent);
+  const to = moneyToCents(target);
+  if (from === to) {
+    node.textContent = target;
+    return;
+  }
+  const id = ++netAnim;
+  const start = performance.now();
+  const duration = 180;
+  const tick = (now) => {
+    if (id !== netAnim) {
+      return;
+    }
+    const t = Math.min(1, (now - start) / duration);
+    node.textContent = centsToMoney(from + Math.round((to - from) * t));
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      node.textContent = target;
+    }
+  };
+  requestAnimationFrame(tick);
+}
+
 function editionLine(version, listing) {
   const row = listing.rule_set_versions.find((item) => item.version === version);
   if (!row) {
@@ -73,11 +114,29 @@ function renderBreakdown(breakdown) {
   }
 }
 
+function factorIndex() {
+  const node = document.getElementById('factor-index');
+  if (!node || !node.textContent) {
+    return {};
+  }
+  try {
+    return JSON.parse(node.textContent);
+  } catch {
+    return {};
+  }
+}
+
+function citationHref(sourceUrl, hash) {
+  const base = String(sourceUrl || '').split('#')[0];
+  return hash ? `${base}#${hash}` : base;
+}
+
 function renderCitations(citations) {
   const list = document.querySelector('[data-testid="citations"]');
   if (!list) {
     return;
   }
+  const index = factorIndex();
   list.replaceChildren();
   const seen = new Set();
   for (const citation of citations) {
@@ -86,10 +145,14 @@ function renderCitations(citations) {
       continue;
     }
     seen.add(key);
+    const meta = index[citation.factor];
     const item = document.createElement('li');
     const link = document.createElement('a');
-    link.href = citation.source_url;
-    link.textContent = `${citation.factor}: ${citation.source_document}`;
+    const whatRaw = meta?.what ?? citation.factor;
+    const what = whatRaw.charAt(0).toLowerCase() + whatRaw.slice(1);
+    const table = meta?.table ?? citation.source_document;
+    link.href = citationHref(citation.source_url, meta?.hash);
+    link.textContent = `${citation.factor} — ${what} — ${table}`;
     item.appendChild(link);
     list.appendChild(item);
   }
@@ -104,10 +167,10 @@ function employerCost(gross, employer) {
 
 function headlineNote(mode) {
   if (mode === 'employer') {
-    return 'Headline is net pay; employer cost is the last line.';
+    return 'Headline is net pay; employer cost is under Employer pays.';
   }
   if (mode === 'cpp') {
-    return 'Employee CPP and CPP2 are the statutory pension lines; employer match is below.';
+    return 'Employee CPP and CPP2 are the statutory pension lines; the employer match is under Employer pays.';
   }
   if (mode === 'ei') {
     return 'Employee EI is 1.63% of insurable earnings to the annual maximum; employer is 1.4×.';
@@ -121,7 +184,7 @@ function headlineNote(mode) {
 function renderSuccess(response, listing, gross, mode) {
   const employee = response.employee;
   const employer = response.employer;
-  text('net-pay', employee.net_pay);
+  setNetPay(employee.net_pay);
   text('federal-tax', employee.federal_tax);
   text('provincial-tax', employee.provincial_tax);
   text('cpp', employee.cpp);

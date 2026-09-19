@@ -16,6 +16,15 @@ env:
   RUSTFLAGS: "-D warnings"
 
 jobs:
+  tracked-ban:
+    # Durable fix for the commit that tracked a maturin .so and .pyc files.
+    # Secret files and generated paths must not re-enter HEAD.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ban tracked secrets and generated artifacts
+        run: ./scripts/tracked-ban.sh
+
   float-ban:
     # Runs first and independently. If binary floating point reaches a money
     # path, nothing else about this build matters.
@@ -43,7 +52,7 @@ jobs:
         run: ./scripts/name-ban.sh
 
   build-test:
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,7 +92,7 @@ jobs:
   wasm-js:
     # Spec §5.4: WASM and native are the same engine. If they disagree, every
     # downstream runtime claim is marketing.
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -110,7 +119,7 @@ jobs:
         run: bash packages/takehome-js/scripts/test.sh
 
   python:
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -138,7 +147,7 @@ jobs:
   site:
     # Spec §5.5 / §13.3: the calculator works offline, matches the engine, and
     # makes no network request during a calculation.
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -181,7 +190,7 @@ jobs:
 
   api:
     # Spec §10.2 tests 11–26: Worker JSON API, keys, metering, billing, five-minute path.
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -213,7 +222,7 @@ jobs:
 
   rules-watch:
     # Spec §12.3: pin T4127 sources, canonicalize, hash, issue on drift.
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -225,7 +234,7 @@ jobs:
         run: npm test
 
   deny:
-    needs: [float-ban, name-ban]
+    needs: [tracked-ban, float-ban, name-ban]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

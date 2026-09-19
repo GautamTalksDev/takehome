@@ -1,0 +1,8 @@
+# Allowlist for Stage 0 finding 1 (2026-09-19).
+# The only gitleaks hit in full history was the documented placeholder
+# np_test_YOUR_KEY in public curl examples. That is not a credential.
+title = "Takehome"
+
+[allowlist]
+description = "Documented API-key placeholder in public docs, not a live secret"
+regexes = ['''np_test_YOUR_KEY''']

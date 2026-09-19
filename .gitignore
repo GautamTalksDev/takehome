@@ -1,6 +1,15 @@
 target/
 node_modules/
 dist/
+.env
+.env.*
+!.env.example
+.dev.vars
+.npmrc
+*.whl
+*.key
+*.pem
+*.p12
 packages/takehome-js/wasm/
 packages/takehome-py/target/
 *.tgz

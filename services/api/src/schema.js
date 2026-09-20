@@ -28,6 +28,7 @@ export const DOCS = {
   unsupported_media_type:
     'https://takehome.gautamkhosla.com/how-payroll-deductions-work-in-canada',
   store: 'https://takehome.gautamkhosla.com/docs/',
+  mail: 'https://takehome.gautamkhosla.com/signup/',
 };
 
 const money = {

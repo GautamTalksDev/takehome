@@ -48,9 +48,17 @@ These are in git on purpose. They do not grant access by themselves.
 
 ---
 
-## Signup mail (no SMTP credential exists)
+## Signup mail (Resend)
 
-`sendMail` in `services/api/src/handler.js` only pushes to `env.MAILBOX` (in-memory, tests and `npm run local`). There is **no** SendGrid / Postmark / SES / SMTP secret in this repo or in Worker secrets as of this index.
+Production and staging send verification and alert mail through Resend.
+
+| Item | Where | Notes |
+|--|--|--|
+| `RESEND_API_KEY` | Worker secret (`wrangler secret put RESEND_API_KEY`) | Never in git or `wrangler.toml`. Required when `MAILBOX` is absent. |
+| `MAIL_FROM` | `wrangler.toml` `[vars]` / `[env.staging.vars]` | `Takehome <noreply@mail.gautamkhosla.com>`. Domain must be verified in Resend (SPF/DKIM). |
+| `ALERT_EMAIL` | Worker secret | Operator inbox for quota 402 and other A09 alerts. Same Resend path as signup. |
+
+`sendMail` in `services/api/src/mail.js`: if `env.MAILBOX` is set (tests / `npm run local`), push in-memory and return. Else POST to `https://api.resend.com/emails`. If neither MAILBOX nor `RESEND_API_KEY` is set, signup returns **503** `mail` (fail closed). Alert mail failures are logged as `alert_mail_failed` and do not change the HTTP response.
 
 `ECHO_VERIFY_URL` is **not** a production var. It is set only in gitignored `services/api/.dev.vars` and in the test harness (`ECHO_VERIFY_URL: '1'`). The Worker treats any value other than the exact string `"1"` as off, including absent, empty, `"0"`, `"false"`, and `"true"`. A tracked `[vars]` assignment would return the verification URL (and therefore the signup token) to anyone who can `POST /v1/signup`.
 
@@ -72,3 +80,13 @@ These are in git on purpose. They do not grant access by themselves.
 - **gitleaks** `v8.30.1` over `--all --full-history`: one finding. `docs/FIVE-MINUTE-TEST.md` (commit `978d611`) matched `curl-auth-header` on the documented placeholder `np_test_YOUR_KEY`. Same placeholder is in `README.md`. **Not a live key.** Triaged; `.gitleaks.toml` allowlists that exact string.
 - **trufflehog** `v3.90.8` `git file://. --only-verified`: zero verified secrets, zero unverified secrets.
 - Git history still contains the `978d611` blobs for `packages/takehome-py/python/takehome_ca/_native.abi3.so` and two `.pyc` files, removed from the tree in `482cef4`. Those are build artifacts, not credentials. They stay until someone chooses a history rewrite. `scripts/tracked-ban.sh` is the check so they cannot re-enter `HEAD`.
+
+---
+
+## Stage 5 scan (2026-09-20)
+
+- **gitleaks** `v8.24.3` with `--log-opts=--all` (full history): **no leaks found**. Allowlisted placeholder still in `.gitleaks.toml`.
+- **trufflehog** `v3.90.8` / `3.97.5` runtime `git file://. --only-verified`: **0 verified, 0 unverified**.
+- `LICENSE-APACHE` (and package LICENSE files) replaced with the full Apache-2.0 text.
+- `services/api` stays in the public tree; README licence split states the hosted product is metered, Worker source remains Apache-2.0.
+- Conformance corpus archive rebuilt: `takehome-conformance-corpus-2026.1.tar.zst` SHA-256 `00a68d0bef8835f8271039981c22bcaca54ff5f0786c33fd3c5b346b27a0023f` (catalog digest `554a54278727bb460e7f2710cde2b6e31b750ea57c4a4ee6735eb2e4d02a71ea`). Tarball is not in git.

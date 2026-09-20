@@ -22,6 +22,7 @@ test('59. migrations are versioned SQL with account_id indexes', () => {
     '0001_init.sql',
     '0002_webhooks.sql',
     '0003_key_revocation.sql',
+    '0004_account_id_indexes.sql',
   ]);
   assert.match(WRANGLER, /migrations_dir\s*=\s*"migrations"/);
   assert.doesNotMatch(WRANGLER, /--remote/);
@@ -49,7 +50,7 @@ test('59. migrations are versioned SQL with account_id indexes', () => {
 
 test('59. applying migrations produces the ownership schema', () => {
   const { db, files } = openMigratedSqlite(MIGRATIONS);
-  assert.equal(files.length, 3);
+  assert.equal(files.length, 4);
   const tables = db
     .prepare(`SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name`)
     .all()

@@ -1,6 +1,7 @@
 import changelog from './assets/changelog.json' with { type: 'json' };
 import conformance from './assets/conformance.json' with { type: 'json' };
 import { errorResponse, fromEngineJson, json, classifyEngineError } from './errors.js';
+import { MailTransportError, sendMail } from './mail.js';
 import { projectYear } from './year.js';
 import { DOCS } from './schema.js';
 import { latestRuleSetVersion, liveIdentity } from './identity.js';
@@ -930,13 +931,27 @@ async function signup(request, env, engine) {
     }),
   );
   const verifyUrl = `${siteUrl(env)}/signup/verify/?token=${token}`;
-  await sendMail(env, {
-    to: email,
-    subject: 'Verify your Takehome email',
-    text: `Verify and receive API keys: ${verifyUrl}`,
-    token,
-    verifyUrl,
-  });
+  try {
+    await sendMail(env, {
+      to: email,
+      subject: 'Verify your Takehome email',
+      text: `Verify and receive API keys: ${verifyUrl}`,
+      token,
+      verifyUrl,
+    });
+  } catch (err) {
+    if (err instanceof MailTransportError) {
+      await Promise.resolve(store.deleteEmailToken(hashKey(token))).catch(() => {});
+      return errorResponse(
+        engine,
+        'mail',
+        'Verification email could not be sent. Try again later.',
+        503,
+        DOCS.mail,
+      );
+    }
+    throw err;
+  }
   const body = { message };
   if (echoVerifyUrlEnabled(env)) {
     body.verify_url = verifyUrl;
@@ -1045,21 +1060,6 @@ async function checkout(request, env, engine) {
     501,
     DOCS.billing_unavailable,
   );
-}
-
-async function sendMail(env, message) {
-  const to = String(message.to ?? '');
-  const subject = String(message.subject ?? '');
-  if (/[\r\n\0]/.test(to) || /[\r\n\0]/.test(subject)) {
-    return;
-  }
-  if (Array.isArray(env.MAILBOX)) {
-    env.MAILBOX.push(message);
-    return;
-  }
-  if (typeof env.MAILBOX?.push === 'function') {
-    env.MAILBOX.push(message);
-  }
 }
 
 async function readBody(request) {

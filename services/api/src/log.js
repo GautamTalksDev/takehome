@@ -1,5 +1,6 @@
 import { redactSecrets } from './keys.js';
 import { clientIp } from './rate-limit.js';
+import { MailTransportError, sendMail } from './mail.js';
 
 export { redactSecrets };
 
@@ -139,25 +140,11 @@ function sanitizeEvent(event, request) {
   return out;
 }
 
-function sendAlertMail(env, message) {
-  const to = String(message.to ?? '');
-  const subject = String(message.subject ?? '');
-  if (/[\r\n\0]/.test(to) || /[\r\n\0]/.test(subject)) {
-    return;
-  }
-  if (Array.isArray(env.MAILBOX)) {
-    env.MAILBOX.push(message);
-    return;
-  }
-  if (typeof env.MAILBOX?.push === 'function') {
-    env.MAILBOX.push(message);
-  }
-}
-
 /**
  * A09:2025 item 50. Push to the in-process ALERTS sink and, when set,
- * email ALERT_EMAIL through MAILBOX (the same path production uses for
- * signup mail). No outbound webhook — that would be SSRF.
+ * email ALERT_EMAIL through the same sendMail path signup uses (MAILBOX
+ * in tests, Resend in production). No outbound webhook — that would be SSRF.
+ * Alert mail failures are logged; they must not change the HTTP response.
  */
 export async function dispatchAlert(env, event) {
   assertLoggable(event);
@@ -168,11 +155,19 @@ export async function dispatchAlert(env, event) {
   if (!to) {
     return;
   }
-  sendAlertMail(env, {
-    to: String(to),
-    subject: `Takehome alert: ${event.type}`,
-    text: JSON.stringify(event),
-  });
+  try {
+    await sendMail(env, {
+      to: String(to),
+      subject: `Takehome alert: ${event.type}`,
+      text: JSON.stringify(event),
+    });
+  } catch (err) {
+    if (err instanceof MailTransportError) {
+      log({ type: 'alert_mail_failed', reason: err.message });
+      return;
+    }
+    throw err;
+  }
 }
 
 /**

@@ -14,6 +14,7 @@ RATE_LIMIT_WINDOW_MS = "60000"
 SIGNUP_RATE_LIMIT_MAX = "5"
 VERIFY_RATE_LIMIT_MAX = "10"
 PUBLIC_SITE = "https://takehome.gautamkhosla.com"
+MAIL_FROM = "Takehome <noreply@mail.gautamkhosla.com>"
 
 [[routes]]
 pattern = "takehome.gautamkhosla.com"
@@ -34,7 +35,8 @@ migrations_dir = "migrations"
 # A09: invocation metadata only (method, path, status, duration).
 # Cloudflare invocation logs omit request and response bodies.
 # Never capture request headers — Authorization would log the API key.
-# Operator alerts: wrangler secret put ALERT_EMAIL (reached via MAILBOX).
+# Outbound mail: wrangler secret put RESEND_API_KEY (signup + ALERT_EMAIL).
+# Operator alerts: wrangler secret put ALERT_EMAIL.
 [observability]
 enabled = true
 
@@ -55,6 +57,7 @@ RATE_LIMIT_WINDOW_MS = "60000"
 SIGNUP_RATE_LIMIT_MAX = "5"
 VERIFY_RATE_LIMIT_MAX = "10"
 PUBLIC_SITE = "https://takehome-staging.gautamkhosla.com"
+MAIL_FROM = "Takehome <noreply@mail.gautamkhosla.com>"
 NOINDEX = "1"
 
 [[env.staging.routes]]

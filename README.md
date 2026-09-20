@@ -36,7 +36,7 @@ Overall agreement with CRA PDOC Option 1 corpora: **[8838/9002](https://takehome
 - **PDOC deltas:** **164** one-cent disagreements with live PDOC remain listed on the conformance page (M-003). We do not hide them in footnotes.
 - **2027 preview:** The `2027-01-01` rule set is **proposed**, not enacted. Responses carry a `RULE_SET_PROPOSED` warning until CRA publishes final tables.
 
-**Licence split:** Source code, rule JSON vendored in the engine, and client packages are [Apache-2.0](./LICENSE-APACHE). The hosted API at `takehome.gautamkhosla.com` is a metered service; see [docs/pricing.md](docs/pricing.md). If the hosted service stops, the engine and data stay published under that licence ([KILL-TEST.md](./KILL-TEST.md)).
+**Licence split:** Source code (including `services/api`), rule JSON vendored in the engine, and client packages are [Apache-2.0](./LICENSE-APACHE). The hosted API at `takehome.gautamkhosla.com` is a metered product: the running service is proprietary as a commercial offering, not because its Worker source is withheld. If the hosted service stops, the engine, data, and Worker source stay published under that licence ([KILL-TEST.md](./KILL-TEST.md)). See [docs/pricing.md](docs/pricing.md).
 
 Takehome calculates deductions. It does not file returns, remit source deductions, or move money. CRA PDOC remains the authoritative calculator for employers.
 

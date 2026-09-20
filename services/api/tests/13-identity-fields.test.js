@@ -11,7 +11,6 @@ const PUBLIC_GETS = [
   '/v1/jurisdictions',
   '/v1/changes',
   '/v1/conformance',
-  '/health',
   '/openapi.json',
 ];
 

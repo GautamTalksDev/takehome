@@ -27,3 +27,13 @@ python-source = "python"
 module-name = "takehome_ca._native"
 features = ["extension-module"]
 manifest-path = "Cargo.toml"
+# Sdist allowlist: tests, fixtures, and prior .so builds stay out.
+exclude = [
+  "tests/**",
+  "**/*.so",
+  "**/__pycache__/**",
+  "**/*.pyc",
+  "**/.pytest_cache/**",
+  "**/.venv/**",
+  "**/node_modules/**",
+]

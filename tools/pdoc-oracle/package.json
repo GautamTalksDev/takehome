@@ -11,7 +11,9 @@
     "capture:queue": "tsx src/pdoc.ts capture --queue",
     "capture:bonus": "tsx src/capture-bonus.ts",
     "spot-check-json-dom": "tsx src/spot-check-json-dom.ts",
-    "test": "tsx --test src/pdoc.test.ts src/edition.test.ts"
+    "record-screenshot-hashes": "tsx src/publication.ts --write",
+    "pack-corpus": "../../scripts/pack-conformance-corpus.sh",
+    "test": "tsx --test src/pdoc.test.ts src/edition.test.ts src/publication.test.ts"
   },
   "engines": {
     "node": ">=20"

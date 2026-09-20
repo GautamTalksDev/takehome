@@ -1,4 +1,9 @@
-# Finding 001 — K2 maximum in the reaching period
+# Finding 001: K2 maximum in the reaching period
+
+**Who this is for:** Engineers investigating K2 against T4127 (Payroll Deductions Formulas) and PDOC.
+
+**When you finish:** You can reproduce M-002 and state what is known versus open.
+
 
 **Record:** M-002 in [`CONFORMANCE.md`](../../CONFORMANCE.md).
 **Vector:** `on-biweekly-midyear-k2-max`
@@ -6,7 +11,7 @@
 
 ## T4127 wording
 
-T4127 Chapter 3, factor K2 (glossary note): use the maximum base CPP
+T4127 (Payroll Deductions Formulas) Chapter 3, factor K2 (glossary note): use the maximum base CPP
 contribution “in that pay period.”
 
 The Chapter 4 Step 2 formula is `min(P × C × (0.0495/0.0595), base_max × PM/12)`.
@@ -21,7 +26,7 @@ PDOC’s federal CPP credit base is `max(P × C × ratio, D × ratio)` capped at
 
 On the measured vector, `P × C × ratio` is well below `base_max` (this
 period’s C is only the remaining room, $30.45), and `D × ratio` is also below
-`base_max`. PDOC takes the greater of those two — `D × ratio` — and stops.
+`base_max`. PDOC takes the greater of those two: `D × ratio`: and stops.
 
 ## Inversion
 
@@ -121,8 +126,8 @@ To select the document’s reading:
 2. Province of employment: Ontario. Pay date: 2026-01-15. Pay period:
    biweekly (26).
 3. Salary or wages: `2500.00`.
-4. Enter **Claim codes** 1 (federal) and 1 (provincial). Do not type a fixed
-   TD1 dollar amount — a locked `$16,452` skips BPAF phaseout and is a
+4. Enter **Claim codes** (TD1 personal amount codes) 1 (federal) and 1 (provincial). Do not type a fixed
+   TD1 dollar amount: a locked `$16,452` skips BPAF (Basic Personal Amount formula) phaseout and is a
    different input.
 5. Year-to-date: CPP `4200.00`, EI `1000.00`, pensionable earnings
    `71000.00`, insurable earnings `50000.00`, pay periods elapsed `20`.
@@ -133,5 +138,8 @@ To select the document’s reading:
 Independent check without the engine: `4200 × 0.0495 / 0.0595 = 3494.1176…`
 (PDOC’s CPP credit base) vs `3519.45` (T4127’s `base_max` in this period).
 Those two bases, plus the uncontested EI half `1059.50`, times `0.14`,
-differ by `$3.54` of annual K2 — thirteen cents once divided by 26 and
+differ by `$3.54` of annual K2: thirteen cents once divided by 26 and
 rounded.
+
+**Last reviewed:** 2026-09-20  
+**Engine:** 0.1.0

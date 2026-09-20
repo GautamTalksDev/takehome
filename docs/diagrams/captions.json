@@ -1,0 +1,30 @@
+{
+  "01-request-lifecycle": {
+    "title": "Request lifecycle",
+    "caption": "One authenticated POST /v1/deductions from arrival to response. Branches mark failures and their HTTP statuses. The meter increments only after a successful calculation."
+  },
+  "02-effective-date-resolution": {
+    "title": "Effective date resolution",
+    "caption": "Rule sets are half-open calendar intervals. 2026-06-30 uses the January set. 2026-07-01 uses the July set. The 2027-01-01 set is proposed, not enacted."
+  },
+  "03-proration": {
+    "title": "British Columbia Option 1 proration",
+    "caption": "The true annual rate is 5.60 percent. Option 1 withholds 5.06 percent in the first half and a prorated 6.14 percent in the second half so the year averages correctly. Option 2 uses 5.60 percent in both halves. That split is the OptionScoped schema."
+  },
+  "04-rule-data-pipeline": {
+    "title": "Rule data pipeline",
+    "caption": "CRA publication is archived with a content hash, parsed, signed, and verified before load. The July document overlays the January set rather than replacing the whole tree."
+  },
+  "05-conformance-pipeline": {
+    "title": "Conformance pipeline",
+    "caption": "The grid splits cases by oracle class before capture. Only capturable PDOC boundary forms go to live PDOC. Uncapturable forms and the interior ladder are validated by invariants. Honesty of that split is the point of the published rate."
+  },
+  "06-one-engine-every-runtime": {
+    "title": "One engine, every runtime",
+    "caption": "The same Rust core compiles to native and to WASM. Browser, Node, Python, and the Worker share engine_build_sha256. The browser path makes no network call after load."
+  },
+  "07-webhook-ssrf-guard": {
+    "title": "Webhook delivery with the SSRF guard",
+    "caption": "Registration validates the URL. Dispatch re-validates immediately before fetch because DNS can change. Redirects are not followed. Response bodies are never written into the delivery log."
+  }
+}

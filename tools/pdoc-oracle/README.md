@@ -20,8 +20,10 @@ npm test
 npm run check-robots   # robots.txt only — no PDOC
 npm run backfill-m1    # import M1 twenty with observedEdition
 npm run capture        # stratified 200-form smoke
+npm run capture:bonus  # twenty pdoc-bonus-2026 vectors; never fills expected from the engine
 # npm run capture:queue  # full capturable July queue — only after smoke + CONFORMANCE republish
 ```
+
 
 Appendix P locators: `src/appendix-p.ts` (label/`name`-based; Angular ids are
 ephemeral UUIDs). Result amounts come from `/SALARY/calculate` JSON because the
@@ -30,7 +32,22 @@ spot-check JSON vs rendered on a handful of cases per session).
 
 ## Cache
 
-`data/pdoc-cache/` (gitignored payloads). Key:
+`data/pdoc-cache/` — **ruling (a)**: the 9,010 JSON records are **not** in git.
+They ship as `takehome-conformance-corpus-2026.1.tar.zst` on the GitHub
+release (`records/` + `pdoc-identity.json` + `screenshot-hashes.json`).
+`pdoc-identity.json`, `screenshot-hashes.json`, and `corpus-archive.json`
+stay in the repo. PNG screenshots stay local in `data/pdoc-screenshots/`
+(gitignored). `CONFORMANCE.md` records the catalog digest and the archive
+SHA-256.
+
+Pack the archive after a capture (does not publish):
+
+```bash
+npm run record-screenshot-hashes
+../../scripts/pack-conformance-corpus.sh
+```
+
+Key:
 `sha256(canonical_input_json || rule_set_version)`.
 
 Every record stores `observedEdition` (the calendar edition live PDOC was

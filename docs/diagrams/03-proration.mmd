@@ -1,0 +1,12 @@
+%%{init: {'theme': 'base'}}%%
+flowchart LR
+  subgraph Year["British Columbia 2026 calendar year"]
+    H1["Jan to Jun<br/>Option 1 rate 5.06%"]
+    H2["Jul to Dec<br/>Option 1 prorated 6.14%"]
+  end
+  True["True annual rate 5.60%"]
+  H1 --> Avg["Year averages to 5.60%"]
+  H2 --> Avg
+  True -.-> Avg
+  Opt2["Option 2 uses true 5.60% both halves"]
+  True --> Opt2

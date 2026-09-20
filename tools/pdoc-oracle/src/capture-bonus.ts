@@ -7,7 +7,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { chromium } from "playwright";
-import { LIVE_RULE_SET_VERSION } from "./appendix-p.ts";
+import { APPENDIX_P_PDOC_IDENTITY, LIVE_RULE_SET_VERSION } from "./appendix-p.ts";
 import { fillSalaryForm, type CaptureInput } from "./capture.ts";
 import {
   findRepoRoot,
@@ -54,9 +54,11 @@ export async function captureBonus(): Promise<{
   const browser = await chromium.launch({ headless: true });
   const failed: string[] = [];
   let captured = 0;
+  const only = process.env.BONUS_CAPTURE_ID ?? "";
 
   try {
     for (const v of file.vectors) {
+      if (only && v.id !== only) continue;
       if (
         v.expected.federal_tax !== "PENDING_PDOC" &&
         v.oracle.retrieved_at !== "PENDING"
@@ -77,6 +79,12 @@ export async function captureBonus(): Promise<{
           provincialClaimCode: claim(v.request.provincial_claim_code),
           cppMonths: 12,
           bonus: String(v.request.bonus),
+          ytdBonus: v.request.ytd_bonus ? String(v.request.ytd_bonus) : null,
+          bonusRrsp: v.request.bonus_rrsp ? String(v.request.bonus_rrsp) : null,
+          ytdBonusRrsp: v.request.ytd_bonus_rrsp
+            ? String(v.request.ytd_bonus_rrsp)
+            : null,
+          f5bYtd: v.request.f5b_ytd ? String(v.request.f5b_ytd) : null,
         };
         const got = await fillSalaryForm(page, input);
         v.expected = {
@@ -91,13 +99,16 @@ export async function captureBonus(): Promise<{
         v.oracle = {
           ...v.oracle,
           retrieved_at: new Date().toISOString(),
-          pdoc_version_string: session.probe?.pdocIdentity ?? "",
+          pdoc_version_string:
+            session.probe?.versionString
+            || APPENDIX_P_PDOC_IDENTITY,
           observed_edition: LIVE_RULE_SET_VERSION,
           browser: `chromium ${browser.version()}`,
           operator: "pdoc-oracle-harness",
         };
         captured += 1;
         console.error(`captured ${v.id}`);
+        await writeFile(path, `${JSON.stringify(file, null, 2)}\n`);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         failed.push(`${v.id}: ${msg}`);

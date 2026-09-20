@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Sign up — Takehome">
+<Base title="Sign up: Takehome">
   <article class="prose">
     <h1>Sign up</h1>
     <p class="lede">
@@ -27,7 +27,7 @@ import Base from '../../layouts/Base.astro';
       <a href="/pricing/">pricing</a>.
     </p>
   </article>
-  <script is:inline>
+  <script>
     function apiOrigin() {
       const fromDoc = document.documentElement.getAttribute('data-api');
       if (fromDoc) return fromDoc;

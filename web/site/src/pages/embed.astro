@@ -1,18 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
+import { EMBED_PATH, embedSnippet, embedSri } from '../lib/embed-sri.js';
 ---
 
-<Base title="Embed a take-home estimate — Takehome" engine={false}>
+<Base title="Embed a take-home estimate: Takehome" engine={false}>
   <article class="prose">
     <h1>Embed</h1>
     <p class="lede">
       One script tag. The salary is calculated in the reader’s browser with
       the same T4127 engine as the rest of Takehome. No cookie. No pixel. No
-      salary posted back to us.
+      salary posted back to us. Pin this path: it is immutable: and keep
+      the SRI hash so a CDN swap cannot silently change the widget.
     </p>
 
-    <pre><code>{`<script src="https://takehome.gautamkhosla.com/embed.js" data-province="ON"
-        data-gross="75000"></script>`}</code></pre>
+    <pre><code>{embedSnippet()}</code></pre>
+    <p>
+      Subresource Integrity: <code>{embedSri()}</code>. Hosts must send
+      <code>crossorigin="anonymous"</code> with the hash.
+    </p>
 
     <p>
       Job boards, recruiters, and relocation services: put that on a listing
@@ -27,7 +32,9 @@ import Base from '../layouts/Base.astro';
     <p>Ontario, $75,000 a year, claim code 1, July 2026 rules:</p>
     <script
       is:inline
-      src="/embed.js"
+      src={EMBED_PATH}
+      integrity={embedSri()}
+      crossorigin="anonymous"
       data-province="ON"
       data-gross="75000"></script>
   </article>

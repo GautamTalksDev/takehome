@@ -6,6 +6,7 @@
 
 use crate::{Grid, GridCase};
 use serde::Serialize;
+use std::cmp::Reverse;
 use std::collections::{BTreeMap, BTreeSet};
 use takehome_core::rules::loader::EMBEDDED_REGISTRY;
 use takehome_core::rules::schema::CalendarDate;
@@ -439,7 +440,7 @@ pub fn stratified_smoke_queue(grid: &Grid, n: usize) -> Vec<PdocQueueItem> {
 
     // Pass 1: one per province×boundary_class.
     for ((_prov, _class), mut items) in by_key {
-        items.sort_by(|a, b| score(b).cmp(&score(a)));
+        items.sort_by_key(|it| Reverse(score(it)));
         if let Some(item) = items.into_iter().next() {
             let k = take_key(&item);
             if picked.insert(k) {
@@ -492,7 +493,7 @@ pub fn stratified_smoke_queue(grid: &Grid, n: usize) -> Vec<PdocQueueItem> {
                     !uncommon
                 }
             });
-            let idx = idx.or_else(|| if list.is_empty() { None } else { Some(0) });
+            let idx = idx.or(if list.is_empty() { None } else { Some(0) });
             if let Some(i) = idx {
                 let item = list.remove(i);
                 let k = take_key(&item);

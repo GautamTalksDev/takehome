@@ -3,25 +3,25 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "sync-engine": "bash scripts/sync-engine.sh",
-    "prebuild": "bash scripts/sync-engine.sh",
+    "prebuild": "bash scripts/sync-engine.sh && bash ../../scripts/render-diagrams.sh",
     "dev": "bash scripts/sync-engine.sh && ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "test:e2e": "playwright test",
     "test:budget": "node tests/js-budget.mjs",
     "test:lighthouse": "node tests/lighthouse.mjs",
-    "test:graph": "node tests/site-graph.mjs",
+    "test:graph": "node tests/site-graph.mjs && node tests/factors-consistency.mjs",
     "test": "npm run build && npm run test:graph && npm run test:e2e && npm run test:budget && npm run test:lighthouse"
   },
   "dependencies": {
-    "astro": "^5.13.0"
+    "astro": "7.3.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "lighthouse": "^12.8.0"
+    "lighthouse": "13.5.0"
   }
 }

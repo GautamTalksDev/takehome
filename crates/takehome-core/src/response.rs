@@ -172,8 +172,7 @@ mod tests {
 
     /// Every breakdown key is documented in `data/factors.json` (website /docs/factors
     /// and calculator tooltips). Symbol → T4127 chapter reference → one-line definition.
-    #[test]
-    fn every_breakdown_key_is_in_factors_json() {
+    fn factors_catalog_matches(raw: &str) -> Result<(), String> {
         #[derive(Deserialize)]
         struct Catalog {
             factors: Vec<FactorDoc>,
@@ -184,37 +183,79 @@ mod tests {
             t4127_reference: String,
             definition: String,
         }
+        let catalog: Catalog =
+            serde_json::from_str(raw).map_err(|e| format!("data/factors.json parses: {e}"))?;
+        let mut by_symbol = std::collections::BTreeMap::new();
+        for row in &catalog.factors {
+            if row.t4127_reference.is_empty() || row.definition.is_empty() {
+                return Err(format!("{} missing reference or definition", row.symbol));
+            }
+            if by_symbol.insert(row.symbol.as_str(), row).is_some() {
+                return Err(format!("duplicate symbol {}", row.symbol));
+            }
+        }
+        for key in Breakdown::FACTOR_KEYS {
+            if !by_symbol.contains_key(key) {
+                return Err(format!(
+                    "breakdown key `{key}` missing from data/factors.json"
+                ));
+            }
+        }
+        for symbol in by_symbol.keys() {
+            if !Breakdown::FACTOR_KEYS.contains(symbol) {
+                return Err(format!(
+                    "data/factors.json has `{symbol}` which is not a breakdown key"
+                ));
+            }
+        }
+        if catalog.factors.len() != Breakdown::FACTOR_KEYS.len() {
+            return Err(format!(
+                "catalog len {} != FACTOR_KEYS len {}",
+                catalog.factors.len(),
+                Breakdown::FACTOR_KEYS.len()
+            ));
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn every_breakdown_key_is_in_factors_json() {
         let raw = include_str!(concat!(
             env!("CARGO_MANIFEST_DIR"),
             "/../../data/factors.json"
         ));
-        let catalog: Catalog = serde_json::from_str(raw).expect("data/factors.json parses");
-        let mut by_symbol = std::collections::BTreeMap::new();
-        for row in &catalog.factors {
-            assert!(
-                !row.t4127_reference.is_empty() && !row.definition.is_empty(),
-                "{} missing reference or definition",
-                row.symbol
-            );
-            assert!(
-                by_symbol.insert(row.symbol.as_str(), row).is_none(),
-                "duplicate symbol {}",
-                row.symbol
-            );
-        }
-        for key in Breakdown::FACTOR_KEYS {
-            assert!(
-                by_symbol.contains_key(key),
-                "breakdown key `{key}` missing from data/factors.json"
-            );
-        }
-        for symbol in by_symbol.keys() {
-            assert!(
-                Breakdown::FACTOR_KEYS.contains(symbol),
-                "data/factors.json has `{symbol}` which is not a breakdown key"
-            );
-        }
-        assert_eq!(catalog.factors.len(), Breakdown::FACTOR_KEYS.len());
+        factors_catalog_matches(raw).expect("factors.json matches FACTOR_KEYS");
+    }
+
+    /// A passing consistency check is not evidence that the check measures
+    /// anything. Break the catalog on purpose; the helper must fail.
+    #[test]
+    fn factors_json_consistency_fails_when_broken_on_purpose() {
+        let raw = include_str!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../data/factors.json"
+        ));
+        factors_catalog_matches(raw).expect("committed catalog is in sync");
+
+        let mut extra_val: serde_json::Value = serde_json::from_str(raw).unwrap();
+        extra_val["factors"]
+            .as_array_mut()
+            .unwrap()
+            .push(serde_json::json!({
+                "symbol": "ZZZ_NOT_A_FACTOR",
+                "t4127_reference": "none",
+                "definition": "mutation"
+            }));
+        let extra = serde_json::to_string(&extra_val).unwrap();
+        let extra_err =
+            factors_catalog_matches(&extra).expect_err("extra catalog symbol must fail");
+        assert!(extra_err.contains("ZZZ_NOT_A_FACTOR"), "{extra_err}");
+
+        let mut dropped_val: serde_json::Value = serde_json::from_str(raw).unwrap();
+        dropped_val["factors"].as_array_mut().unwrap().pop();
+        let dropped = serde_json::to_string(&dropped_val).unwrap();
+        let dropped_err = factors_catalog_matches(&dropped).expect_err("removed symbol must fail");
+        assert!(dropped_err.contains("QPIP"), "{dropped_err}");
     }
 
     /// 35. engine_version from CARGO_PKG_VERSION; build sha is a 64-hex source digest.

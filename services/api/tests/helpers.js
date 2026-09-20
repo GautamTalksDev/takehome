@@ -1,12 +1,23 @@
 import { handle } from '../src/handler.js';
 import { nodeEngine } from '../src/engine-node.js';
-import { MemoryStore } from '../src/store-memory.js';
+import { resetSecurityLog } from '../src/log.js';
 import { issueKeyPair } from '../src/keys.js';
+import { MemoryStore } from '../src/store-memory.js';
+import { SqliteStore } from './store-sqlite.js';
+
+export function newStore() {
+  if (process.env.TAKEHOME_API_STORE === 'd1') {
+    return SqliteStore.fromMigrations();
+  }
+  return new MemoryStore();
+}
 
 export const BASE_ENV = {
   CLOCK_DATE: '2026-09-16',
   RATE_LIMIT_MAX: '10000',
   RATE_LIMIT_WINDOW_MS: '60000',
+  SIGNUP_RATE_LIMIT_MAX: '10000',
+  VERIFY_RATE_LIMIT_MAX: '10000',
   STRIPE_PRICE_STARTER: 'price_starter_cad',
   STRIPE_PRICE_GROWTH: 'price_growth_cad',
   STRIPE_PRICE_BUSINESS: 'price_business_cad',
@@ -14,8 +25,10 @@ export const BASE_ENV = {
 };
 
 export function createWorld(plan = 'developer') {
-  const store = new MemoryStore();
+  resetSecurityLog();
+  const store = newStore();
   const mailbox = [];
+  const alerts = [];
   const stripeSessions = [];
   const account = store.createAccount({
     email: `dev-${store.accounts.size}@example.com`,
@@ -25,8 +38,10 @@ export function createWorld(plan = 'developer') {
   const keys = issueKeyPair(store, account.id);
   const env = {
     ...BASE_ENV,
+    WEBHOOK_RESOLVE: async () => ['203.0.113.10'],
     STORE: store,
     MAILBOX: mailbox,
+    ALERTS: alerts,
     STRIPE: {
       createCheckoutSession(input) {
         const session = {
@@ -43,7 +58,17 @@ export function createWorld(plan = 'developer') {
       },
     },
   };
-  return { env, store, account, mailbox, stripeSessions, ...keys };
+  return { env, store, account, mailbox, alerts, stripeSessions, ...keys };
+}
+
+export function addAccount(world, plan = 'developer') {
+  const account = world.store.createAccount({
+    email: `dev-${world.store.accounts.size}@example.com`,
+    email_verified: true,
+    plan,
+  });
+  const keys = issueKeyPair(world.store, account.id);
+  return { account, ...keys };
 }
 
 const defaultWorld = createWorld();

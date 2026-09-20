@@ -19,6 +19,17 @@ while IFS= read -r f; do
     dist/*|*/dist/*) ;;
     __pycache__/*|*/__pycache__/*) ;;
     *.pyc|*.so|*.whl|*.key|*.pem|*.p12) ;;
+    data/pdoc-screenshots/*)
+      if [[ "$f" == data/pdoc-screenshots/.gitkeep ]]; then
+        continue
+      fi
+      ;;
+    data/pdoc-cache/records|data/pdoc-cache/records/*)
+      ;;
+    *.tar.zst|*.tar.zst.*)
+      ;;
+    data/pdoc-cache/*.log|data/pdoc-cache/*checkpoint.json|data/pdoc-cache/last-run-conditions.json)
+      ;;
     *) continue ;;
   esac
   printf '%s\n' "$f"

@@ -2,42 +2,62 @@
 import Base from '../layouts/Base.astro';
 import { cadLabel, PLANS } from '../lib/plans.js';
 
-const tiers = [
-  ...PLANS.live.map((plan) => ({
-    name: plan.name,
-    price: cadLabel(plan.cad_cents),
-    limit: `${plan.calculations.toLocaleString('en-CA')} live calculations / month`,
-    blurb: plan.blurb,
-  })),
-  {
-    name: PLANS.test.name,
-    price: cadLabel(PLANS.test.cad_cents),
-    limit: 'unlimited test calculations',
-    blurb: 'np_test_ keys. Identical output to live. Unmetered.',
-  },
-];
+const free = PLANS.live.find((plan) => plan.id === 'developer');
+const paidLater = PLANS.live.filter((plan) => plan.id !== 'developer');
 ---
 
-<Base title="Pricing — Takehome" engine={false}>
+<Base title="Pricing: Takehome" engine={false}>
   <article class="prose">
     <h1>Pricing</h1>
     <p class="lede">
-      Published CAD prices. Sign up, verify your email, make a call. Test keys
-      run the same engine and are not metered. Live keys hard-stop at the plan
-      limit — Takehome does not surprise-bill.
+      Everything is free during early access. No card required. Sign up, verify
+      your email, make a call. Test keys run the same engine and are not metered.
+      Live keys hard-stop at the monthly quota: Takehome does not surprise-bill.
     </p>
 
+    <h2>Early access (now)</h2>
+    <ul class="plans">
+      <li class="plan">
+        <h3 class="plan-name">{free.name}</h3>
+        <p class="plan-price">{cadLabel(free.cad_cents)}</p>
+        <p class="plan-limit">
+          {free.calculations.toLocaleString('en-CA')} live calculations / month
+        </p>
+        <p class="plan-for">{free.blurb}</p>
+        <p class="cta">
+          <a href="/signup/">Get API keys</a>
+        </p>
+      </li>
+      <li class="plan">
+        <h3 class="plan-name">{PLANS.test.name}</h3>
+        <p class="plan-price">{cadLabel(PLANS.test.cad_cents)}</p>
+        <p class="plan-limit">unlimited test calculations</p>
+        <p class="plan-for">
+          np_test_ keys. Identical output to live. Unmetered.
+        </p>
+        <p class="cta">
+          <a href="/signup/">Get API keys</a>
+        </p>
+      </li>
+    </ul>
+
+    <h2>Paid tiers (later)</h2>
+    <p>
+      These CAD prices are published so you can plan. Checkout is not live yet.
+      <code>POST /v1/billing/checkout</code> returns
+      <code>billing_unavailable</code> until paid billing turns on.
+    </p>
     <ul class="plans">
       {
-        tiers.map((tier) => (
+        paidLater.map((plan) => (
           <li class="plan">
-            <h2 class="plan-name">{tier.name}</h2>
-            <p class="plan-price">{tier.price}</p>
-            <p class="plan-limit">{tier.limit}</p>
-            <p class="plan-for">{tier.blurb}</p>
-            <p class="cta">
-              <a href="/signup/">Get API keys</a>
+            <h3 class="plan-name">{plan.name}</h3>
+            <p class="plan-price">{cadLabel(plan.cad_cents)}</p>
+            <p class="plan-limit">
+              {plan.calculations.toLocaleString('en-CA')} live calculations /
+              month
             </p>
+            <p class="plan-for">{plan.blurb}</p>
           </li>
         ))
       }
@@ -46,11 +66,6 @@ const tiers = [
     <p>
       Quebec is not calculated and is not billed. A <code>QC</code> request
       returns <code>jurisdiction_not_supported</code>.
-    </p>
-    <p>
-      Paid tiers are Stripe Checkout in CAD after you have a live key:
-      <code>POST /v1/billing/checkout</code> with <code>starter</code>,
-      <code>growth</code>, or <code>business</code>. There is no sales queue.
     </p>
   </article>
 </Base>

@@ -1,28 +1,47 @@
 import changelog from './assets/changelog.json' with { type: 'json' };
 import conformance from './assets/conformance.json' with { type: 'json' };
-import { corsHeaders, errorResponse, fromEngineJson, json, classifyEngineError } from './errors.js';
+import { errorResponse, fromEngineJson, json, classifyEngineError } from './errors.js';
 import { projectYear } from './year.js';
 import { DOCS } from './schema.js';
 import { latestRuleSetVersion, liveIdentity } from './identity.js';
 import { buildOpenApi } from './openapi.js';
-import { checkRateLimit } from './rate-limit.js';
-import { hashKey, keyKind, mintKey, parseBearer, randomHex } from './keys.js';
+import { checkRateLimit, rateBucket } from './rate-limit.js';
+import {
+  AUTH_DUMMY_SECRET,
+  DIGEST_PLACEHOLDER,
+  equalDigest,
+  hashKey,
+  keyKind,
+  mintKey,
+  mintVerifyToken,
+  mintWebhookSecret,
+  parseBearer,
+  newWebhookId,
+  newDeliveryId,
+} from './keys.js';
 import { calculationCount, isBatch, batchItems, MAX_BATCH, usageHeaders } from './meter.js';
 import { livePlan, periodReset, periodStart, PLANS } from './plans.js';
 import { getStore } from './store.js';
-import { stripeClient } from './stripe.js';
 import { deliverWithRetry, webhookPayload } from './webhooks.js';
+import { UnsafeWebhookUrlError, assertSafeWebhookUrl } from './ssrf.js';
+import { matchObjectIdRoute, objectIdMethodsFor } from './object-routes.js';
+import { isPublicCorsPath, publicCorsHeaders } from './cors.js';
+import {
+  logException,
+  observeResponse,
+  recordSecurityEvent,
+} from './log.js';
+import {
+  BodyError,
+  parseJsonStrict,
+  readJsonRequest,
+  readTextCapped,
+} from './json-body.js';
 
 const PROBE =
   '{"as_of":"2026-01-15","province":"ON","pay_period":52,"gross_pay":"1000.00","federal_claim_code":1,"provincial_claim_code":1}';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PAID_PLANS = new Set(['starter', 'growth', 'business']);
-const PRICE_ENV = {
-  starter: 'STRIPE_PRICE_STARTER',
-  growth: 'STRIPE_PRICE_GROWTH',
-  business: 'STRIPE_PRICE_BUSINESS',
-};
 
 function pathname(url) {
   const path = new URL(url).pathname;
@@ -57,6 +76,14 @@ function siteUrl(env) {
   return env.PUBLIC_SITE ?? 'https://takehome.gautamkhosla.com';
 }
 
+/**
+ * Dev-only signup echo. Default deny: only the exact string `"1"` opens the
+ * path. Absent, empty, `"0"`, `"false"`, `"true"`, and any other value stay off.
+ */
+export function echoVerifyUrlEnabled(env) {
+  return env?.ECHO_VERIFY_URL === '1';
+}
+
 function meterContext(env, kind, account, used) {
   const reset = periodReset(utcDate(env));
   if (kind === 'test') {
@@ -71,23 +98,183 @@ function meterContext(env, kind, account, used) {
   });
 }
 
-export async function handle(request, env, engine) {
-  if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() });
-  }
-
-  const limited = checkRateLimit(request, env);
-  if (!limited.allowed) {
+async function bodyErrorResponse(engine, err, fallbackMessage) {
+  if (err instanceof BodyError) {
     return errorResponse(
       engine,
-      'rate_limited',
-      `IP rate limit exceeded (${limited.limit} requests per window).`,
-      429,
-      DOCS.rate_limited,
+      err.code,
+      err.message,
+      err.status,
+      DOCS[err.code] ?? DOCS.malformed_json,
     );
   }
+  return errorResponse(
+    engine,
+    'malformed_json',
+    fallbackMessage,
+    400,
+    DOCS.malformed_json,
+  );
+}
 
+async function jsonBody(request, engine) {
+  try {
+    return await readJsonRequest(request);
+  } catch (err) {
+    return { response: await bodyErrorResponse(engine, err, 'Request body is not valid JSON.') };
+  }
+}
+
+/**
+ * A10:2025 item 51 / ADR-005. Metering is a control. A store failure
+ * does not become a free calculation.
+ */
+async function storeUnavailable(engine, err) {
+  try {
+    logException(err, 'store_error');
+  } catch {
+    // Client still gets the typed 503.
+  }
+  return errorResponse(
+    engine,
+    'store',
+    'The usage store is unavailable.',
+    503,
+    DOCS.store,
+  );
+}
+
+async function readUsage(store, accountId, period) {
+  try {
+    return { used: await Promise.resolve(store.getUsage(accountId, period)) };
+  } catch (err) {
+    return { err };
+  }
+}
+
+async function writeUsage(store, accountId, period, n) {
+  try {
+    return { billed: await Promise.resolve(store.addUsage(accountId, period, n)) };
+  } catch (err) {
+    return { err };
+  }
+}
+
+function applyNoindex(env, response) {
+  if (env?.NOINDEX !== '1') {
+    return response;
+  }
+  const headers = new Headers(response.headers);
+  headers.set('x-robots-tag', 'noindex, nofollow');
+  return new Response(response.body, {
+    status: response.status,
+    headers,
+  });
+}
+
+export async function handle(request, env, engine) {
+  try {
+    const response = applyNoindex(
+      env,
+      applyPublicCors(request, await dispatch(request, env, engine)),
+    );
+    try {
+      await observeResponse(request, env, response);
+    } catch {
+      // Logging must never change the response.
+    }
+    return response;
+  } catch (err) {
+    try {
+      logException(err, 'engine_panic');
+    } catch {
+      // Logging must never change the response.
+    }
+    try {
+      await recordSecurityEvent(
+        env,
+        { type: 'http_5xx', status: 500, reason: 'unhandled' },
+        request,
+      );
+    } catch {
+      // Logging must never change the response.
+    }
+    try {
+      return applyNoindex(
+        env,
+        applyPublicCors(
+          request,
+          await errorResponse(
+            engine,
+            'engine',
+            'The request could not be completed.',
+            500,
+            DOCS.engine,
+          ),
+        ),
+      );
+    } catch {
+      return applyNoindex(
+        env,
+        new Response(
+          JSON.stringify({
+            error: {
+              code: 'engine',
+              message: 'The request could not be completed.',
+              docs: DOCS.engine,
+            },
+          }),
+          {
+            status: 500,
+            headers: { 'content-type': 'application/json; charset=utf-8' },
+          },
+        ),
+      );
+    }
+  }
+}
+
+function applyPublicCors(request, response) {
   const path = pathname(request.url);
+  if (!isPublicCorsPath(path)) {
+    return response;
+  }
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(publicCorsHeaders())) {
+    headers.set(name, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    headers,
+  });
+}
+
+async function dispatch(request, env, engine) {
+  const path = pathname(request.url);
+  if (request.method === 'OPTIONS') {
+    if (isPublicCorsPath(path)) {
+      return new Response(null, {
+        status: 204,
+        headers: publicCorsHeaders(),
+      });
+    }
+    return new Response(null, { status: 204 });
+  }
+
+  const bucket = rateBucket(path, request.method);
+  if (bucket) {
+    const limited = checkRateLimit(request, env, bucket);
+    if (!limited.allowed) {
+      return errorResponse(
+        engine,
+        'rate_limited',
+        `IP rate limit exceeded (${limited.limit} requests per window).`,
+        429,
+        DOCS.rate_limited,
+      );
+    }
+  }
+
   if (request.method === 'GET' && path === '/health') {
     return health(engine);
   }
@@ -189,16 +376,50 @@ export async function handle(request, env, engine) {
     return checkout(request, env, engine);
   }
   if (path === '/v1/billing/webhook') {
-    if (request.method !== 'POST') {
+    // ADR-006: billing deferred. Do not accept signed Stripe events.
+    return errorResponse(
+      engine,
+      'not_found',
+      `No endpoint at ${path}.`,
+      404,
+      DOCS.not_found,
+    );
+  }
+  if (path === '/v1/keys') {
+    if (request.method !== 'GET') {
       return errorResponse(
         engine,
         'method_not_allowed',
-        'POST /v1/billing/webhook is the Stripe endpoint.',
+        'GET /v1/keys.',
         405,
         DOCS.method_not_allowed,
       );
     }
-    return webhook(request, env, engine);
+    return listAccountKeys(request, env, engine);
+  }
+  if (path === '/v1/keys/rotate') {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/keys/rotate with { "kind": "test" } or { "kind": "live" }.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return rotateAccountKey(request, env, engine);
+  }
+  if (path === '/v1/keys/revoke') {
+    if (request.method !== 'POST') {
+      return errorResponse(
+        engine,
+        'method_not_allowed',
+        'POST /v1/keys/revoke with { "kind": "test" } or { "kind": "live" }.',
+        405,
+        DOCS.method_not_allowed,
+      );
+    }
+    return revokeAccountKey(request, env, engine);
   }
   if (path === '/v1/webhooks') {
     if (request.method === 'GET') {
@@ -239,31 +460,34 @@ export async function handle(request, env, engine) {
     }
     return listWebhookDeliveries(request, env, engine);
   }
-  const replayMatch = path.match(/^\/v1\/webhooks\/deliveries\/([^/]+)\/replay$/);
-  if (replayMatch) {
-    if (request.method !== 'POST') {
+  const OBJECT_ID_HANDLERS = {
+    getWebhook: getWebhookEndpoint,
+    deleteWebhook: deleteWebhookEndpoint,
+    replayDelivery: replayWebhookDelivery,
+  };
+  const objectHit = matchObjectIdRoute(request.method, path);
+  if (objectHit) {
+    const fn = OBJECT_ID_HANDLERS[objectHit.route.name];
+    if (!fn) {
       return errorResponse(
         engine,
-        'method_not_allowed',
-        'POST /v1/webhooks/deliveries/:id/replay.',
-        405,
-        DOCS.method_not_allowed,
+        'not_found',
+        `No endpoint at ${path}.`,
+        404,
+        DOCS.not_found,
       );
     }
-    return replayWebhookDelivery(request, env, engine, decodeURIComponent(replayMatch[1]));
+    return fn(request, env, engine, objectHit.id);
   }
-  const webhookMatch = path.match(/^\/v1\/webhooks\/([^/]+)$/);
-  if (webhookMatch) {
-    if (request.method !== 'DELETE') {
-      return errorResponse(
-        engine,
-        'method_not_allowed',
-        'DELETE /v1/webhooks/:id.',
-        405,
-        DOCS.method_not_allowed,
-      );
-    }
-    return deleteWebhookEndpoint(request, env, engine, decodeURIComponent(webhookMatch[1]));
+  const objectMethods = objectIdMethodsFor(path);
+  if (objectMethods.length > 0) {
+    return errorResponse(
+      engine,
+      'method_not_allowed',
+      `${objectMethods.join(' or ')} ${path}.`,
+      405,
+      DOCS.method_not_allowed,
+    );
   }
 
   return errorResponse(
@@ -287,14 +511,9 @@ async function unauthorized(engine) {
 }
 
 async function authenticate(request, env, engine) {
-  const secret = parseBearer(request);
-  if (!secret) {
-    return { response: await unauthorized(engine) };
-  }
+  const secret = parseBearer(request) ?? '';
   const kind = keyKind(secret);
-  if (!kind) {
-    return { response: await unauthorized(engine) };
-  }
+  const presented = hashKey(kind ? secret : AUTH_DUMMY_SECRET);
   const store = getStore(env);
   if (!store) {
     return {
@@ -307,8 +526,11 @@ async function authenticate(request, env, engine) {
       ),
     };
   }
-  const row = await Promise.resolve(store.getKeyByHash(hashKey(secret)));
-  if (!row || row.kind !== kind) {
+  const row = await Promise.resolve(store.getKeyByHash(presented));
+  const stored = row ? row.hash : DIGEST_PLACEHOLDER;
+  const digestOk = equalDigest(presented, stored);
+  const revoked = Boolean(row?.revoked);
+  if (!kind || !digestOk || !row || row.kind !== kind || revoked) {
     return { response: await unauthorized(engine) };
   }
   const account = await Promise.resolve(store.getAccount(row.account_id));
@@ -318,6 +540,89 @@ async function authenticate(request, env, engine) {
   return { store, account, kind };
 }
 
+function requestedKeyKind(payload) {
+  return payload?.kind === 'test' || payload?.kind === 'live'
+    ? payload.kind
+    : null;
+}
+
+async function listAccountKeys(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const rows = await Promise.resolve(auth.store.listKeys(auth.account.id));
+  const identity = await liveIdentity(engine, null);
+  return json(200, {
+    ...identity,
+    keys: rows
+      .filter((row) => !row.revoked)
+      .map((row) => ({ kind: row.kind, prefix: row.prefix })),
+  });
+}
+
+async function rotateAccountKey(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  let payload;
+  try {
+    payload = await readBody(request);
+  } catch (err) {
+    return bodyErrorResponse(
+      engine,
+      err,
+      'Rotate expects JSON { "kind": "test" } or { "kind": "live" }.',
+    );
+  }
+  const kind = requestedKeyKind(payload);
+  if (!kind) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'Rotate expects JSON { "kind": "test" } or { "kind": "live" }.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const next = mintKey(kind);
+  await Promise.resolve(auth.store.revokeKind(auth.account.id, kind));
+  await Promise.resolve(
+    auth.store.insertKey({
+      account_id: auth.account.id,
+      kind,
+      prefix: `np_${kind}_`,
+      hash: hashKey(next),
+    }),
+  );
+  return json(200, {
+    kind,
+    key: next,
+    message: 'Shown once. The previous key of this kind no longer works.',
+  });
+}
+
+async function revokeAccountKey(request, env, engine) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  let payload;
+  try {
+    payload = await readBody(request);
+  } catch (err) {
+    return bodyErrorResponse(
+      engine,
+      err,
+      'Revoke expects JSON { "kind": "test" } or { "kind": "live" }.',
+    );
+  }
+  const kind = requestedKeyKind(payload) ?? auth.kind;
+  await Promise.resolve(auth.store.revokeKind(auth.account.id, kind));
+  return json(200, { kind, revoked: true });
+}
+
 async function deductions(request, env, engine) {
   const auth = await authenticate(request, env, engine);
   if (auth.response) {
@@ -325,16 +630,19 @@ async function deductions(request, env, engine) {
   }
   const { store, account, kind } = auth;
   const period = periodStart(utcDate(env));
-  const used = await Promise.resolve(store.getUsage(account.id, period));
+  const usage = await readUsage(store, account.id, period);
+  if (usage.err) {
+    return storeUnavailable(engine, usage.err);
+  }
+  const used = usage.used;
   const plan = livePlan(account.plan) ?? livePlan('developer');
 
-  const raw = await request.text();
-  let payload;
-  try {
-    payload = JSON.parse(raw);
-  } catch {
-    payload = null;
+  const parsedBody = await jsonBody(request, engine);
+  if (parsedBody.response) {
+    return parsedBody.response;
   }
+  const { raw } = parsedBody;
+  let { payload } = parsedBody;
   const n = payload == null ? 1 : calculationCount(payload);
 
   if (kind === 'live') {
@@ -375,7 +683,11 @@ async function deductions(request, env, engine) {
   }
   let billed = used;
   if (kind === 'live') {
-    billed = await Promise.resolve(store.addUsage(account.id, period, n));
+    const wrote = await writeUsage(store, account.id, period, n);
+    if (wrote.err) {
+      return storeUnavailable(engine, wrote.err);
+    }
+    billed = wrote.billed;
   }
   return fromEngineJson(body, engine, meterContext(env, kind, account, billed));
 }
@@ -421,22 +733,18 @@ async function deductionsBatch(request, env, engine) {
   }
   const { store, account, kind } = auth;
   const period = periodStart(utcDate(env));
-  const used = await Promise.resolve(store.getUsage(account.id, period));
+  const usage = await readUsage(store, account.id, period);
+  if (usage.err) {
+    return storeUnavailable(engine, usage.err);
+  }
+  const used = usage.used;
   const plan = livePlan(account.plan) ?? livePlan('developer');
 
-  const raw = await request.text();
-  let payload;
-  try {
-    payload = JSON.parse(raw);
-  } catch {
-    return errorResponse(
-      engine,
-      'malformed_json',
-      'Batch expects JSON { "requests": [ ... ] }.',
-      400,
-      DOCS.malformed_json,
-    );
+  const parsedBody = await jsonBody(request, engine);
+  if (parsedBody.response) {
+    return parsedBody.response;
   }
+  const payload = parsedBody.payload;
   const items = batchItems(payload);
   if (!items) {
     return errorResponse(
@@ -471,7 +779,11 @@ async function deductionsBatch(request, env, engine) {
 
   let billed = used;
   if (kind === 'live') {
-    billed = await Promise.resolve(store.addUsage(account.id, period, n));
+    const wrote = await writeUsage(store, account.id, period, n);
+    if (wrote.err) {
+      return storeUnavailable(engine, wrote.err);
+    }
+    billed = wrote.billed;
   }
   const identity = await liveIdentity(engine, null);
   return json(200, { ...identity, results }, meterContext(env, kind, account, billed));
@@ -484,22 +796,18 @@ async function deductionsYear(request, env, engine) {
   }
   const { store, account, kind } = auth;
   const period = periodStart(utcDate(env));
-  const used = await Promise.resolve(store.getUsage(account.id, period));
+  const usage = await readUsage(store, account.id, period);
+  if (usage.err) {
+    return storeUnavailable(engine, usage.err);
+  }
+  const used = usage.used;
   const plan = livePlan(account.plan) ?? livePlan('developer');
 
-  const raw = await request.text();
-  let payload;
-  try {
-    payload = JSON.parse(raw);
-  } catch {
-    return errorResponse(
-      engine,
-      'malformed_json',
-      'Year projection expects JSON with as_of, province, pay_period, and gross_pay.',
-      400,
-      DOCS.malformed_json,
-    );
+  const parsedBody = await jsonBody(request, engine);
+  if (parsedBody.response) {
+    return parsedBody.response;
   }
+  let payload = parsedBody.payload;
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     return errorResponse(
       engine,
@@ -543,7 +851,11 @@ async function deductionsYear(request, env, engine) {
 
   let billed = used;
   if (kind === 'live') {
-    billed = await Promise.resolve(store.addUsage(account.id, period, n));
+    const wrote = await writeUsage(store, account.id, period, n);
+    if (wrote.err) {
+      return storeUnavailable(engine, wrote.err);
+    }
+    billed = wrote.billed;
   }
   const identity = await liveIdentity(engine, null);
   return json(
@@ -567,18 +879,24 @@ async function signup(request, env, engine) {
   let payload;
   try {
     payload = await readBody(request);
-  } catch {
-    return errorResponse(
+  } catch (err) {
+    return bodyErrorResponse(
       engine,
-      'malformed_json',
+      err,
       'Signup expects JSON { "email": "…" }.',
-      400,
-      DOCS.malformed_json,
     );
   }
-  const email = String(payload?.email ?? '')
-    .trim()
-    .toLowerCase();
+  const rawEmail = String(payload?.email ?? '');
+  if (/[\r\n\0]/.test(rawEmail)) {
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'Provide an email address. Keys are issued after you verify it.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const email = rawEmail.trim().toLowerCase();
   if (!EMAIL.test(email)) {
     return errorResponse(
       engine,
@@ -603,7 +921,7 @@ async function signup(request, env, engine) {
   if (account.email_verified) {
     return json(200, { message });
   }
-  const token = randomHex(24);
+  const token = mintVerifyToken();
   await Promise.resolve(
     store.insertEmailToken({
       hash: hashKey(token),
@@ -620,7 +938,7 @@ async function signup(request, env, engine) {
     verifyUrl,
   });
   const body = { message };
-  if (env.ECHO_VERIFY_URL === '1' || env.ECHO_VERIFY_URL === 'true') {
+  if (echoVerifyUrlEnabled(env)) {
     body.verify_url = verifyUrl;
   }
   return json(200, body);
@@ -647,8 +965,10 @@ async function verifySignup(request, env, engine) {
       DOCS.invalid_request,
     );
   }
-  const row = await Promise.resolve(store.consumeEmailToken(hashKey(token)));
-  if (!row) {
+  const presented = hashKey(token);
+  const row = await Promise.resolve(store.getEmailToken(presented));
+  const stored = row ? row.hash : DIGEST_PLACEHOLDER;
+  if (!equalDigest(presented, stored) || !row) {
     return errorResponse(
       engine,
       'invalid_request',
@@ -657,11 +977,23 @@ async function verifySignup(request, env, engine) {
       DOCS.invalid_request,
     );
   }
+  await Promise.resolve(store.deleteEmailToken(row.hash));
   if (Date.parse(row.expires_at) < nowMs(env)) {
     return errorResponse(
       engine,
       'invalid_request',
       'That verification token has expired. Sign up again.',
+      400,
+      DOCS.invalid_request,
+    );
+  }
+  const existing = await Promise.resolve(store.listKeys(row.account_id));
+  if (existing.some((key) => key.kind === 'live' || key.kind === 'test')) {
+    await Promise.resolve(store.deleteEmailTokensForAccount(row.account_id));
+    return errorResponse(
+      engine,
+      'invalid_request',
+      'That verification token is not valid.',
       400,
       DOCS.invalid_request,
     );
@@ -685,6 +1017,7 @@ async function verifySignup(request, env, engine) {
       hash: hashKey(liveKey),
     }),
   );
+  await Promise.resolve(store.deleteEmailTokensForAccount(row.account_id));
   return json(200, {
     test_key: testKey,
     live_key: liveKey,
@@ -693,109 +1026,33 @@ async function verifySignup(request, env, engine) {
   });
 }
 
+/**
+ * ADR-006: paid checkout is deferred. Authenticate first so the unauthenticated
+ * surface stays 401; a live key gets a typed 501 rather than a Stripe session.
+ */
 async function checkout(request, env, engine) {
   const auth = await authenticate(request, env, engine);
   if (auth.response) {
     return auth.response;
   }
-  let payload;
-  try {
-    payload = await readBody(request);
-  } catch {
-    return errorResponse(
-      engine,
-      'malformed_json',
-      'Checkout expects JSON { "plan": "starter" }.',
-      400,
-      DOCS.malformed_json,
-    );
+  if (auth.kind !== 'live') {
+    return unauthorized(engine);
   }
-  const planId = String(payload?.plan ?? '');
-  if (!PAID_PLANS.has(planId) || !livePlan(planId)) {
-    return errorResponse(
-      engine,
-      'unknown_plan',
-      `Unknown plan ${planId || '(empty)'}. Published CAD tiers are starter, growth, and business at ${PLANS.upgrade_url}.`,
-      400,
-      DOCS.unknown_plan,
-    );
-  }
-  const priceKey = PRICE_ENV[planId];
-  const price = env[priceKey];
-  if (!price) {
-    return errorResponse(
-      engine,
-      'unknown_plan',
-      `Plan ${planId} is published but has no Stripe price configured.`,
-      500,
-      DOCS.unknown_plan,
-    );
-  }
-  const success_url =
-    payload.success_url ?? `${siteUrl(env)}/signup/verify/?ok=1`;
-  const cancel_url = payload.cancel_url ?? `${siteUrl(env)}/pricing/`;
-  const stripe = stripeClient(env);
-  const session = await Promise.resolve(
-    stripe.createCheckoutSession({
-      currency: 'cad',
-      price,
-      client_reference_id: auth.account.id,
-      metadata: { plan: planId },
-      success_url,
-      cancel_url,
-      mode: 'subscription',
-    }),
+  return errorResponse(
+    engine,
+    'billing_unavailable',
+    'Billing is deferred. Every live tier is free during early access. See the pricing page for the monthly quota and the published paid tiers that will return later.',
+    501,
+    DOCS.billing_unavailable,
   );
-  return json(200, { url: session.url, currency: 'cad', plan: planId });
-}
-
-async function webhook(request, env, engine) {
-  const store = getStore(env);
-  if (!store) {
-    return errorResponse(
-      engine,
-      'store',
-      'API key store is not configured.',
-      503,
-      DOCS.engine,
-    );
-  }
-  const raw = await request.text();
-  let event;
-  try {
-    event = stripeClient(env).constructEvent(
-      raw,
-      request.headers.get('stripe-signature'),
-      env.STRIPE_WEBHOOK_SECRET,
-    );
-  } catch {
-    return errorResponse(
-      engine,
-      'invalid_request',
-      'Stripe webhook payload was not a valid event.',
-      400,
-      DOCS.invalid_request,
-    );
-  }
-  if (event?.id) {
-    const seen = await Promise.resolve(store.hasStripeEvent(event.id));
-    if (seen) {
-      return json(200, { received: true });
-    }
-    await Promise.resolve(store.recordStripeEvent(event.id));
-  }
-  if (event?.type === 'checkout.session.completed') {
-    const session = event.data?.object ?? {};
-    const accountId = session.client_reference_id;
-    const plan = session.metadata?.plan;
-    if (accountId && PAID_PLANS.has(plan)) {
-      await Promise.resolve(store.setPlan(accountId, plan));
-    }
-  }
-  return json(200, { received: true });
 }
 
 async function sendMail(env, message) {
+  const to = String(message.to ?? '');
+  const subject = String(message.subject ?? '');
+  if (/[\r\n\0]/.test(to) || /[\r\n\0]/.test(subject)) {
+    return;
+  }
   if (Array.isArray(env.MAILBOX)) {
     env.MAILBOX.push(message);
     return;
@@ -807,14 +1064,14 @@ async function sendMail(env, message) {
 
 async function readBody(request) {
   const type = request.headers.get('content-type') ?? '';
-  const raw = await request.text();
+  const raw = await readTextCapped(request);
   if (type.includes('application/x-www-form-urlencoded')) {
     return Object.fromEntries(new URLSearchParams(raw));
   }
   if (!raw) {
     return {};
   }
-  return JSON.parse(raw);
+  return parseJsonStrict(raw);
 }
 
 async function health(engine) {
@@ -832,12 +1089,7 @@ async function health(engine) {
       DOCS.engine,
     );
   }
-  return json(200, {
-    status: 'ok',
-    rule_set_version: parsed.rule_set_version,
-    engine_version: parsed.engine_version,
-    engine_build_sha256: parsed.engine_build_sha256,
-  });
+  return json(200, { status: 'ok' });
 }
 
 async function openapi(engine) {
@@ -944,13 +1196,13 @@ function unixSec(env) {
   return Math.floor(nowMs(env) / 1000);
 }
 
-function httpsUrl(value) {
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === 'https:' && parsed.hostname.length > 0;
-  } catch {
-    return false;
+function webhookTimeoutMs(env) {
+  const raw = env.WEBHOOK_TIMEOUT_MS;
+  if (raw == null || raw === '') {
+    return undefined;
   }
+  const n = Number.parseInt(String(raw), 10);
+  return Number.isInteger(n) && n > 0 ? n : undefined;
 }
 
 function webhookTransport(env) {
@@ -995,30 +1247,34 @@ async function createWebhookEndpoint(request, env, engine) {
   let payload;
   try {
     payload = await readBody(request);
-  } catch {
-    return errorResponse(
+  } catch (err) {
+    return bodyErrorResponse(
       engine,
-      'malformed_json',
+      err,
       'Register a webhook with JSON { "url": "https://…" }.',
-      400,
-      DOCS.malformed_json,
     );
   }
   const url = String(payload?.url ?? '');
-  if (!httpsUrl(url)) {
+  try {
+    await assertSafeWebhookUrl(url, { resolve: env.WEBHOOK_RESOLVE });
+  } catch (err) {
+    const message =
+      err instanceof UnsafeWebhookUrlError
+        ? err.message
+        : 'Webhook URL must be https.';
     return errorResponse(
       engine,
       'invalid_request',
-      'Webhook URL must be https.',
+      message,
       400,
       DOCS.invalid_request,
     );
   }
   const row = {
-    id: `wh_${randomHex(16)}`,
+    id: newWebhookId(),
     account_id: auth.account.id,
     url,
-    secret: `whsec_${randomHex(24)}`,
+    secret: mintWebhookSecret(),
     created_at: isoNow(env),
   };
   await Promise.resolve(auth.store.insertWebhook(row));
@@ -1036,6 +1292,25 @@ async function listWebhookEndpoints(request, env, engine) {
   return json(200, { ...identity, webhooks: rows.map(publicWebhook) });
 }
 
+async function getWebhookEndpoint(request, env, engine, id) {
+  const auth = await authenticate(request, env, engine);
+  if (auth.response) {
+    return auth.response;
+  }
+  const row = await Promise.resolve(auth.store.getWebhook(id, auth.account.id));
+  if (!row) {
+    return errorResponse(
+      engine,
+      'not_found',
+      `No webhook ${id}.`,
+      404,
+      DOCS.not_found,
+    );
+  }
+  const identity = await liveIdentity(engine, null);
+  return json(200, { ...identity, ...publicWebhook(row) });
+}
+
 async function deleteWebhookEndpoint(request, env, engine, id) {
   const auth = await authenticate(request, env, engine);
   if (auth.response) {
@@ -1048,7 +1323,7 @@ async function deleteWebhookEndpoint(request, env, engine, id) {
     return errorResponse(
       engine,
       'not_found',
-      `No webhook ${id} on this account.`,
+      `No webhook ${id}.`,
       404,
       DOCS.not_found,
     );
@@ -1075,13 +1350,11 @@ async function dispatchWebhooks(request, env, engine) {
   let payload;
   try {
     payload = await readBody(request);
-  } catch {
-    return errorResponse(
+  } catch (err) {
+    return bodyErrorResponse(
       engine,
-      'malformed_json',
+      err,
       'Dispatch expects JSON { "from": "YYYY-MM-DD", "to": "YYYY-MM-DD" }.',
-      400,
-      DOCS.malformed_json,
     );
   }
   const from = String(payload?.from ?? '');
@@ -1134,7 +1407,9 @@ async function replayWebhookDelivery(request, env, engine, id) {
   if (auth.response) {
     return auth.response;
   }
-  const original = await Promise.resolve(auth.store.getDelivery(id));
+  const original = await Promise.resolve(
+    auth.store.getDelivery(id, auth.account.id),
+  );
   if (!original) {
     return errorResponse(
       engine,
@@ -1145,13 +1420,13 @@ async function replayWebhookDelivery(request, env, engine, id) {
     );
   }
   const endpoint = await Promise.resolve(
-    auth.store.getWebhook(original.endpoint_id),
+    auth.store.getWebhook(original.endpoint_id, auth.account.id),
   );
-  if (!endpoint || endpoint.account_id !== auth.account.id) {
+  if (!endpoint) {
     return errorResponse(
       engine,
       'not_found',
-      `No delivery ${id} on this account.`,
+      `No delivery ${id}.`,
       404,
       DOCS.not_found,
     );
@@ -1170,8 +1445,9 @@ async function replayWebhookDelivery(request, env, engine, id) {
 async function sendWebhook(env, store, endpoint, body, replayOf) {
   const createdAt = isoNow(env);
   const row = {
-    id: `whd_${randomHex(16)}`,
+    id: newDeliveryId(),
     endpoint_id: endpoint.id,
+    account_id: endpoint.account_id,
     event: 'rule_set.changed',
     payload: body,
     status: 'pending',
@@ -1183,6 +1459,36 @@ async function sendWebhook(env, store, endpoint, body, replayOf) {
     delivered_at: null,
   };
   await Promise.resolve(store.insertDelivery(row));
+  try {
+    await assertSafeWebhookUrl(endpoint.url, { resolve: env.WEBHOOK_RESOLVE });
+  } catch (err) {
+    const patch = {
+      status: 'failed',
+      attempts: 0,
+      last_error:
+        err instanceof UnsafeWebhookUrlError
+          ? err.message
+          : 'Webhook URL failed safety checks.',
+      last_http_status: null,
+      delivered_at: null,
+    };
+    try {
+      await recordSecurityEvent(env, {
+        type: 'webhook_delivery_failed',
+        endpoint_id: endpoint.id,
+        last_error: patch.last_error,
+        path: '/v1/webhooks/dispatch',
+      });
+    } catch {
+      // Delivery status is already recorded; alerting must not throw out.
+    }
+    return (
+      (await Promise.resolve(store.updateDelivery(row.id, patch))) ?? {
+        ...row,
+        ...patch,
+      }
+    );
+  }
   const { fetchImpl, sleep } = webhookTransport(env);
   const result = await deliverWithRetry({
     url: endpoint.url,
@@ -1191,6 +1497,7 @@ async function sendWebhook(env, store, endpoint, body, replayOf) {
     timestampSec: unixSec(env),
     fetchImpl,
     sleep,
+    timeoutMs: webhookTimeoutMs(env),
   });
   const patch = {
     status: result.ok ? 'delivered' : 'failed',
@@ -1199,6 +1506,19 @@ async function sendWebhook(env, store, endpoint, body, replayOf) {
     last_http_status: result.status,
     delivered_at: result.ok ? isoNow(env) : null,
   };
+  if (patch.status === 'failed') {
+    try {
+      await recordSecurityEvent(env, {
+        type: 'webhook_delivery_failed',
+        endpoint_id: endpoint.id,
+        last_http_status: patch.last_http_status,
+        last_error: patch.last_error,
+        path: '/v1/webhooks/dispatch',
+      });
+    } catch {
+      // Delivery status is already recorded; alerting must not throw out.
+    }
+  }
   return (
     (await Promise.resolve(store.updateDelivery(row.id, patch))) ?? {
       ...row,
@@ -1232,7 +1552,6 @@ ${items}
   return new Response(body, {
     headers: {
       'content-type': 'application/rss+xml; charset=utf-8',
-      ...corsHeaders(),
     },
   });
 }

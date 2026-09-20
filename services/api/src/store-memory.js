@@ -6,7 +6,9 @@ export class MemoryStore {
     this.usage = new Map();
     this.stripeEvents = new Set();
     this.webhooks = new Map();
+    this.webhooksByAccount = new Map();
     this.deliveries = new Map();
+    this.deliveriesByAccount = new Map();
   }
 
   createAccount({ email, email_verified = false, plan = 'developer' }) {
@@ -46,24 +48,58 @@ export class MemoryStore {
     }
   }
 
-  insertKey({ account_id, kind, prefix, hash }) {
-    this.keys.set(hash, { account_id, kind, prefix, hash });
+  insertKey({ account_id, kind, prefix, hash, revoked = false }) {
+    this.keys.set(hash, {
+      account_id,
+      kind,
+      prefix,
+      hash,
+      revoked: Boolean(revoked),
+    });
   }
 
   getKeyByHash(hash) {
     return this.keys.get(hash) ?? null;
   }
 
+  listKeys(accountId) {
+    return [...this.keys.values()].filter((row) => row.account_id === accountId);
+  }
+
+  revokeKind(accountId, kind) {
+    for (const row of this.keys.values()) {
+      if (row.account_id === accountId && row.kind === kind) {
+        row.revoked = true;
+      }
+    }
+  }
+
   insertEmailToken({ hash, account_id, expires_at }) {
     this.tokens.set(hash, { hash, account_id, expires_at });
   }
 
+  getEmailToken(hash) {
+    return this.tokens.get(hash) ?? null;
+  }
+
+  deleteEmailToken(hash) {
+    this.tokens.delete(hash);
+  }
+
+  deleteEmailTokensForAccount(accountId) {
+    for (const [hash, row] of this.tokens) {
+      if (row.account_id === accountId) {
+        this.tokens.delete(hash);
+      }
+    }
+  }
+
   consumeEmailToken(hash) {
-    const row = this.tokens.get(hash);
+    const row = this.getEmailToken(hash);
     if (!row) {
       return null;
     }
-    this.tokens.delete(hash);
+    this.deleteEmailToken(hash);
     return row;
   }
 
@@ -95,15 +131,24 @@ export class MemoryStore {
 
   insertWebhook(row) {
     this.webhooks.set(row.id, { ...row });
+    accountIndex(this.webhooksByAccount, row.account_id).add(row.id);
     return this.webhooks.get(row.id);
   }
 
   listWebhooks(accountId) {
-    return [...this.webhooks.values()].filter((row) => row.account_id === accountId);
+    const ids = this.webhooksByAccount.get(accountId);
+    if (!ids) {
+      return [];
+    }
+    return [...ids].map((id) => this.webhooks.get(id)).filter(Boolean);
   }
 
-  getWebhook(id) {
-    return this.webhooks.get(id) ?? null;
+  getWebhook(id, accountId) {
+    const row = this.webhooks.get(id);
+    if (!row || row.account_id !== accountId) {
+      return null;
+    }
+    return row;
   }
 
   deleteWebhook(id, accountId) {
@@ -112,22 +157,38 @@ export class MemoryStore {
       return false;
     }
     this.webhooks.delete(id);
+    this.webhooksByAccount.get(accountId)?.delete(id);
+    for (const [deliveryId, delivery] of this.deliveries) {
+      if (delivery.endpoint_id === id) {
+        this.deliveries.delete(deliveryId);
+        this.deliveriesByAccount.get(delivery.account_id)?.delete(deliveryId);
+      }
+    }
     return true;
   }
 
   insertDelivery(row) {
     this.deliveries.set(row.id, { ...row });
+    accountIndex(this.deliveriesByAccount, row.account_id).add(row.id);
     return this.deliveries.get(row.id);
   }
 
-  getDelivery(id) {
-    return this.deliveries.get(id) ?? null;
+  getDelivery(id, accountId) {
+    const row = this.deliveries.get(id);
+    if (!row || row.account_id !== accountId) {
+      return null;
+    }
+    return row;
   }
 
   listDeliveries(accountId) {
-    const ids = new Set(this.listWebhooks(accountId).map((row) => row.id));
-    return [...this.deliveries.values()]
-      .filter((row) => ids.has(row.endpoint_id))
+    const ids = this.deliveriesByAccount.get(accountId);
+    if (!ids) {
+      return [];
+    }
+    return [...ids]
+      .map((id) => this.deliveries.get(id))
+      .filter(Boolean)
       .sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
   }
 
@@ -147,8 +208,18 @@ export class MemoryStore {
         kind: row.kind,
         prefix: row.prefix,
         account_id: row.account_id,
+        revoked: Boolean(row.revoked),
       })),
       accounts: [...this.accounts.values()],
     };
   }
+}
+
+function accountIndex(map, accountId) {
+  let ids = map.get(accountId);
+  if (!ids) {
+    ids = new Set();
+    map.set(accountId, ids);
+  }
+  return ids;
 }

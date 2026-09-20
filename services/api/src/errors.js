@@ -1,20 +1,12 @@
 import { DOCS } from './schema.js';
 import { liveIdentity } from './identity.js';
-
-export function corsHeaders() {
-  return {
-    'access-control-allow-origin': '*',
-    'access-control-allow-methods': 'GET, POST, DELETE, OPTIONS',
-    'access-control-allow-headers': 'content-type, authorization',
-  };
-}
+import { redactSecrets } from './keys.js';
 
 export function json(status, body, extra = {}) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      ...corsHeaders(),
       ...extra,
     },
   });
@@ -33,7 +25,7 @@ export async function errorResponse(
     status,
     {
       ...identity,
-      error: { code, message, docs },
+      error: { code, message: redactSecrets(message), docs },
     },
     extra,
   );

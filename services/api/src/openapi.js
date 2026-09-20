@@ -1,3 +1,4 @@
+import { KEY_HEX_CHARS } from './keys.js';
 import { schemas } from './schema.js';
 
 export function buildOpenApi() {
@@ -181,10 +182,56 @@ export function buildOpenApi() {
           },
         },
       },
+      '/v1/keys': {
+        get: {
+          operationId: 'listKeys',
+          summary: 'Active key prefixes for this account. Secrets are never returned.',
+          responses: {
+            200: { description: 'Prefixes only', ...json('KeyListResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/keys/rotate': {
+        post: {
+          operationId: 'rotateKey',
+          summary:
+            'Issue a new key of the given kind. The previous key is revoked immediately. The new secret is shown once.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': { schema: ref('KeyKindRequest') },
+            },
+          },
+          responses: {
+            200: { description: 'New secret, shown once', ...json('KeyRotateResponse') },
+            400: { description: 'Rejected request', ...json('ErrorEnvelope') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/keys/revoke': {
+        post: {
+          operationId: 'revokeKey',
+          summary: 'Revoke keys of the given kind immediately. A lost key is regenerated, never retrieved.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': { schema: ref('KeyKindRequest') },
+            },
+          },
+          responses: {
+            200: { description: 'Revoked', ...json('KeyRevokeResponse') },
+            400: { description: 'Rejected request', ...json('ErrorEnvelope') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
       '/v1/billing/checkout': {
         post: {
           operationId: 'createCheckout',
-          summary: 'Stripe Checkout session in CAD for a published self-serve tier.',
+          summary:
+            'Paid checkout is deferred (ADR-006). Returns billing_unavailable.',
           requestBody: {
             required: true,
             content: {
@@ -192,21 +239,21 @@ export function buildOpenApi() {
             },
           },
           responses: {
-            200: { description: 'Checkout URL', ...json('CheckoutResponse') },
-            400: { description: 'Unknown plan', ...json('ErrorEnvelope') },
-            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
-            429: { description: 'Rate limited', ...json('ErrorEnvelope') },
+            401: { description: 'Missing or unknown live key', ...json('ErrorEnvelope') },
+            501: {
+              description: 'Billing unavailable; all tiers are free during early access',
+              ...json('ErrorEnvelope'),
+            },
           },
         },
       },
       '/v1/billing/webhook': {
         post: {
           operationId: 'stripeWebhook',
-          summary: 'Stripe webhook. Upgrades the plan. Never invents overage.',
+          summary: 'Not listening. Billing deferred (ADR-006).',
           security: [],
           responses: {
-            200: { description: 'Received', ...json('WebhookResponse') },
-            400: { description: 'Invalid event', ...json('ErrorEnvelope') },
+            404: { description: 'No endpoint', ...json('ErrorEnvelope') },
           },
         },
       },
@@ -222,6 +269,8 @@ export function buildOpenApi() {
         post: {
           operationId: 'createWebhook',
           summary: 'Register an HTTPS endpoint. Signing secret is shown once.',
+          description:
+            'The whsec_ secret is returned only on create. Deliveries are HMAC-SHA256 over t + "." + body as takehome-signature: t=<unix>,v1=<hex>. Receivers must reject |now - t| > 300 seconds (5 minutes).',
           requestBody: {
             required: true,
             content: {
@@ -238,6 +287,42 @@ export function buildOpenApi() {
             200: { description: 'Created', ...json('WebhookCreateResponse') },
             400: { description: 'Rejected request', ...json('ErrorEnvelope') },
             401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+          },
+        },
+      },
+      '/v1/webhooks/{id}': {
+        get: {
+          operationId: 'getWebhook',
+          summary: 'One webhook endpoint on this account. Unknown or foreign IDs are 404.',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+            },
+          ],
+          responses: {
+            200: { description: 'Endpoint', ...json('WebhookGetResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            404: { description: 'Unknown webhook', ...json('ErrorEnvelope') },
+          },
+        },
+        delete: {
+          operationId: 'deleteWebhook',
+          summary: 'Delete a webhook endpoint on this account. Unknown or foreign IDs are 404.',
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'string' },
+            },
+          ],
+          responses: {
+            200: { description: 'Deleted', ...json('WebhookDeleteResponse') },
+            401: { description: 'Missing or unknown key', ...json('ErrorEnvelope') },
+            404: { description: 'Unknown webhook', ...json('ErrorEnvelope') },
           },
         },
       },
@@ -413,7 +498,7 @@ export function buildOpenApi() {
       '/health': {
         get: {
           operationId: 'health',
-          summary: 'Liveness plus a probe calculation.',
+          summary: 'Liveness only. No versions, dependencies, or environment.',
           security: [],
           responses: {
             200: { description: 'OK', ...json('HealthResponse') },
@@ -462,8 +547,14 @@ export function buildOpenApi() {
           type: 'object',
           required: ['test_key', 'live_key', 'message'],
           properties: {
-            test_key: { type: 'string', pattern: '^np_test_[0-9a-f]{48}$' },
-            live_key: { type: 'string', pattern: '^np_live_[0-9a-f]{48}$' },
+            test_key: {
+              type: 'string',
+              pattern: `^np_test_[0-9a-f]{${KEY_HEX_CHARS}}$`,
+            },
+            live_key: {
+              type: 'string',
+              pattern: `^np_live_[0-9a-f]{${KEY_HEX_CHARS}}$`,
+            },
             message: { type: 'string' },
           },
         },

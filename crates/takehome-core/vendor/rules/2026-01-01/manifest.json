@@ -1,0 +1,33 @@
+{
+  "rule_set_version": "2026-01-01",
+  "effective_from": "2026-01-01",
+    "effective_to": "2026-07-01",
+  "published_by": "Canada Revenue Agency",
+  "sources": [
+    {
+      "source_document": "T4127 Payroll Deductions Formulas - 122nd Edition Effective January 1, 2026",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jan/t4127-jan-payroll-deductions-formulas-computer-programs.html",
+      "retrieved_at": "2026-09-11T23:40:35Z",
+      "scalars_verified_at": "2026-09-12T02:50:00Z",
+      "source_sha256": "97a57a3072ef8b9caa35450e3aefb5c18f86b332795e5a0b7686860127a6319b",
+      "files": [
+        "federal.json",
+        "ab.json",
+        "bc.json",
+        "mb.json",
+        "nb.json",
+        "nl.json",
+        "ns.json",
+        "nt.json",
+        "nu.json",
+        "on.json",
+        "pe.json",
+        "sk.json",
+        "yt.json",
+        "cpp.json",
+        "ei.json",
+        "qpip.json"
+      ]
+    }
+  ]
+}

@@ -104,12 +104,12 @@ test('18. a 1000-item batch is metered as 1000, not 1', async () => {
   assert.equal(status, 200);
   assert.equal(json.results.length, 1000);
   assert.equal(world.store.getUsage(world.account.id, '2026-09-01'), 1000);
-  assert.equal(response.headers.get('x-usage-remaining'), '0');
+  assert.equal(response.headers.get('x-usage-remaining'), '99000');
 });
 
 test('19. over-quota mid-batch rejects the whole batch with 402 and does not charge', async () => {
   const world = createWorld();
-  world.store.setUsage(world.account.id, '2026-09-01', 1);
+  world.store.setUsage(world.account.id, '2026-09-01', 99_100);
   const { status, json } = await call(
     'POST',
     '/v1/deductions/batch',
@@ -122,7 +122,7 @@ test('19. over-quota mid-batch rejects the whole batch with 402 and does not cha
   assert.match(json.error.message, /1000/);
   assert.equal(json.results, undefined);
   assert.equal(json.employee, undefined);
-  assert.equal(world.store.getUsage(world.account.id, '2026-09-01'), 1);
+  assert.equal(world.store.getUsage(world.account.id, '2026-09-01'), 99_100);
 });
 
 test('20. the same batch twice is byte-identical', async () => {

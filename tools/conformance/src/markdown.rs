@@ -44,11 +44,11 @@ pub fn render(report: &Report, methodology: &str) -> String {
 
     out.push_str("## Sampling design\n\n");
     out.push_str("Published PDOC queue: every **distinct** July live-edition boundary\n");
-    out.push_str("form the salary UI can enter — **ten** of fourteen legal P, both claim\n");
+    out.push_str("form the salary UI can enter: **ten** of fourteen legal P, both claim\n");
     out.push_str("codes, fingerprint-deduped. The earlier **15,264** figure assumed all\n");
     out.push_str("fourteen P; PDOC cannot capture annual / semi-annual / quarterly /\n");
     out.push_str("hourly (`1`, `2`, `4`, `2000`). Those forms, plus `$0` and sub-dollar\n");
-    out.push_str("gross, are the named **`uncapturable`** class below — validated by\n");
+    out.push_str("gross, are the named **`uncapturable`** class below: validated by\n");
     out.push_str("invariants and the differential oracle (same as the interior ladder),\n");
     out.push_str("not by silently shortening a queue that still claims 15,264.\n\n");
     out.push_str("The spec’s “250,000 cases” target is a case *list*, not a PDOC queue.\n");
@@ -192,7 +192,7 @@ pub fn render(report: &Report, methodology: &str) -> String {
                 let note = if corpus.oracle_class == "t4127_worked_examples" {
                     "*not a PDOC corpus; T4127 Chapter 5 worked examples + invariants. Weaker evidence than PDOC. Does not inherit the Option 1 PDOC agreement rate.*"
                 } else if corpus.id == "year-projection-2026" {
-                    "*not a PDOC corpus; year-projection invariants (API tests 22–29), not per-cell PDOC*"
+                    "*not a PDOC corpus; year-projection invariants (API tests 22-29), not per-cell PDOC*"
                 } else {
                     "*not a PDOC corpus; invariants + differential oracle (§16.2), not per-cell PDOC*"
                 };
@@ -218,7 +218,7 @@ pub fn render(report: &Report, methodology: &str) -> String {
     } else {
         out.push_str("| id | provincial_tax | federal_tax | cpp | net_pay |\n|--|--|--|--|--|\n");
         for d in &open {
-            let cell = |k: &str| d.delta.get(k).map(String::as_str).unwrap_or("—");
+            let cell = |k: &str| d.delta.get(k).map(String::as_str).unwrap_or("-");
             writeln!(
                 out,
                 "| `{}` | {} | {} | {} | {} |",
@@ -238,13 +238,13 @@ pub fn render(report: &Report, methodology: &str) -> String {
         }
     }
 
-    out.push_str("### Closed — D-007 biweekly mid-year K2\n\n");
+    out.push_str("### Closed: D-007 biweekly mid-year K2\n\n");
     out.push_str("**Vector:** `on-biweekly-midyear-k2-max` (matches under `pdoc_observed`).\n");
     out.push_str("Published as **M-002**. PDOC does not force `base_max` in the reaching\n");
     out.push_str("period. That is a fact about PDOC, stated with inversion in\n");
     out.push_str("[findings/001](docs/findings/001-k2-maximum-in-reaching-period.md).\n\n");
 
-    out.push_str("### Open — M-003 PDOC midpoint direction\n\n");
+    out.push_str("### Open: M-003 PDOC midpoint direction\n\n");
     out.push_str("Live disagreement (counts in the rate). T4127 half-up at a midpoint\n");
     out.push_str("goes up; PDOC is sometimes 1¢ lower. Not Alberta-specific (AB is dense).\n");
     out.push_str("Finished July queue: 164 one-cent disagreements (counted in the rate) and\n");
@@ -254,12 +254,84 @@ pub fn render(report: &Report, methodology: &str) -> String {
     out.push_str("[findings/002](docs/findings/002-pdoc-midpoint-direction.md).\n\n");
 
     out.push_str("## Cases where PDOC is believed wrong\n\n");
-    out.push_str("None settled. M-003 is an open PDOC midpoint-direction delta — not a declared PDOC error.\n");
+    out.push_str("None settled. M-003 is an open PDOC midpoint-direction delta: not a declared PDOC error.\n");
     out.push_str("M-002 remains a selectable `k2_method` difference under the default.\n\n");
 
     out.push_str("## Coverage gaps\n\n");
     for gap in &report.coverage_gaps {
         writeln!(out, "- {gap}").ok();
+    }
+    out.push('\n');
+
+    out.push_str("## PDOC evidence publication\n\n");
+    out.push_str("Ruling **(a)**: JSON cache records are published as a release\n");
+    out.push_str("archive, not in git. PNG screenshots stay local. Their SHA-256\n");
+    out.push_str("values are recorded here so a missing file cannot stay green only\n");
+    out.push_str("because the report never looked at it.\n\n");
+    out.push_str("| | |\n|--|--|\n");
+    writeln!(out, "| ruling | `{}` |", report.pdoc_evidence.ruling).ok();
+    writeln!(
+        out,
+        "| records in git | no (`data/pdoc-cache/records/` stays local; {} forms) |",
+        report.pdoc_evidence.record_count
+    )
+    .ok();
+    writeln!(
+        out,
+        "| archive | `{}` |",
+        report.pdoc_evidence.archive_filename
+    )
+    .ok();
+    writeln!(
+        out,
+        "| archive SHA-256 | `{}` |",
+        report.pdoc_evidence.archive_sha256
+    )
+    .ok();
+    writeln!(
+        out,
+        "| download | {} |",
+        report.pdoc_evidence.archive_download
+    )
+    .ok();
+    writeln!(
+        out,
+        "| screenshots published | no (`data/pdoc-screenshots/`, gitignored) |"
+    )
+    .ok();
+    writeln!(
+        out,
+        "| screenshot catalog | [`{}`]({}) |",
+        report.pdoc_evidence.catalog_path, report.pdoc_evidence.catalog_path
+    )
+    .ok();
+    writeln!(
+        out,
+        "| catalog digest (SHA-256 of sorted `key<space>sha256` lines) | `{}` |",
+        report.pdoc_evidence.screenshot_catalog_sha256
+    )
+    .ok();
+    out.push('\n');
+    out.push_str("After download, a stranger can check the claim:\n\n");
+    out.push_str("```\n");
+    writeln!(
+        out,
+        "echo {}  {} | sha256sum -c",
+        report.pdoc_evidence.archive_sha256, report.pdoc_evidence.archive_filename
+    )
+    .ok();
+    out.push_str("tar --zstd -xf ");
+    out.push_str(&report.pdoc_evidence.archive_filename);
+    out.push_str(
+        " && python3 -c \"import json,hashlib,pathlib;h={d['key']:d['screenshotSha256'] for d in (json.loads(p.read_text()) for p in pathlib.Path('records').glob('*.json'))};digest=hashlib.sha256(''.join(f'{k} {h[k]}\\n' for k in sorted(h)).encode()).hexdigest();assert digest=='",
+    );
+    out.push_str(&report.pdoc_evidence.screenshot_catalog_sha256);
+    out.push_str("'\"\n");
+    out.push_str("```\n\n");
+    out.push_str("### M1 screenshot hashes (local PNGs)\n\n");
+    out.push_str("| id | sha256 |\n|--|--|\n");
+    for row in &report.pdoc_evidence.m1_screenshot_hashes {
+        writeln!(out, "| `{}` | `{}` |", row.id, row.sha256).ok();
     }
     out.push('\n');
 
@@ -298,7 +370,7 @@ pub fn render(report: &Report, methodology: &str) -> String {
     out.push_str("| Rule-change detection; signed retrying webhooks | yes |\n");
     out.push_str("| 2027 preview rule set, proposed, warning asserted | yes |\n");
     out.push_str("| Conformance re-run, no PDOC regression, new classes named | **this file** |\n");
-    out.push_str("| `pdoc-bonus-2026` named pending, not in 8838/9002 | yes |\n");
+    out.push_str("| `pdoc-bonus-2026` captured, own class, not in 8838/9002 | yes |\n");
     out.push_str("| `rounding_compat: pdoc` still typed NotImplemented | yes (finding 002) |\n");
     out.push_str("| Tagged `v0.5.0-m4` | after this report is committed |\n");
     out.push_str(

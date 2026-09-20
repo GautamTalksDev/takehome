@@ -1,3 +1,67 @@
+/**
+ * Stripe helpers kept warm while paid billing is deferred (ADR-006).
+ * Live routes in handler.js must not import this module until checkout
+ * and the webhook are turned back on with real products and prices.
+ */
+import { createHmac } from 'node:crypto';
+import { equalDigest } from './keys.js';
+
+/** Stripe replay window. Same 5-minute bound as customer webhooks. */
+export const STRIPE_TOLERANCE_SEC = 300;
+
+/**
+ * A10:2025 item 55. Stripe-compatible `t=<unix>,v1=<hex>` over
+ * `timestamp.payload`. HMAC-SHA256, compared with equalDigest.
+ */
+export function signStripeEvent(secret, raw, timestampSec) {
+  const t = String(timestampSec);
+  const mac = createHmac('sha256', secret).update(`${t}.${raw}`).digest('hex');
+  return `t=${t},v1=${mac}`;
+}
+
+export function verifyStripeSignature(
+  secret,
+  raw,
+  header,
+  nowSec,
+  toleranceSec = STRIPE_TOLERANCE_SEC,
+) {
+  if (!secret || !header) {
+    return false;
+  }
+  const parts = Object.fromEntries(
+    String(header)
+      .split(',')
+      .map((part) => part.trim().split('='))
+      .filter((pair) => pair.length === 2),
+  );
+  const t = Number.parseInt(parts.t, 10);
+  if (!Number.isFinite(t) || !parts.v1) {
+    return false;
+  }
+  if (Math.abs(nowSec - t) > toleranceSec) {
+    return false;
+  }
+  const expected = createHmac('sha256', secret)
+    .update(`${t}.${raw}`)
+    .digest('hex');
+  const got = String(parts.v1);
+  if (got.length !== expected.length) {
+    return false;
+  }
+  return equalDigest(Buffer.from(got, 'hex'), Buffer.from(expected, 'hex'));
+}
+
+export function constructStripeEvent(raw, header, secret, nowSec) {
+  if (!secret) {
+    throw new Error('missing stripe webhook secret');
+  }
+  if (!verifyStripeSignature(secret, raw, header, nowSec)) {
+    throw new Error('invalid stripe signature');
+  }
+  return JSON.parse(raw);
+}
+
 export function stripeClient(env) {
   if (env.STRIPE) {
     return env.STRIPE;
@@ -33,8 +97,8 @@ export function stripeClient(env) {
         price: input.price,
       };
     },
-    constructEvent(raw) {
-      return JSON.parse(raw);
+    constructEvent(raw, header, secret, nowSec) {
+      return constructStripeEvent(raw, header, secret, nowSec);
     },
   };
 }

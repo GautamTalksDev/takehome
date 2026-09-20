@@ -227,3 +227,28 @@ describe("policy", () => {
     }
   });
 });
+
+describe("Appendix P bonus locators", () => {
+  it("current bonus amount is Total current bonus payable, not a /bonus/i grab", () => {
+    const amount = /Total current bonus payable/i;
+    const tooBroad = /bonus/i;
+    const liveAmount =
+      "Total current bonus payable in_canadian_funds (required)";
+    const radio = "A bonus payment";
+    const noBonus = "No bonus or retroactive payment";
+    const previous = "Previous bonus(es) in_canadian_funds";
+    const f5bYtd =
+      "Deductions for Canada Pension Plan additional contributions deducted from previous bonus(es) and retroactive payment(s)";
+    assert.match(liveAmount, amount);
+    assert.doesNotMatch(radio, amount);
+    assert.doesNotMatch(noBonus, amount);
+    assert.doesNotMatch(previous, amount);
+    assert.doesNotMatch(f5bYtd, amount);
+    // The previous harness used tooBroad.nth(last), which selected f5bYtd.
+    assert.match(radio, tooBroad);
+    assert.match(noBonus, tooBroad);
+    assert.match(previous, tooBroad);
+    assert.match(f5bYtd, tooBroad);
+  });
+});
+

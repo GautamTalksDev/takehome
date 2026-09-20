@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import { FIRST_CALL_NET_PAY } from '../../lib/first-call.js';
 ---
 
-<Base title="Verify email — Takehome">
+<Base title="Verify email: Takehome">
   <article class="prose">
     <h1>Verify email</h1>
     <p class="lede">
@@ -23,7 +23,7 @@ import { FIRST_CALL_NET_PAY } from '../../lib/first-call.js';
       <a href="/pricing/">Pricing</a>
     </p>
   </article>
-  <script is:inline>
+  <script>
     function apiOrigin() {
       const fromDoc = document.documentElement.getAttribute('data-api');
       if (fromDoc) return fromDoc;

@@ -9,7 +9,7 @@ This file is the script, not a description of one.
 ## Script
 
 Use a clean browser profile (no Takehome tabs, no saved passwords for this
-site). A terminal is allowed — this is an API.
+site). A terminal is allowed: this is an API.
 
 1. Start the stopwatch.
 2. Open https://takehome.gautamkhosla.com/
@@ -48,10 +48,10 @@ script against a local stack that serves the same pages and the same Worker
 handler:
 
 ```bash
-# terminal 1 — default port 8787; set PORT if that bind is taken
+# terminal 1: default port 8787; set PORT if that bind is taken
 cd services/api && npm run local
 
-# terminal 2 — if the API is not on 8787, rebuild so the site targets it
+# terminal 2: if the API is not on 8787, rebuild so the site targets it
 cd web/site && PUBLIC_API_ORIGIN=http://127.0.0.1:8787 npm run build
 npx astro preview --host 127.0.0.1 --port 4321
 ```

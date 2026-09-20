@@ -1,13 +1,13 @@
 {
   "status": "complete",
   "grid_version": "2026.1",
-  "engine_build_sha256": "b793f5379e9b1cfa268c3eea3472fd31921565ea1766b980f77652e646dd2134",
+  "engine_build_sha256": "b8a89f98fa2fcf25715aa6171bdf0b2d2b00ad2fe595b1187c119bb7cd9c77bd",
   "rule_set_versions": [
     "2026-01-01",
     "2026-07-01",
     "2027-01-01"
   ],
-  "rule_set_sha256": "d864a7e991a770ece4649bad21be4aa7db7e9f4a331d8c2e87ac0de5e4aa52d2",
+  "rule_set_sha256": "cf000bd165fe7b7d6f5244ff2111a9afe54ce5931e5574c6688784457f62b897",
   "pdoc_identity": "2026-06-11 (M1); form:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (grid queue)",
   "browser": "chromium 153.0.8010.12",
   "harness_git_sha": "pdoc-oracle-harness",
@@ -11730,10 +11730,494 @@
       "id": "pdoc-bonus-2026",
       "oracle_class": "pdoc",
       "cases_defined": 20,
-      "cases_measured": 0,
-      "pending": 20,
-      "exact_matches": 0,
-      "disagreements": []
+      "cases_measured": 20,
+      "pending": 0,
+      "exact_matches": 7,
+      "disagreements": [
+        {
+          "id": "on-weekly-1000-bonus-2500",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "2500.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "1000.00",
+            "pay_period": 52,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "204.25",
+            "cpp2": "0.00",
+            "ei": "57.05",
+            "federal_tax": "405.09",
+            "net_pay": "2668.55",
+            "provincial_tax": "165.06",
+            "total_deductions": "831.45"
+          },
+          "pdoc": {
+            "cpp": "204.25",
+            "cpp2": "0.00",
+            "ei": "57.05",
+            "federal_tax": "405.09",
+            "net_pay": "2668.56",
+            "provincial_tax": "165.05",
+            "total_deductions": "831.44"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "on-biweekly-2000-bonus-1000",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "1000.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "2000.00",
+            "pay_period": 26,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "170.49",
+            "cpp2": "0.00",
+            "ei": "48.90",
+            "federal_tax": "292.61",
+            "net_pay": "2349.73",
+            "provincial_tax": "138.27",
+            "total_deductions": "650.27"
+          },
+          "pdoc": {
+            "cpp": "170.49",
+            "cpp2": "0.00",
+            "ei": "48.90",
+            "federal_tax": "292.61",
+            "net_pay": "2349.74",
+            "provincial_tax": "138.26",
+            "total_deductions": "650.26"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "on-biweekly-2000-bonus-4999.99",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "4999.99",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "2000.00",
+            "pay_period": 26,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.16",
+            "net_pay": "5238.19",
+            "provincial_tax": "429.05",
+            "total_deductions": "1761.80"
+          },
+          "pdoc": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.16",
+            "net_pay": "5238.20",
+            "provincial_tax": "429.04",
+            "total_deductions": "1761.79"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "on-biweekly-2000-bonus-5000",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "5000.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "2000.00",
+            "pay_period": 26,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.16",
+            "net_pay": "5238.20",
+            "provincial_tax": "429.05",
+            "total_deductions": "1761.80"
+          },
+          "pdoc": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.16",
+            "net_pay": "5238.21",
+            "provincial_tax": "429.04",
+            "total_deductions": "1761.79"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "on-biweekly-2000-bonus-5000.01",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "5000.01",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "2000.00",
+            "pay_period": 26,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.17",
+            "net_pay": "5238.20",
+            "provincial_tax": "429.05",
+            "total_deductions": "1761.81"
+          },
+          "pdoc": {
+            "cpp": "408.49",
+            "cpp2": "0.00",
+            "ei": "114.10",
+            "federal_tax": "810.17",
+            "net_pay": "5238.21",
+            "provincial_tax": "429.04",
+            "total_deductions": "1761.80"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "ab-monthly-4000-bonus-2000",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "2000.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "4000.00",
+            "pay_period": 12,
+            "province": "AB",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "339.65",
+            "cpp2": "0.00",
+            "ei": "97.80",
+            "federal_tax": "569.29",
+            "net_pay": "4700.05",
+            "provincial_tax": "293.21",
+            "total_deductions": "1299.95"
+          },
+          "pdoc": {
+            "cpp": "339.65",
+            "cpp2": "0.00",
+            "ei": "97.80",
+            "federal_tax": "569.30",
+            "net_pay": "4700.04",
+            "provincial_tax": "293.21",
+            "total_deductions": "1299.96"
+          },
+          "delta": {
+            "federal_tax": "-0.01",
+            "net_pay": "0.01",
+            "total_deductions": "-0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "bc-weekly-1200-bonus-800",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "800.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "1200.00",
+            "pay_period": 52,
+            "province": "BC",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "115.00",
+            "cpp2": "0.00",
+            "ei": "32.60",
+            "federal_tax": "266.59",
+            "net_pay": "1471.89",
+            "provincial_tax": "113.92",
+            "total_deductions": "528.11"
+          },
+          "pdoc": {
+            "cpp": "115.00",
+            "cpp2": "0.00",
+            "ei": "32.60",
+            "federal_tax": "266.60",
+            "net_pay": "1471.88",
+            "provincial_tax": "113.92",
+            "total_deductions": "528.12"
+          },
+          "delta": {
+            "federal_tax": "-0.01",
+            "net_pay": "0.01",
+            "total_deductions": "-0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "mb-semimonthly-2500-bonus-1500",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "1500.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "2500.00",
+            "pay_period": 24,
+            "province": "MB",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "229.32",
+            "cpp2": "0.00",
+            "ei": "65.20",
+            "federal_tax": "513.03",
+            "net_pay": "2824.23",
+            "provincial_tax": "368.22",
+            "total_deductions": "1175.77"
+          },
+          "pdoc": {
+            "cpp": "229.32",
+            "cpp2": "0.00",
+            "ei": "65.20",
+            "federal_tax": "513.03",
+            "net_pay": "2824.22",
+            "provincial_tax": "368.23",
+            "total_deductions": "1175.78"
+          },
+          "delta": {
+            "net_pay": "0.01",
+            "provincial_tax": "-0.01",
+            "total_deductions": "-0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "sk-weekly-900-bonus-3000",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "3000.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "900.00",
+            "pay_period": 52,
+            "province": "SK",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "228.05",
+            "cpp2": "0.00",
+            "ei": "63.57",
+            "federal_tax": "456.83",
+            "net_pay": "2813.83",
+            "provincial_tax": "337.72",
+            "total_deductions": "1086.17"
+          },
+          "pdoc": {
+            "cpp": "228.05",
+            "cpp2": "0.00",
+            "ei": "63.57",
+            "federal_tax": "456.84",
+            "net_pay": "2813.81",
+            "provincial_tax": "337.73",
+            "total_deductions": "1086.19"
+          },
+          "delta": {
+            "federal_tax": "-0.01",
+            "net_pay": "0.02",
+            "provincial_tax": "-0.01",
+            "total_deductions": "-0.02"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "nb-monthly-3500-bonus-500",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "500.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "3500.00",
+            "pay_period": 12,
+            "province": "NB",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "220.65",
+            "cpp2": "0.00",
+            "ei": "65.20",
+            "federal_tax": "310.52",
+            "net_pay": "3161.54",
+            "provincial_tax": "242.09",
+            "total_deductions": "838.46"
+          },
+          "pdoc": {
+            "cpp": "220.65",
+            "cpp2": "0.00",
+            "ei": "65.20",
+            "federal_tax": "310.52",
+            "net_pay": "3161.55",
+            "provincial_tax": "242.08",
+            "total_deductions": "838.45"
+          },
+          "delta": {
+            "net_pay": "-0.01",
+            "provincial_tax": "0.01",
+            "total_deductions": "0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "nl-weekly-1100-bonus-1100",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "1100.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "1100.00",
+            "pay_period": 52,
+            "province": "NL",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "126.90",
+            "cpp2": "0.00",
+            "ei": "35.86",
+            "federal_tax": "236.87",
+            "net_pay": "1571.70",
+            "provincial_tax": "228.67",
+            "total_deductions": "628.30"
+          },
+          "pdoc": {
+            "cpp": "126.90",
+            "cpp2": "0.00",
+            "ei": "35.86",
+            "federal_tax": "236.87",
+            "net_pay": "1571.69",
+            "provincial_tax": "228.68",
+            "total_deductions": "628.31"
+          },
+          "delta": {
+            "net_pay": "0.01",
+            "provincial_tax": "-0.01",
+            "total_deductions": "-0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "pe-biweekly-1600-bonus-4000",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "4000.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "1600.00",
+            "pay_period": 26,
+            "province": "PE",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "325.19",
+            "cpp2": "0.00",
+            "ei": "91.28",
+            "federal_tax": "629.03",
+            "net_pay": "3948.54",
+            "provincial_tax": "605.96",
+            "total_deductions": "1651.46"
+          },
+          "pdoc": {
+            "cpp": "325.19",
+            "cpp2": "0.00",
+            "ei": "91.28",
+            "federal_tax": "629.02",
+            "net_pay": "3948.54",
+            "provincial_tax": "605.97",
+            "total_deductions": "1651.46"
+          },
+          "delta": {
+            "federal_tax": "0.01",
+            "provincial_tax": "-0.01"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        },
+        {
+          "id": "on-53-weekly-1000-bonus-2500",
+          "request": {
+            "as_of": "2026-07-15",
+            "bonus": "2500.00",
+            "cpp_months": 12,
+            "federal_claim_code": 1,
+            "gross_pay": "1000.00",
+            "pay_period": 53,
+            "province": "ON",
+            "provincial_claim_code": 1
+          },
+          "engine": {
+            "cpp": "204.32",
+            "cpp2": "0.00",
+            "ei": "57.05",
+            "federal_tax": "405.99",
+            "net_pay": "2626.97",
+            "provincial_tax": "205.67",
+            "total_deductions": "873.03"
+          },
+          "pdoc": {
+            "cpp": "204.32",
+            "cpp2": "0.00",
+            "ei": "57.05",
+            "federal_tax": "406.00",
+            "net_pay": "2626.95",
+            "provincial_tax": "205.68",
+            "total_deductions": "873.05"
+          },
+          "delta": {
+            "federal_tax": "-0.01",
+            "net_pay": "0.02",
+            "provincial_tax": "-0.01",
+            "total_deductions": "-0.02"
+          },
+          "explanation": "engine and PDOC differ on identically specified bonus inputs"
+        }
+      ],
+      "agreement_rate": "7/20"
     },
     {
       "id": "year-projection-2026",
@@ -17689,20 +18173,115 @@
   "coverage_gaps": [
     "Quebec / QPIP: EngineError::JurisdictionNotSupported. Never a federal-only T2=0 success. docs/jurisdictions.md.",
     "Interior log-ladder of grid 2026.1: engine invariants (§16.2 proptests over thirteen jurisdictions) and differential oracle only. Not a per-cell PDOC comparison.",
-    "Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle — same as the interior ladder. Live PDOC salary UI cannot enter them.",
+    "Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle: same as the interior ladder. Live PDOC salary UI cannot enter them.",
     "Grid PDOC stratum: 9762 distinct capturable July forms (fingerprint-deduped). Queue finished: 8818 match, 164 M-003 1¢ disagreements (counted), 780 PDOC step-2 would not advance (named, not in the rate). Superseded all-14-P count was 15264.",
     "January-only BC/NL/PE amounts retired from live PDOC: invariants + differential vs July sibling.",
     "PDOC does not expose Option 2 (cumulative averaging). Live PDOC (observed 2026-06-11, screen WLCM) offers Salary, Commission, Pension, and CPP/EI verification only; there is no Option 2 / S1 / cumulative-averaging control, so no PDOC vectors were captured. Option 2 is a distinct oracle class `t4127_worked_examples` (T4127 Chapter 5 worked examples plus invariants) with weaker evidence than PDOC. It does not inherit the Option 1 PDOC agreement rate.",
     "DateBeforeCoverage cells: engine error path, not a PDOC form.",
     "M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented.",
-    "PDOC bonus class `pdoc-bonus-2026`: 20 defined cases. Expected amounts stay PENDING_PDOC until captured through tools/pdoc-oracle; never filled from the engine. Named pending; not in the overall Option 1 PDOC rate.",
-    "Year projection `year-projection-2026`: oracle class `invariants` (API tests 22–29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md."
+    "PDOC bonus class `pdoc-bonus-2026`: 20 cases captured from live PDOC on 2026-09-19 (locator: Total current bonus payable). Own class; not in the overall Option 1 PDOC rate 8838/9002. One-cent field disagreements are listed on this corpus (same neighbourhood as M-003); expected amounts are PDOC, never the engine.",
+    "Year projection `year-projection-2026`: oracle class `invariants` (API tests 22-29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md."
   ],
   "methodology": [
     "defect-vs-disagreement",
     "M-001",
     "M-002",
     "M-003",
-    "ADR-003"
-  ]
+    "ADR-003",
+    "pdoc-evidence-records-only"
+  ],
+  "pdoc_evidence": {
+    "ruling": "records-only",
+    "records_published": true,
+    "screenshots_published": false,
+    "record_count": 9010,
+    "screenshot_hash_count": 9010,
+    "screenshot_catalog_sha256": "554a54278727bb460e7f2710cde2b6e31b750ea57c4a4ee6735eb2e4d02a71ea",
+    "catalog_path": "data/pdoc-cache/screenshot-hashes.json",
+    "archive_filename": "takehome-conformance-corpus-2026.1.tar.zst",
+    "archive_sha256": "00a68d0bef8835f8271039981c22bcaca54ff5f0786c33fd3c5b346b27a0023f",
+    "archive_download": "https://github.com/takehome-ca/takehome/releases/download/conformance-corpus-2026.1/takehome-conformance-corpus-2026.1.tar.zst",
+    "m1_screenshot_hashes": [
+      {
+        "id": "on-weekly-600-cc1",
+        "sha256": "6e90c7ca206a1f07632715f82276c2d0134cc6f7c50e142eae6ee52bf717e3e5"
+      },
+      {
+        "id": "on-weekly-1000-cc1",
+        "sha256": "ecac47e3146e41ff1fbd4a56318a63c8db2389fa50a37d50203c32756dfde806"
+      },
+      {
+        "id": "on-weekly-2000-cc1",
+        "sha256": "a1b566e315ffe1e519a59648a2e9646a1b2064b8976a1806d4591bd4f4ddef47"
+      },
+      {
+        "id": "on-weekly-above-ympe",
+        "sha256": "3e6cbfb0f0c62c4cca7c6634ba4b0f3d3a865f951f5a21c46a1956365b9e9c92"
+      },
+      {
+        "id": "on-weekly-above-yampe",
+        "sha256": "e5396f02628950b636f91700dd592b8890d1b9ce5258ce4f76f8d78bcbaf616f"
+      },
+      {
+        "id": "on-weekly-bpaf-phaseout",
+        "sha256": "c6b0c671c880d3ad5312fc82a4b724ce6c70b114cf66e517147776781367be31"
+      },
+      {
+        "id": "on-weekly-surtax-tier1",
+        "sha256": "39a8d38e824922be04b59fc089067bd19291c94ebd539da244ba798e3089efcf"
+      },
+      {
+        "id": "on-weekly-surtax-tier2",
+        "sha256": "36badeb15aee410cad5d7be1b14a49b83b11d156e07abfa1170cd1b96d8a7b15"
+      },
+      {
+        "id": "on-v2-tier0-at-or-below-20k",
+        "sha256": "5703bdb1253413de765e87c55b64fe1a3b018d6e5b562bbbccff7c29efae86be"
+      },
+      {
+        "id": "on-v2-tier1-20k-36k",
+        "sha256": "9fe68bf570ce11783b7c20b1a9f4dd8d993ce8f364d96a00d1aa04bc58be2c48"
+      },
+      {
+        "id": "on-v2-tier2-36k-48k",
+        "sha256": "d60354ddb5f7fa18fe148345166b53aa890677765e40fc0c4124f4d031371529"
+      },
+      {
+        "id": "on-v2-tier3-48k-72k",
+        "sha256": "5298a5310dbc198164097bf781eb5a2a6381cf5238cdaa82f85a46383d68e712"
+      },
+      {
+        "id": "on-v2-tier4-72k-200k",
+        "sha256": "cfa9c8f17f957767de88433d8550405e76389e13b29c745be6085a52b664732c"
+      },
+      {
+        "id": "on-v2-tier5-above-200k",
+        "sha256": "41f95b80b1a7b7fb3c615863768563a532a9cf47ff137a5c740fd3f5863625c2"
+      },
+      {
+        "id": "on-weekly-claim-code-e",
+        "sha256": "4638100cbb54d573c8e86721c25fc7d0a0dc51e0e4f247122b04e63b3671df36"
+      },
+      {
+        "id": "on-weekly-claim-code-0",
+        "sha256": "584685a947f4b9f6c39e341971d01d8449f972e74b2576fd6dfa2fd0ab97d2b2"
+      },
+      {
+        "id": "on-weekly-direct-tc-tcp",
+        "sha256": "e4237a6dfceca01aad822854fac07dbe09b7b38f04d40c55610cd308b4075920"
+      },
+      {
+        "id": "on-monthly-1000-cc1",
+        "sha256": "82a6d05b3d3cbf8637a08eb0a0a9c3a1e9f3935deaea491b5cca279ad5ce064e"
+      },
+      {
+        "id": "on-biweekly-midyear-k2-max",
+        "sha256": "7ffb4f821d664bba20b2c09b05903520505344f10c8dab61bca5f772f155e021"
+      },
+      {
+        "id": "on-weekly-l-and-u1",
+        "sha256": "af83d873b3c5099adde12dfe9bec2aed0fac85e1f16153e30aff786eb1b25d77"
+      }
+    ]
+  }
 }

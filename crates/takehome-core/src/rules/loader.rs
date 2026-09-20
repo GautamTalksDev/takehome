@@ -8,6 +8,7 @@ use crate::rules::schema::{
     CppParams, EiParams, Jurisdiction, JurisdictionCode, LoadError, QpipParams, RuleSet,
     RuleSetStatus,
 };
+use crate::rules::signature::{verify_rules_file, SignatureError};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::sync::LazyLock;
@@ -15,161 +16,161 @@ use thiserror::Error;
 
 const MANIFEST_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/manifest.json"
+    "/vendor/rules/2026-01-01/manifest.json"
 ));
 const FEDERAL_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/federal.json"
+    "/vendor/rules/2026-01-01/federal.json"
 ));
 const AB_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/ab.json"
+    "/vendor/rules/2026-01-01/ab.json"
 ));
 const BC_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/bc.json"
+    "/vendor/rules/2026-01-01/bc.json"
 ));
 const MB_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/mb.json"
+    "/vendor/rules/2026-01-01/mb.json"
 ));
 const NB_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/nb.json"
+    "/vendor/rules/2026-01-01/nb.json"
 ));
 const NL_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/nl.json"
+    "/vendor/rules/2026-01-01/nl.json"
 ));
 const NS_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/ns.json"
+    "/vendor/rules/2026-01-01/ns.json"
 ));
 const NT_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/nt.json"
+    "/vendor/rules/2026-01-01/nt.json"
 ));
 const NU_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/nu.json"
+    "/vendor/rules/2026-01-01/nu.json"
 ));
 const ON_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/on.json"
+    "/vendor/rules/2026-01-01/on.json"
 ));
 const PE_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/pe.json"
+    "/vendor/rules/2026-01-01/pe.json"
 ));
 const SK_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/sk.json"
+    "/vendor/rules/2026-01-01/sk.json"
 ));
 const YT_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/yt.json"
+    "/vendor/rules/2026-01-01/yt.json"
 ));
 const CPP_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/cpp.json"
+    "/vendor/rules/2026-01-01/cpp.json"
 ));
 const EI_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/ei.json"
+    "/vendor/rules/2026-01-01/ei.json"
 ));
 const QPIP_2026_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-01-01/qpip.json"
+    "/vendor/rules/2026-01-01/qpip.json"
 ));
 
 const MANIFEST_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/manifest.json"
+    "/vendor/rules/2026-07-01/manifest.json"
 ));
 const FEDERAL_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/federal.json"
+    "/vendor/rules/2026-07-01/federal.json"
 ));
 const AB_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/ab.json"
+    "/vendor/rules/2026-07-01/ab.json"
 ));
 const BC_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/bc.json"
+    "/vendor/rules/2026-07-01/bc.json"
 ));
 const MB_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/mb.json"
+    "/vendor/rules/2026-07-01/mb.json"
 ));
 const NB_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/nb.json"
+    "/vendor/rules/2026-07-01/nb.json"
 ));
 const NL_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/nl.json"
+    "/vendor/rules/2026-07-01/nl.json"
 ));
 const NS_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/ns.json"
+    "/vendor/rules/2026-07-01/ns.json"
 ));
 const NT_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/nt.json"
+    "/vendor/rules/2026-07-01/nt.json"
 ));
 const NU_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/nu.json"
+    "/vendor/rules/2026-07-01/nu.json"
 ));
 const ON_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/on.json"
+    "/vendor/rules/2026-07-01/on.json"
 ));
 const PE_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/pe.json"
+    "/vendor/rules/2026-07-01/pe.json"
 ));
 const SK_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/sk.json"
+    "/vendor/rules/2026-07-01/sk.json"
 ));
 const YT_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/yt.json"
+    "/vendor/rules/2026-07-01/yt.json"
 ));
 const CPP_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/cpp.json"
+    "/vendor/rules/2026-07-01/cpp.json"
 ));
 const EI_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/ei.json"
+    "/vendor/rules/2026-07-01/ei.json"
 ));
 const QPIP_2026_07_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2026-07-01/qpip.json"
+    "/vendor/rules/2026-07-01/qpip.json"
 ));
 
 const MANIFEST_2027_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2027-01-01/manifest.json"
+    "/vendor/rules/2027-01-01/manifest.json"
 ));
 const BC_2027_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2027-01-01/bc.json"
+    "/vendor/rules/2027-01-01/bc.json"
 ));
 const NL_2027_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2027-01-01/nl.json"
+    "/vendor/rules/2027-01-01/nl.json"
 ));
 const PE_2027_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2027-01-01/pe.json"
+    "/vendor/rules/2027-01-01/pe.json"
 ));
 const CPP_2027_01_01: &str = include_str!(concat!(
     env!("CARGO_MANIFEST_DIR"),
-    "/../../data/rules/2027-01-01/cpp.json"
+    "/vendor/rules/2027-01-01/cpp.json"
 ));
 
 /// Lazily assembled registry of every embedded rule set.
@@ -228,6 +229,8 @@ pub enum EmbedError {
     Ei(String),
     #[error("qpip: {0}")]
     Qpip(String),
+    #[error("signature: {0}")]
+    Signature(#[from] SignatureError),
     #[error("ruleset validate: {0}")]
     Validate(#[from] LoadError),
     #[error("registry: {0}")]
@@ -309,50 +312,52 @@ fn load_component<T: serde::de::DeserializeOwned>(
 /// Build the 2026-01-01 [`RuleSet`] from embedded JSON fragments.
 pub fn load_ruleset_2026_01_01() -> Result<RuleSet, EmbedError> {
     assemble_ruleset(
+        "2026-01-01/manifest.json",
         MANIFEST_2026_01_01,
         [
-            ("FED", FEDERAL_2026_01_01),
-            ("AB", AB_2026_01_01),
-            ("BC", BC_2026_01_01),
-            ("MB", MB_2026_01_01),
-            ("NB", NB_2026_01_01),
-            ("NL", NL_2026_01_01),
-            ("NS", NS_2026_01_01),
-            ("NT", NT_2026_01_01),
-            ("NU", NU_2026_01_01),
-            ("ON", ON_2026_01_01),
-            ("PE", PE_2026_01_01),
-            ("SK", SK_2026_01_01),
-            ("YT", YT_2026_01_01),
+            ("FED", "2026-01-01/federal.json", FEDERAL_2026_01_01),
+            ("AB", "2026-01-01/ab.json", AB_2026_01_01),
+            ("BC", "2026-01-01/bc.json", BC_2026_01_01),
+            ("MB", "2026-01-01/mb.json", MB_2026_01_01),
+            ("NB", "2026-01-01/nb.json", NB_2026_01_01),
+            ("NL", "2026-01-01/nl.json", NL_2026_01_01),
+            ("NS", "2026-01-01/ns.json", NS_2026_01_01),
+            ("NT", "2026-01-01/nt.json", NT_2026_01_01),
+            ("NU", "2026-01-01/nu.json", NU_2026_01_01),
+            ("ON", "2026-01-01/on.json", ON_2026_01_01),
+            ("PE", "2026-01-01/pe.json", PE_2026_01_01),
+            ("SK", "2026-01-01/sk.json", SK_2026_01_01),
+            ("YT", "2026-01-01/yt.json", YT_2026_01_01),
         ],
-        CPP_2026_01_01,
-        EI_2026_01_01,
-        QPIP_2026_01_01,
+        ("2026-01-01/cpp.json", CPP_2026_01_01),
+        ("2026-01-01/ei.json", EI_2026_01_01),
+        ("2026-01-01/qpip.json", QPIP_2026_01_01),
     )
 }
 
 /// Build the 2026-07-01 [`RuleSet`] from the July delta overlaid on January.
 pub fn load_ruleset_2026_07_01() -> Result<RuleSet, EmbedError> {
     assemble_ruleset(
+        "2026-07-01/manifest.json",
         MANIFEST_2026_07_01,
         [
-            ("FED", FEDERAL_2026_07_01),
-            ("AB", AB_2026_07_01),
-            ("BC", BC_2026_07_01),
-            ("MB", MB_2026_07_01),
-            ("NB", NB_2026_07_01),
-            ("NL", NL_2026_07_01),
-            ("NS", NS_2026_07_01),
-            ("NT", NT_2026_07_01),
-            ("NU", NU_2026_07_01),
-            ("ON", ON_2026_07_01),
-            ("PE", PE_2026_07_01),
-            ("SK", SK_2026_07_01),
-            ("YT", YT_2026_07_01),
+            ("FED", "2026-07-01/federal.json", FEDERAL_2026_07_01),
+            ("AB", "2026-07-01/ab.json", AB_2026_07_01),
+            ("BC", "2026-07-01/bc.json", BC_2026_07_01),
+            ("MB", "2026-07-01/mb.json", MB_2026_07_01),
+            ("NB", "2026-07-01/nb.json", NB_2026_07_01),
+            ("NL", "2026-07-01/nl.json", NL_2026_07_01),
+            ("NS", "2026-07-01/ns.json", NS_2026_07_01),
+            ("NT", "2026-07-01/nt.json", NT_2026_07_01),
+            ("NU", "2026-07-01/nu.json", NU_2026_07_01),
+            ("ON", "2026-07-01/on.json", ON_2026_07_01),
+            ("PE", "2026-07-01/pe.json", PE_2026_07_01),
+            ("SK", "2026-07-01/sk.json", SK_2026_07_01),
+            ("YT", "2026-07-01/yt.json", YT_2026_07_01),
         ],
-        CPP_2026_07_01,
-        EI_2026_07_01,
-        QPIP_2026_07_01,
+        ("2026-07-01/cpp.json", CPP_2026_07_01),
+        ("2026-07-01/ei.json", EI_2026_07_01),
+        ("2026-07-01/qpip.json", QPIP_2026_07_01),
     )
 }
 
@@ -362,35 +367,45 @@ pub fn load_ruleset_2026_07_01() -> Result<RuleSet, EmbedError> {
 /// YMPE held at 2026 published dollars; BC indexation paused at 2026 levels.
 pub fn load_ruleset_2027_01_01() -> Result<RuleSet, EmbedError> {
     assemble_ruleset(
+        "2027-01-01/manifest.json",
         MANIFEST_2027_01_01,
         [
-            ("FED", FEDERAL_2026_07_01),
-            ("AB", AB_2026_07_01),
-            ("BC", BC_2027_01_01),
-            ("MB", MB_2026_07_01),
-            ("NB", NB_2026_07_01),
-            ("NL", NL_2027_01_01),
-            ("NS", NS_2026_07_01),
-            ("NT", NT_2026_07_01),
-            ("NU", NU_2026_07_01),
-            ("ON", ON_2026_07_01),
-            ("PE", PE_2027_01_01),
-            ("SK", SK_2026_07_01),
-            ("YT", YT_2026_07_01),
+            ("FED", "2026-07-01/federal.json", FEDERAL_2026_07_01),
+            ("AB", "2026-07-01/ab.json", AB_2026_07_01),
+            ("BC", "2027-01-01/bc.json", BC_2027_01_01),
+            ("MB", "2026-07-01/mb.json", MB_2026_07_01),
+            ("NB", "2026-07-01/nb.json", NB_2026_07_01),
+            ("NL", "2027-01-01/nl.json", NL_2027_01_01),
+            ("NS", "2026-07-01/ns.json", NS_2026_07_01),
+            ("NT", "2026-07-01/nt.json", NT_2026_07_01),
+            ("NU", "2026-07-01/nu.json", NU_2026_07_01),
+            ("ON", "2026-07-01/on.json", ON_2026_07_01),
+            ("PE", "2027-01-01/pe.json", PE_2027_01_01),
+            ("SK", "2026-07-01/sk.json", SK_2026_07_01),
+            ("YT", "2026-07-01/yt.json", YT_2026_07_01),
         ],
-        CPP_2027_01_01,
-        EI_2026_07_01,
-        QPIP_2026_07_01,
+        ("2027-01-01/cpp.json", CPP_2027_01_01),
+        ("2026-07-01/ei.json", EI_2026_07_01),
+        ("2026-07-01/qpip.json", QPIP_2026_07_01),
     )
 }
 
 fn assemble_ruleset(
+    manifest_path: &str,
     manifest_json: &str,
-    jurisdiction_files: [(&str, &str); 13],
-    cpp_json: &str,
-    ei_json: &str,
-    qpip_json: &str,
+    jurisdiction_files: [(&str, &str, &str); 13],
+    cpp: (&str, &str),
+    ei: (&str, &str),
+    qpip: (&str, &str),
 ) -> Result<RuleSet, EmbedError> {
+    verify_rules_file(manifest_path, manifest_json.as_bytes())?;
+    for (_, path, json) in jurisdiction_files {
+        verify_rules_file(path, json.as_bytes())?;
+    }
+    verify_rules_file(cpp.0, cpp.1.as_bytes())?;
+    verify_rules_file(ei.0, ei.1.as_bytes())?;
+    verify_rules_file(qpip.0, qpip.1.as_bytes())?;
+
     let mut deserializer = serde_json::Deserializer::from_str(manifest_json);
     let manifest: Manifest = serde_path_to_error::deserialize(&mut deserializer)
         .map_err(|err| EmbedError::Manifest(err.to_string()))?;
@@ -424,16 +439,16 @@ fn assemble_ruleset(
     }
 
     let mut jurisdictions = BTreeMap::new();
-    for (code, json) in jurisdiction_files {
+    for (code, _, json) in jurisdiction_files {
         jurisdictions.insert(
             JurisdictionCode(code.to_string()),
             load_jurisdiction(json, code)?,
         );
     }
 
-    let cpp: CppParams = load_component(cpp_json, EmbedError::Cpp)?;
-    let ei: EiParams = load_component(ei_json, EmbedError::Ei)?;
-    let qpip: QpipParams = load_component(qpip_json, EmbedError::Qpip)?;
+    let cpp: CppParams = load_component(cpp.1, EmbedError::Cpp)?;
+    let ei: EiParams = load_component(ei.1, EmbedError::Ei)?;
+    let qpip: QpipParams = load_component(qpip.1, EmbedError::Qpip)?;
 
     let set = RuleSet {
         rule_set_version: manifest.rule_set_version,

@@ -7,3 +7,4 @@ pub mod diff;
 pub mod loader;
 pub mod registry;
 pub mod schema;
+pub mod signature;

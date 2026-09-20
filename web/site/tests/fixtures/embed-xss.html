@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Job listing (XSS host)</title>
+  </head>
+  <body>
+    <h1>Payroll specialist</h1>
+    <script
+      src="/embed.js"
+      data-province="ON"
+      data-gross='"><img src=x onerror=alert(1)>'
+    ></script>
+  </body>
+</html>

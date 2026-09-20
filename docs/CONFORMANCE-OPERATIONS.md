@@ -1,4 +1,9 @@
-# Conformance operations — CRA PDOC oracle
+# Conformance operations: CRA PDOC oracle
+
+**Who this is for:** Maintainers who run the PDOC (Payroll Deductions Online Calculator) capture harness.
+
+**When you finish:** You can operate the oracle under the published rate limits and identity rules.
+
 
 **Status:** Published before the first automated request from this repository’s
 Playwright harness (`tools/pdoc-oracle/`).
@@ -14,7 +19,7 @@ contacting PDOC.
 
 ## 1. Purpose
 
-Takehome implements CRA T4127 payroll deduction formulas. The authoritative
+Takehome implements CRA T4127 (Payroll Deductions Formulas) payroll deduction formulas. The authoritative
 interactive check for period amounts is the CRA **Payroll Deductions Online
 Calculator** (PDOC):
 
@@ -26,7 +31,7 @@ We drive that form only to:
    then the larger M2 grid).
 2. Record **provenance** (timestamp, input, output, PDOC version string,
    browser version, screenshot hash) so every cent in `expected` is
-   attributable to a PDOC result — never to our engine.
+   attributable to a PDOC result: never to our engine.
 
 We are **not** scraping PDOC for a product feature, rate API, or live proxy.
 The harness is a **standalone developer tool**. It is never part of a deployed
@@ -86,7 +91,7 @@ Non-negotiable for every automated session:
 | Consecutive hard failures | **Hard stop after 3**, loud error, no further requests that session |
 | **Heartbeat** | **Every 30 seconds** to `data/pdoc-cache/queue-progress.log` (`heartbeat attempted=… idle_s=…`) |
 | **Stall** | **No completed form for 5 minutes** → **non-zero exit**, checkpoint saved. A hung browser is not a rate limit. |
-| Scheduling | **Overnight / scheduled batches only** — never a burst of back-to-back fetches |
+| Scheduling | **Overnight / scheduled batches only**: never a burst of back-to-back fetches |
 | Cache hit | **Zero** network contact with PDOC |
 
 “Request” means any navigation or form submission that loads a PDOC page.
@@ -104,8 +109,15 @@ queue.
 
 ## 5. Permanent cache (fetch once, ever)
 
-Cache directory (default): `data/pdoc-cache/` at the repo root (gitignored
-payloads; optional index may be committed separately if maintainers choose).
+Cache directory (default): `data/pdoc-cache/` at the repo root. **Ruling (a):**
+the 9,010 JSON records are published as the GitHub release archive
+`takehome-conformance-corpus-2026.1.tar.zst` (contents: `records/`,
+`pdoc-identity.json`, `screenshot-hashes.json`). They are **not** in git.
+`pdoc-identity.json`, `screenshot-hashes.json`, and `corpus-archive.json`
+are tracked. PNG screenshots stay local in `data/pdoc-screenshots/`
+(gitignored). [`CONFORMANCE.md`](../CONFORMANCE.md) records the catalog
+digest, the archive SHA-256, and the download URL. Queue logs and
+checkpoints stay gitignored.
 
 **Key:**
 
@@ -124,7 +136,7 @@ sha256( canonical_input_json || rule_set_version )
 2. Each distinct key is fetched from the network **at most once, ever**.
 3. On cache hit, the harness **must not** open PDOC or take a new screenshot.
 4. Cache entries store the full measurement record (see §6), including the
-   screenshot bytes or their hash and path.
+   screenshot hash (and path of the local PNG, which is not published).
 
 If PDOC later changes behaviour for the same calendar rules, that is a
 **new** disagreement investigation: we do not silently re-fetch to “update”
@@ -159,7 +171,7 @@ A cache record may satisfy a case only when `observed_edition` equals the
 case `rule_set_version`, **or** `data/edition-identity.json` proves every
 jurisdiction the case touches is field-identical between those editions
 (test 18 jurisdiction tables + test 19 claim-code files). Anything else is
-a hard error — including January-only BC/NL/PE forms against a July-serving
+a hard error: including January-only BC/NL/PE forms against a July-serving
 PDOC, which are **edition-retired**, not pending.
 
 Emitted vector records use **exactly** the step-12 format consumed by
@@ -184,7 +196,7 @@ manual transcription of a PDOC screen) may fill those fields.
 
 Operators should start batches outside peak daytime hours for the service
 region when practical (“scheduled overnight”). Daytime ad-hoc runs of a few
-cache-miss cases are allowed for debugging but must still obey §4 — never
+cache-miss cases are allowed for debugging but must still obey §4: never
 compress the queue into a burst.
 
 ---
@@ -215,7 +227,7 @@ this document is missing from the checkout (fail closed).
 ## 10. Pre-flight: robots.txt and PDOC identity
 
 Both checks run **before** the case queue. A failure is a hard stop: no
-cache-miss fetches, no form submits, no “just one more.”
+cache-miss fetches, no form submits, no extra attempt after the stop.
 
 ### 10.1 Honour robots.txt
 
@@ -229,7 +241,7 @@ origin `https://apps.cra-arc.gc.ca/robots.txt`.
 | Parse | RFC 9309 groups (`User-agent`, `Allow`, `Disallow`). Longest matching path rule wins. Our product token is `Takehome-PDOC-Oracle`; otherwise `*`. |
 | 404 / missing file | No robots.txt → **no restrictions** for that origin (RFC 9309). Still record status + body hash so a later 200 cannot be confused with “we never checked.” |
 | 5xx / network failure | **Fail closed.** Do not treat an outage as permission. |
-| Disallow of a PDOC path | **Stop.** Do not discover a ban after thousands of requests. We find another approach (manual capture, CRA-published tables) — we do not crawl around the disallow. |
+| Disallow of a PDOC path | **Stop.** Do not discover a ban after thousands of requests. We find another approach (manual capture, CRA-published tables): we do not crawl around the disallow. |
 
 robots.txt is origin-scoped. A rule on `canada.ca` does not legally govern
 `apps.cra-arc.gc.ca`, but we still refuse if **either** origin’s file
@@ -265,7 +277,7 @@ not a theorem.
 1. The version string shown on the page when one is exposed (today:
    footer-style dates such as `2026-06-11`).
 2. If none is exposed, `sha256` of a canonical fingerprint of the **entry
-   form’s structure** (control names, types, and labels — not values).
+   form’s structure** (control names, types, and labels: not values).
 
 **Probe.** Once per automated session, after robots.txt and before the
 case queue, the harness loads the PDOC entry page **once** to observe the
@@ -291,15 +303,15 @@ purpose.
 
 ## 11. Known capture hazards (before M2 grid)
 
-### 11.1 Fixed TD1 dollars vs claim codes — BPAF phaseout
+### 11.1 Fixed TD1 dollars vs claim code (TD1 personal amount code)s: BPAF (Basic Personal Amount formula) phaseout
 
 PDOC’s **Basic personal amount** can be entered two ways:
 
-1. **Claim codes** (federal / provincial claim code 1, …) — the calculator
+1. **Claim code (TD1 personal amount code)s** (federal / provincial claim code 1, …): the calculator
    applies the dynamic BPA / BPAF formula, including **phaseout** between the
    published start and end thresholds.
 2. **Fixed TD1 dollars** (e.g. typing `16452.00` for the 2026 federal maximum)
-   — that amount is treated as a **locked claim**. It does **not** phase out.
+  : that amount is treated as a **locked claim**. It does **not** phase out.
 
 For high-income vectors (BPAF phaseout dimension, anything with annual income
 at or above the phaseout start, and any grid cell that is meant to exercise
@@ -327,20 +339,20 @@ it is what the salary form itself posts to.
 overnight queue session, compare JSON figures to the rendered results for a
 handful of cases (at least one exact match and one known M-003 midpoint-down
 case when available). Record the check in the run checkpoint notes.
-If JSON and DOM diverge on a mapped field, **hard stop** — do not trust the
+If JSON and DOM diverge on a mapped field, **hard stop**: do not trust the
 queue until the mapping is reconciled.
 
 **Spot-check performed 2026-09-12:** three cases (ON weekly claim1, AB P=10
 M-003, BC biweekly claim0). Federal and provincial tax lines matched JSON ↔
 rendered text. Full results DOM still often incomplete (CPP/EI/net lines
-missing — the Angular hazard that motivated JSON capture). `npm run
+missing: the Angular hazard that motivated JSON capture). `npm run
 spot-check-json-dom` in `tools/pdoc-oracle`.
 
 ## 12. Grid version on every run
 
 The M2 case list comes from `tools/grid-gen`. It is deterministic: same
 `grid_version` (`2026.1`) and seed (`t4127-grid-2026.1`) produce byte-identical
-output. Every conformance run — cache hit or capture — **records that
+output. Every conformance run: cache hit or capture: **records that
 `grid_version`** in the run header and in [`CONFORMANCE.md`](../CONFORMANCE.md).
 A number without a grid version is not a conformance number.
 
@@ -358,4 +370,7 @@ all-14-P headline.
 
 ---
 
-*Last updated: 2026-09-12 — §11.2 JSON oracle; §13 ten-P queue + uncapturable; §12 grid version; §10 identity alarm.*
+*Last updated: 2026-09-12: §11.2 JSON oracle; §13 ten-P queue + uncapturable; §12 grid version; §10 identity alarm.*
+
+**Last reviewed:** 2026-09-20  
+**Engine:** 0.1.0

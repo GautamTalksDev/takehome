@@ -1,0 +1,12 @@
+%%{init: {'theme': 'base'}}%%
+flowchart TD
+  Reg[POST webhook register] --> V1{Validate URL: HTTPS, no private IP, no metadata}
+  V1 -->|reject| R1[400]
+  V1 --> Store[Store endpoint + secret]
+  Event[rule_set.changed] --> Load[Load endpoint]
+  Load --> V2{Re-validate URL immediately before fetch}
+  V2 -->|DNS changed to private| R2[Mark delivery failed]
+  V2 --> Fetch[fetch: redirect follow = never]
+  Fetch -->|3xx| R3[Fail. Body not read into log]
+  Fetch -->|2xx| Ok[Record success status only]
+  Fetch -->|timeout or 5xx| Retry[Backoff retry]

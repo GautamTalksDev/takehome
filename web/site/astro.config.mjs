@@ -5,4 +5,9 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   prefetch: false,
+  vite: {
+    build: {
+      sourcemap: false,
+    },
+  },
 });

@@ -4,5 +4,6 @@
 title = "Takehome"
 
 [allowlist]
-description = "Documented API-key placeholder in public docs, not a live secret"
+description = "Documented placeholders and the public rule-set integrity seed (not an API credential)"
 regexes = ['''np_test_YOUR_KEY''']
+paths = ['''data/rules/signing.seed''']

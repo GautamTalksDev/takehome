@@ -1,0 +1,20 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'fontFamily': 'IBM Plex Sans, sans-serif'}}}%%
+flowchart TD
+  A[POST /v1/deductions] --> B{Authenticate Bearer key}
+  B -->|401 missing or unknown key| Z1[Error envelope]
+  B --> C{Check live quota}
+  C -->|402 at plan limit| Z2[Error envelope]
+  C --> D{Parse and validate JSON}
+  D -->|400 unknown field or invalid| Z3[Error envelope]
+  D --> E{Resolve rule set by as_of and option}
+  E -->|400 date out of range| Z4[Error envelope]
+  E -->|422 Quebec unsupported| Z5[Error envelope]
+  E --> F[T4127 Step 1: annual income A]
+  F --> G[Step 2: federal tax T1]
+  G --> H[Step 3: additional federal L]
+  H --> I[Step 4: provincial tax T2]
+  I --> J[Step 5: CPP EI and CPP2]
+  J --> K[Step 6: period tax and round]
+  K --> L[Assemble breakdown citations warnings]
+  L --> M[Increment meter]
+  M --> N[200 DeductionResponse]

@@ -1,0 +1,61 @@
+{
+  "announcement_date": "2026-04-28",
+  "announcement_source": "Department of Finance Canada, Spring Economic Update 2026",
+  "delta_marker": "PREVIEW. Not a CRA T4127 edition. Overlay on the 123rd edition with the announced 2027 CPP rates; YMPE/YAMPE held at 2026 published dollars; BC indexation paused at 2026 levels.",
+  "edition_kind": "preview",
+  "effective_from": "2027-01-01",
+  "effective_to": null,
+  "jurisdiction_origin": {
+    "AB": "inherited",
+    "BC": "preview_full_year",
+    "FED": "inherited",
+    "MB": "inherited",
+    "NB": "inherited",
+    "NL": "preview_full_year",
+    "NS": "inherited",
+    "NT": "inherited",
+    "NU": "inherited",
+    "ON": "inherited",
+    "PE": "preview_full_year",
+    "SK": "inherited",
+    "YT": "inherited"
+  },
+  "published_by": "Takehome (PREVIEW — not a CRA T4127 edition)",
+  "rule_set_version": "2027-01-01",
+  "status": "proposed",
+  "sources": [
+    {
+      "files": [
+        "ab.json",
+        "bc.json",
+        "cpp.json",
+        "ei.json",
+        "federal.json",
+        "mb.json",
+        "nb.json",
+        "nl.json",
+        "ns.json",
+        "nt.json",
+        "nu.json",
+        "on.json",
+        "pe.json",
+        "qpip.json",
+        "sk.json",
+        "yt.json"
+      ],
+      "retrieved_at": "2026-09-18T16:00:00Z",
+      "source_document": "Spring Economic Update 2026 — CPP contribution rate reduction (preview of 2027-01-01)",
+      "source_sha256": "21c5e249b8ab6f2d8adbe67d6adefbdec919b1bbb19c02754771ce2b045a2bfe",
+      "source_url": "https://www.canada.ca/en/department-finance/news/2026/04/spring-economic-update-2026-key-measures.html"
+    },
+    {
+      "files": [
+        "bc.json"
+      ],
+      "retrieved_at": "2026-09-18T16:00:00Z",
+      "source_document": "BC Budget 2026 — personal income tax indexation pause 2027–2030",
+      "source_sha256": "b0b544b99aa0f201eb03f290a08e0bff909963f474bde26bf0896de0c4aebaa4",
+      "source_url": "https://www2.gov.bc.ca/gov/content/taxes/tax-updates/budget-changes"
+    }
+  ]
+}

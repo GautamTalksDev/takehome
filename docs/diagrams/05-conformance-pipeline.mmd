@@ -1,0 +1,13 @@
+%%{init: {'theme': 'base'}}%%
+flowchart TD
+  Grid[Grid generator] --> Split{Oracle class split}
+  Split --> PDOC["PDOC boundary forms<br/>9762 queue / 9002 compared<br/>oracle: live PDOC"]
+  Split --> Uncap["Uncapturable P<br/>named class<br/>oracle: invariants"]
+  Split --> Interior["Interior log ladder<br/>oracle: invariants"]
+  Split --> Inv["Named invariants<br/>year projection Option 2"]
+  PDOC --> Harness[PDOC harness: cache + rate limit]
+  Harness --> Report[takehome-conformance report]
+  Uncap --> Report
+  Interior --> Report
+  Inv --> Report
+  Report --> Pub[CONFORMANCE.md + corpus archive]

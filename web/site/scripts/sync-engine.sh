@@ -10,5 +10,7 @@ fi
 mkdir -p "$SITE/public/engine"
 cp "$WASM_SRC/takehome_wasm.js" "$SITE/public/engine/"
 cp "$WASM_SRC/takehome_wasm_bg.wasm" "$SITE/public/engine/"
+mkdir -p "$SITE/public/embed/v0.1.0"
+cp "$SITE/public/embed.js" "$SITE/public/embed/v0.1.0/embed.js"
 cp "$ROOT/data/plans.json" "$SITE/src/data/plans.json"
 echo "synced engine wasm ($(wc -c < "$SITE/public/engine/takehome_wasm_bg.wasm") bytes)"

@@ -13,5 +13,8 @@ if [ ! -f "$ROOT/packages/takehome-js/tests/fixtures/grid-sample-500.json" ]; th
 fi
 
 bash "$ROOT/packages/takehome-js/scripts/build.sh"
+bash "$ROOT/scripts/check-binaryen-version.sh"
+bash "$ROOT/scripts/check-wasm-hash.sh"
+bash "$ROOT/scripts/check-wasm-paths.sh"
 cd "$ROOT/packages/takehome-js"
 node --test tests/*.test.js

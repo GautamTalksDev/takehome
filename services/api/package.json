@@ -11,6 +11,8 @@
     "sync-data": "node scripts/sync-data.js",
     "pretest": "node scripts/sync-data.js && node scripts/generate-openapi.js",
     "test": "node --test tests/*.test.js",
+    "test:d1": "TAKEHOME_API_STORE=d1 node --test tests/*.test.js",
+    "test:security": "node scripts/sync-data.js && node --test tests/58-exceptions.test.js",
     "local": "node scripts/local.mjs",
     "deploy": "wrangler deploy"
   },

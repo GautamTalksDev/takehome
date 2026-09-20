@@ -7,6 +7,7 @@ repository.workspace = true
 rust-version.workspace = true
 description = "Deterministic implementation of the CRA T4127 payroll deduction formulas."
 build = "build.rs"
+exclude = ["tests/**"]
 
 [dependencies]
 rust_decimal = { workspace = true }
@@ -14,6 +15,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 serde_path_to_error = { workspace = true }
+ed25519-compact = { version = "2.4.2", default-features = false }
 
 [dev-dependencies]
 rust_decimal_macros = { workspace = true }

@@ -74,6 +74,55 @@ test('45. a changed fixture opens an issue whose body contains the diff', async 
   assert.match(csvIssue.diff, /0\.0506/);
 });
 
+test('49. pin drift raises a rules-watch alert', async () => {
+  const pinHtml = load('index.pin.html');
+  const newHtml = load('index.changed.html');
+  const pinCsv = load('rates.pin.csv');
+  const newCsv = load('rates.changed.csv');
+  const pins = {
+    documents: [
+      {
+        id: 't4127-index',
+        url: 'https://example.test/t4127.html',
+        kind: 'html',
+        sha256: sha256(canonicalize('html', pinHtml)),
+        snapshot: path.join(fixtures, 'index.pin.html'),
+      },
+    ],
+    csv_bundle: [
+      {
+        name: 'rates.csv',
+        sha256: sha256(canonicalize('csv', pinCsv)),
+        snapshot: path.join(fixtures, 'rates.pin.csv'),
+      },
+    ],
+  };
+  const bodies = {
+    'https://example.test/t4127.html': newHtml,
+    'https://example.test/csv/rates.csv': newCsv,
+  };
+  const issues = [];
+  const alerts = [];
+  await watch({
+    pins,
+    fetchImpl: async (url) => {
+      const body = bodies[url];
+      assert.ok(body, `unexpected fetch ${url}`);
+      return response(body);
+    },
+    openIssue: async (issue) => {
+      issues.push(issue);
+    },
+    onAlert: async (event) => {
+      alerts.push(event);
+    },
+    readSnapshot: (rel) => readFileSync(rel, 'utf8'),
+  });
+  assert.ok(issues.length >= 1);
+  assert.ok(alerts.some((row) => row.type === 'rules_watch_drift'));
+  assert.ok(alerts.some((row) => row.id === 't4127-index'));
+});
+
 test('45. unchanged fixture does not open an issue', async () => {
   const pinHtml = load('index.pin.html');
   const pinCsv = load('rates.pin.csv');

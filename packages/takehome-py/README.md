@@ -23,4 +23,4 @@ response = json.loads(
 print(response["employee"]["net_pay"], takehome_ca.engine_build_sha())
 ```
 
-Publish (once a PyPI token is available): `maturin publish` from this directory.
+Publish: create a GitHub Release. `.github/workflows/publish.yml` uses PyPI Trusted Publishing (OIDC). Do not use `PYPI_API_TOKEN` or `scripts/publish-packages.sh` from a laptop.

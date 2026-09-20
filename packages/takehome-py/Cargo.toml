@@ -7,6 +7,13 @@ repository = "https://github.com/takehome-ca/takehome"
 rust-version = "1.90"
 publish = false
 description = "Python bindings for takehome-core. Same JSON calculate() wire as WASM."
+include = [
+  "src/**/*",
+  "Cargo.toml",
+  "Cargo.lock",
+  "README.md",
+  "LICENSE",
+]
 
 [lib]
 name = "_native"

@@ -63,6 +63,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f079e83a288787bcd14a6aea84cee5c87a67c5a3e660c30f557a3d24761b3527"
 
 [[package]]
+name = "ed25519-compact"
+version = "2.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f05391a505666bdf2b5d2626f41b7f0f49052b1e33cceac960eaa818008141da"
+
+[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -147,25 +153,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "488016bfae457b036d996092f6cb448677611ce4449e970ceaf42695203f218a"
 dependencies = [
  "autocfg",
-]
-
-[[package]]
-name = "takehome-core"
-version = "0.1.0"
-dependencies = [
- "rust_decimal",
- "serde",
- "serde_json",
- "serde_path_to_error",
- "thiserror",
-]
-
-[[package]]
-name = "takehome-py"
-version = "0.1.0"
-dependencies = [
- "takehome-core",
- "pyo3",
 ]
 
 [[package]]
@@ -450,6 +437,26 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "takehome-core"
+version = "0.1.0"
+dependencies = [
+ "ed25519-compact",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "serde_path_to_error",
+ "thiserror",
+]
+
+[[package]]
+name = "takehome-py"
+version = "0.1.0"
+dependencies = [
+ "pyo3",
+ "takehome-core",
 ]
 
 [[package]]

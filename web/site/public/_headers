@@ -1,3 +1,29 @@
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+
+# Embed widget is cross-origin on purpose. Hosts load /embed.js by origin; they
+# must not add 'unsafe-inline' or 'unsafe-eval'. The widget styles itself with
+# a constructed stylesheet inside a shadow root, so the host does not need to
+# loosen style-src. WASM is fetched from /engine/* (CORS + CORP: cross-origin).
+# Compiling WASM uses 'wasm-unsafe-eval' only — never 'unsafe-eval'.
+/embed.js
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Content-Type: text/javascript; charset=utf-8
+  X-Content-Type-Options: nosniff
+
+/embed/v0.1.0/embed.js
+  Access-Control-Allow-Origin: *
+  Cross-Origin-Resource-Policy: cross-origin
+  Content-Type: text/javascript; charset=utf-8
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=31536000, immutable
+
 /engine/takehome_wasm_bg.wasm
   Content-Type: application/wasm
   Cache-Control: public, max-age=31536000, immutable
@@ -7,8 +33,3 @@
 /engine/*
   Access-Control-Allow-Origin: *
   Cross-Origin-Resource-Policy: cross-origin
-
-/embed.js
-  Access-Control-Allow-Origin: *
-  Cross-Origin-Resource-Policy: cross-origin
-  Content-Type: text/javascript; charset=utf-8

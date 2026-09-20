@@ -2,6 +2,8 @@ name = "takehome-api"
 main = "src/worker.js"
 compatibility_date = "2026-09-16"
 compatibility_flags = ["nodejs_compat"]
+# Source maps embed absolute workspace paths. Do not upload them.
+upload_source_maps = false
 
 [build]
 command = "node scripts/sync-data.js"
@@ -9,8 +11,9 @@ command = "node scripts/sync-data.js"
 [vars]
 RATE_LIMIT_MAX = "120"
 RATE_LIMIT_WINDOW_MS = "60000"
+SIGNUP_RATE_LIMIT_MAX = "5"
+VERIFY_RATE_LIMIT_MAX = "10"
 PUBLIC_SITE = "https://takehome.gautamkhosla.com"
-ECHO_VERIFY_URL = "1"
 
 [[routes]]
 pattern = "takehome.gautamkhosla.com"
@@ -27,3 +30,52 @@ binding = "DB"
 database_name = "takehome"
 database_id = "3cfd409e-441b-434a-a2a0-1192562156e8"
 migrations_dir = "migrations"
+
+# A09: invocation metadata only (method, path, status, duration).
+# Cloudflare invocation logs omit request and response bodies.
+# Never capture request headers — Authorization would log the API key.
+# Operator alerts: wrangler secret put ALERT_EMAIL (reached via MAILBOX).
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+
+# Staging is a separate Worker name, D1, hostname, and rate-limit budget.
+# routes / d1_databases / vars are non-inheritable or must be overridden so a
+# staging deploy cannot steal takehome.gautamkhosla.com or touch production D1.
+[env.staging]
+name = "takehome-api-staging"
+workers_dev = false
+
+[env.staging.vars]
+RATE_LIMIT_MAX = "60"
+RATE_LIMIT_WINDOW_MS = "60000"
+SIGNUP_RATE_LIMIT_MAX = "5"
+VERIFY_RATE_LIMIT_MAX = "10"
+PUBLIC_SITE = "https://takehome-staging.gautamkhosla.com"
+NOINDEX = "1"
+
+[[env.staging.routes]]
+pattern = "takehome-staging.gautamkhosla.com"
+custom_domain = true
+
+[env.staging.assets]
+directory = "../../web/site/dist"
+binding = "ASSETS"
+html_handling = "force-trailing-slash"
+run_worker_first = ["/v1*", "/health"]
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "takehome-staging"
+database_id = "b1fee19f-57e4-4d4e-bd19-c1cbf9a11efc"
+migrations_dir = "migrations"
+
+[env.staging.observability]
+enabled = true
+
+[env.staging.observability.logs]
+enabled = true
+invocation_logs = true

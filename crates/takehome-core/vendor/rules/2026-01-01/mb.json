@@ -1,0 +1,33 @@
+{
+  "basic_personal_amount": {
+    "formula": {},
+    "max": "15780.00",
+    "min": "0.00",
+    "phaseout_end": "400000.00",
+    "phaseout_start": "200000.00",
+    "type": "dynamic"
+  },
+  "brackets": [
+    {
+      "constant": "0.00",
+      "rate": "0.1080",
+      "threshold": "0"
+    },
+    {
+      "constant": "917.00",
+      "rate": "0.1275",
+      "threshold": "47000.00"
+    },
+    {
+      "constant": "5567.00",
+      "rate": "0.1740",
+      "threshold": "100000.00"
+    }
+  ],
+  "index_rate": "0.021",
+  "lcp": {
+    "max": "1800.00",
+    "rate": "0.150"
+  },
+  "lowest_rate": "0.1080"
+}

@@ -1,0 +1,69 @@
+{
+  "delta_marker": "Please refer to the 122nd edition for any sections that have not been reproduced.",
+  "edition_kind": "delta",
+  "effective_from": "2026-07-01",
+  "effective_to": "2027-01-01",
+  "jurisdiction_origin": {
+    "AB": "inherited",
+    "BC": "delta",
+    "FED": "inherited",
+    "MB": "inherited",
+    "NB": "inherited",
+    "NL": "delta",
+    "NS": "inherited",
+    "NT": "inherited",
+    "NU": "inherited",
+    "ON": "inherited",
+    "PE": "delta",
+    "SK": "inherited",
+    "YT": "inherited"
+  },
+  "published_by": "Canada Revenue Agency",
+  "rule_set_version": "2026-07-01",
+  "sources": [
+    {
+      "archive_files": [
+        {
+          "name": "cc-bc-07-26e.csv",
+          "sha256": "754c27fc1f99616bbb842533a5287ff95b89a6bde7020afe8bc0e7cd93b6544e"
+        },
+        {
+          "name": "cc-nl-07-26e.csv",
+          "sha256": "b4ff3b2c70675edf095b1c5171076e0dfc2b7fd35416dc52df217fd59cf531b2"
+        },
+        {
+          "name": "other-rates-amounts-26e.csv",
+          "sha256": "d395b439d0e48846a05e5c578555d9a35e36aef58adbbf88b2eae2fcc2068bf8"
+        },
+        {
+          "name": "rates-income-thresholds-constants-26e.csv",
+          "sha256": "e3a690ccf861c14654279d89cdeca8ec018506edbfc950027518bf16bf728090"
+        }
+      ],
+      "files": [
+        "ab.json",
+        "bc.json",
+        "cpp.json",
+        "ei.json",
+        "federal.json",
+        "mb.json",
+        "nb.json",
+        "nl.json",
+        "ns.json",
+        "nt.json",
+        "nu.json",
+        "on.json",
+        "pe.json",
+        "qpip.json",
+        "sk.json",
+        "yt.json"
+      ],
+      "ingest_git_sha": "a9687df942dd8d7fb138b26e583095c4d327f710",
+      "retrieved_at": "2026-09-12T04:49:52Z",
+      "source_document": "T4127 Payroll Deductions Formulas - 123rd Edition Effective July 1, 2026",
+      "source_sha256": "e3a690ccf861c14654279d89cdeca8ec018506edbfc950027518bf16bf728090",
+      "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/t4127-payroll-deductions-formulas/t4127-jul.html",
+      "tool_version": "0.1.0"
+    }
+  ]
+}

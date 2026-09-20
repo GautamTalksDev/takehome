@@ -1,11 +1,10 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { call, ON_WEEKLY } from './helpers.js';
-import { MemoryStore } from '../src/store-memory.js';
+import { call, ON_WEEKLY, newStore } from './helpers.js';
 import { BASE_ENV } from './helpers.js';
 
 test('26. signup with ECHO_VERIFY_URL, first authenticated call is 800.79', async () => {
-  const store = new MemoryStore();
+  const store = newStore();
   const mailbox = [];
   const env = {
     ...BASE_ENV,

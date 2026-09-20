@@ -4,6 +4,12 @@
 
 ## [Unreleased]
 
+- Live smoke script covers batch, year CPP cap `4230.45`, CRA bonus combined `TB = 503.72` (federal-only `T3` slice remains `323.54`), BC Option 1/Option 2 at `2026-08-01`, and the 2027 preview banner above the number.
+- Paid billing deferred for free early access (ADR-006): checkout is `501` / `billing_unavailable`, Stripe webhook is `404`, free live quota is **100,000**/month. Kill-test route C withdrawn.
+- PDOC evidence publication (ruling a): JSON records are the GitHub release archive `takehome-conformance-corpus-2026.1.tar.zst` (not in git; `tracked-ban.sh` refuses `records/`). `CONFORMANCE.md` records the catalog digest `554a5427…d02a71ea`, the archive SHA-256, the download URL, and two lines to verify after download. Publication tests extract the archive and break the catalog on purpose.
+- Documentation house style: `scripts/docs-lint.sh` fails on em dashes, banned words, missing audience blocks, and undefined domain terms. Seven Mermaid diagrams render to SVG at site build. Docs nav is grouped (Getting started, Concepts, API reference, Conformance and findings, Operations). Link check and runnable example harness are in CI.
+- Gzipped WASM went **141,104 → 186,011** because `wasm-opt` was gated behind `WASM_OPT=1` to freeze the hash. Pinning Binaryen **132** was the right determinism fix (`check-binaryen-version.sh` fails on drift). Separate finding: `-Oz` shrinks uncompressed 614 KB → 551 KB but gzip goes slightly **up**, and **141,104 was the smaller 0.4.0 module**, not an optimised M4 build. The M4 growth is real code size. Gzipped size is **199,744** (CI max 220,000): about **9% headroom**, tighter than before.
+
 ## [0.5.0-m4] - 2026-09-18
 - `POST /v1/deductions/batch`: up to 1000 calculations, results in input order, partial success (`{ok, response}` or `{error}`), 1001 rejected by name, metered as N not 1, over-quota is 402 with usage unchanged, byte-identical replay.
 - `POST /v1/deductions/year`: every pay period in the year with YTD CPP/CPP2/EI carried forward. CPP and EI caps, YMPE crossing, CPP2 start (spec §21.5), BC mid-year rule-set split, 53-week / 27-biweekly exemptions. Federal tax sum vs T1 differs by at most one cent per period because of per-period rounding.

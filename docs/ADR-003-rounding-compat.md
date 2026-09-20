@@ -1,16 +1,20 @@
-# ADR-003 — `rounding_compat` request field
+# ADR-003: `rounding_compat` request field
 
-**Status:** Accepted (schema reserved; `pdoc` is a typed not-implemented error until finding 002).
+**Who this is for:** API and engine contributors handling M-003 PDOC cent deltas.
+
+**When you finish:** You know the default compat mode and why `pdoc` fails closed today.
+
+**Status:** Accepted (schema reserved; `pdoc` is a typed not-implemented error until finding 002 closes).  
 **Date:** 2026-09-12
 
 ## Context
 
-M-002 (`k2_method`) taught the pattern: when PDOC and T4127 diverge, customers
+M-002 (`k2_method`) taught the pattern: when PDOC and T4127 (Payroll Deductions Formulas) diverge, customers
 who reconcile against PDOC need a selectable arm, and the default should be
 stated explicitly.
 
 M-003 is a live cent delta where T4127 half-up at an exact midpoint goes up
-and PDOC’s corresponding line is sometimes 1¢ lower. It is not
+and PDOC's corresponding line is sometimes 1¢ lower. It is not
 Alberta-specific. The condition that selects down vs up is unnamed. A payroll
 product that differs from PDOC by a predictable cent still needs an escape
 hatch once that condition is known.
@@ -20,12 +24,12 @@ Request-schema fields are expensive after v1.
 ## Decision
 
 1. Add request field **`rounding_compat`** with wire values:
-   - **`t4127`** (default) — exact decimal half-up for period tax lines
+   - **`t4127`** (default): exact decimal half-up for period tax lines
      (`round_tax_to_cent` on `T1/P` and `T2/P` as today).
-   - **`pdoc`** — match live PDOC period federal/provincial lines when they
+   - **`pdoc`**: match live PDOC period federal/provincial lines when they
      diverge from `t4127` on a documented class.
 
-2. **Default is `t4127`**, not `pdoc`. Unlike `k2_method` (where PDOC’s rule
+2. **Default is `t4127`**, not `pdoc`. Unlike `k2_method` (where PDOC's rule
    was inverted and confirmed), we do not yet have a named midpoint condition
    to observe. Defaulting to an unimplemented or speculative `pdoc` arm would
    encode a guess. When finding 002 closes with a PDOC-observed rule, revisit
@@ -50,3 +54,6 @@ Request-schema fields are expensive after v1.
   closes; they cannot build against a no-op arm.
 - Grid / harness compare against PDOC under whatever compat the vector
   requests; default vectors use `t4127`.
+
+**Last reviewed:** 2026-09-20  
+**Engine:** 0.1.0

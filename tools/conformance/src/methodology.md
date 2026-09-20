@@ -1,7 +1,7 @@
 A **disagreement** is: correctly-specified identical inputs, engine and PDOC
 both given exactly what the operator intended, outputs differ. That is a
 finding about the world. It is published here with the full input, both
-outputs, the delta, and an explanation — including cases where we conclude
+outputs, the delta, and an explanation: including cases where we conclude
 PDOC is wrong.
 
 A disagreement is **not**: a bug in the harness, a mis-mapped request or
@@ -20,7 +20,7 @@ Until every defined vector in a corpus is measured, this document states
 an agreement rate on a partial run. A completed corpus states how many match
 and lists every disagreement.
 
-### M-001 — Published whole-dollar K (ADR-002)
+### M-001: Published whole-dollar K (ADR-002)
 
 Annual T3/T4 is discontinuous by at most $1.00 at each bracket threshold,
 because the CRA publishes the K constants rounded to whole dollars. PDOC
@@ -43,10 +43,10 @@ Canada 48% T1 surtax, and allows two cents of period rounding.
 Decision:
 [`docs/ADR-002-published-constants.md`](docs/ADR-002-published-constants.md).
 
-### M-002 — PDOC K2 maximum in the reaching period
+### M-002: PDOC K2 maximum in the reaching period
 
 T4127 Chapter 3 tells the calculator to use the maximum base CPP contribution
-“in that pay period” — the period year-to-date first reaches the annual CPP
+“in that pay period”: the period year-to-date first reaches the annual CPP
 maximum. PDOC does not. Its federal CPP credit base is
 `max(P × C × ratio, D × ratio)` capped at `base_max`, which on the measured
 vector is `D × ratio` = 3494.12 rather than `base_max` = 3519.45.
@@ -64,13 +64,13 @@ Federal + Additional). `employee.total_tax` is the sum of the two
 separately rounded federal and provincial lines a user can add up on
 screen; `breakdown.T` is T4127 Step 6 `round((T1+T2)/P)+L` and may differ
 by one cent. Claim code 1 must be entered via PDOC **Claim codes**,
-not a fixed TD1 dollar amount — fixed `$16,452` does not phase out BPAF.
+not a fixed TD1 dollar amount: fixed `$16,452` does not phase out BPAF.
 `employee.total_deductions` includes union dues.
 
-### M-003 — PDOC midpoint direction (open)
+### M-003: PDOC midpoint direction (open)
 
 Live cent delta: T4127 half-up at an exact midpoint goes up; PDOC’s line is
-sometimes 1¢ lower. Counts against the agreement rate — not exempted as
+sometimes 1¢ lower. Counts against the agreement rate: not exempted as
 methodology. Not Alberta-specific; AB is dense because 8% flat on round
 grosses manufactures halves. Observed down-classes: AB provincial `T2/P`,
 AB CPP, NL `4333.33` P=12, NL `1718.39` P=26 (neighbour `1718.40` goes up),
@@ -81,7 +81,7 @@ NU 14, NS 12, MB 11, YT 11, NL 10, PE 8, SK 8, NB 6, NT 6, OutsideCanada 6);
 **780** forms the salary UI accepted as queue items but PDOC step-2 would
 not advance. Those 780 are named, not pending, and not in the rate.
 
-Product: [`ADR-003`](docs/ADR-003-rounding-compat.md) — `rounding_compat`
+Product: [`ADR-003`](docs/ADR-003-rounding-compat.md): `rounding_compat`
 (`t4127` default; `pdoc` is a typed not-implemented error until finding 002).
 
 Full write-up:
@@ -89,6 +89,16 @@ Full write-up:
 
 ### M4 named classes (not folded into 8838/9002)
 
-- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors. Expected amounts stay `PENDING_PDOC` until captured through `tools/pdoc-oracle`; never filled from the engine. Named pending; excluded from the overall Option 1 PDOC rate.
-- **`year-projection-2026`**: engine invariants (API tests 22–29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
+- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors captured 2026-09-19 through `tools/pdoc-oracle` (locator: Total current bonus payable). Own class; excluded from the overall Option 1 PDOC rate. One-cent disagreements listed on the corpus; expected amounts stay PDOC.
+- **`year-projection-2026`**: engine invariants (API tests 22-29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
 - **`t4127-option2-2026`**: T4127 Chapter 5 worked examples plus invariants. Live PDOC has no Option 2 control. Weaker evidence than PDOC; does not inherit the Option 1 agreement rate.
+
+### PDOC evidence publication (ruling a)
+
+JSON cache records are published as the GitHub release archive
+`takehome-conformance-corpus-2026.1.tar.zst`, not in git. `pdoc-identity.json`
+and `screenshot-hashes.json` stay in the repo so the catalog digest is
+checkable without a 38 MB clone. PNG screenshots stay local
+(`data/pdoc-screenshots/`, gitignored). This document records the catalog
+digest, the archive SHA-256, and the twenty M1 screenshot hashes. Publication
+tests extract the archive and break the catalog on purpose.

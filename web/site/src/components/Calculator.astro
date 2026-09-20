@@ -1,18 +1,12 @@
 ---
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { citationIndex } from '../lib/citations.js';
 import { CLAIM_CODES, PAY_PERIODS, PROVINCES } from '../lib/provinces.js';
+import { REPO } from '../lib/rules.js';
 
 const factors = JSON.parse(
-  readFileSync(
-    path.resolve(
-      path.dirname(fileURLToPath(import.meta.url)),
-      '../../../../data/factors.json',
-    ),
-    'utf8',
-  ),
+  readFileSync(path.join(REPO, 'data/factors.json'), 'utf8'),
 );
 const {
   code,

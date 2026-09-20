@@ -20,7 +20,7 @@ function findRepoRoot() {
   throw new Error('cannot find repo root (data/rules/2026-01-01/manifest.json)');
 }
 
-const REPO = findRepoRoot();
+export const REPO = findRepoRoot();
 
 const FILE_BY_SLUG = {
   ab: 'ab.json',

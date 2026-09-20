@@ -525,12 +525,41 @@ footer nav a {
 .docs-nav {
   position: sticky;
   top: 0.75rem;
+  max-height: calc(100vh - 1.5rem);
+  overflow: auto;
+}
+
+.docs-nav-group {
+  margin-bottom: 1rem;
+}
+
+.docs-nav-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--grey-2);
 }
 
 .docs-nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+figure {
+  margin: 1.5rem 0;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+}
+
+figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--grey-1);
 }
 
 .docs-nav a {

@@ -1,0 +1,8 @@
+%%{init: {'theme': 'base'}}%%
+flowchart LR
+  CRA[CRA publishes T4127 and CSVs] --> Arch[Archive captures bytes and hash]
+  Arch --> Ingest[Ingest parses to rule JSON]
+  Ingest --> Sign[Ed25519 sign rule files]
+  Sign --> Engine[Engine verifies signature and loads]
+  Jan[January rule set] --> Engine
+  July[July delta document] -->|overlays January| Engine

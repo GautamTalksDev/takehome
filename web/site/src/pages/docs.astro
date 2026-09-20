@@ -5,27 +5,48 @@ import {
   FIRST_CALL_RESPONSE,
   firstCallCurl,
 } from '../lib/first-call.js';
+import { embedSnippet, embedSri } from '../lib/embed-sri.js';
 import { highlight } from '../lib/highlight.js';
+import { DOC_NAV } from '../lib/doc-nav.js';
 
 const curl = firstCallCurl('https://takehome.gautamkhosla.com');
 const curlHtml = await highlight(curl, 'bash');
 const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
 ---
 
-<Base title="API docs — Takehome" engine={false}>
+<Base title="API docs: Takehome" engine={false}>
   <div class="docs">
     <nav class="docs-nav" aria-label="Docs">
-      <ul>
-        <li><a href="#first-call">First call</a></li>
-        <li><a href="#request">Request</a></li>
-        <li><a href="#response">Response</a></li>
-        <li><a href="#year">Year</a></li>
-        <li><a href="#auth">Authentication</a></li>
-        <li><a href="#public">Public endpoints</a></li>
-        <li><a href="#embed">Embed</a></li>
-        <li><a href="/pricing/">Pricing</a></li>
-        <li><a href="/signup/">Sign up</a></li>
-      </ul>
+      {
+        DOC_NAV.map((group) => (
+          <div class="docs-nav-group">
+            <p class="docs-nav-label">{group.label}</p>
+            <ul>
+              {group.items.map((item) => (
+                <li>
+                  <a href={item.href}>{item.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+      <div class="docs-nav-group">
+        <p class="docs-nav-label">This page</p>
+        <ul>
+          <li><a href="#first-call">First call</a></li>
+          <li><a href="#request">Request</a></li>
+          <li><a href="#response">Response</a></li>
+          <li><a href="#year">Year</a></li>
+          <li><a href="#auth">Authentication</a></li>
+          <li><a href="#webhooks">Webhooks</a></li>
+          <li><a href="#public">Public endpoints</a></li>
+          <li><a href="#embed">Embed</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/signup/">Sign up</a></li>
+        </ul>
+      </div>
     </nav>
     <article class="prose">
       <h1>API docs</h1>
@@ -37,13 +58,13 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="first-call">
         <h2>First call</h2>
         <p>
-          <a href="/signup/">Get a key</a> — email, verify, copy the
+          <a href="/signup/">Get a key</a>: email, verify, copy the
           <code>np_test_</code> key. No sales call. Then run this. Ontario weekly
           <code>$1000.00</code> on <code>2026-01-15</code>, claim code 1.
           <code>employee.net_pay</code> is <code>{FIRST_CALL_NET_PAY}</code>.
         </p>
         <div class="code-block">
-          <button type="button" class="copy" data-copy="curl-source" onclick="window.takehomeCopy(this)">Copy</button>
+          <button type="button" class="copy" data-copy="curl-source">Copy</button>
           <Fragment set:html={curlHtml} />
           <pre id="curl-source" class="hidden">{curl}</pre>
         </div>
@@ -63,7 +84,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         <h2>Response</h2>
         <p>Trimmed body for the first call. Cents are strings, never binary floats.</p>
         <div class="code-block">
-          <button type="button" class="copy" data-copy="response-source" onclick="window.takehomeCopy(this)">Copy</button>
+          <button type="button" class="copy" data-copy="response-source">Copy</button>
           <Fragment set:html={responseHtml} />
           <pre id="response-source" class="hidden">{FIRST_CALL_RESPONSE}</pre>
         </div>
@@ -100,6 +121,25 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         </p>
       </section>
 
+      <section id="webhooks">
+        <h2>Webhooks</h2>
+        <p>
+          <code>POST /v1/webhooks</code> registers an HTTPS URL. The
+          <code>whsec_</code> signing secret is in that create response
+          exactly once; <code>GET</code> will not return it. Deliveries send
+          <code>rule_set.changed</code> with header
+          <code>takehome-signature: t=&lt;unix&gt;,v1=&lt;hex&gt;</code>.
+          <code>v1</code> is HMAC-SHA256 over the timestamp and body together
+          (<code>t</code> + <code>.</code> + raw JSON), never the body alone.
+        </p>
+        <p>
+          Receivers must reject a signature whose <code>t</code> is more than
+          5 minutes off their clock (300 seconds either side). That is the
+          replay window. Accepting an old <code>t</code> with a valid
+          <code>v1</code> lets an attacker replay a captured delivery.
+        </p>
+      </section>
+
       <section id="public">
         <h2>Public endpoints</h2>
         <p>
@@ -113,19 +153,37 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         <p>
           Job boards can skip the API: one
           <a href="/embed/"><code>embed.js</code></a> tag runs the same WASM engine
-          in the listing page. No cookie, no salary posted back.
+          in the listing page. No cookie, no salary posted back. Pin the
+          versioned path and the SRI hash so a host page cannot be swapped onto
+          a different build.
+        </p>
+        <pre><code>{embedSnippet()}</code></pre>
+        <p>
+          Integrity <code>{embedSri()}</code> with
+          <code>crossorigin="anonymous"</code>.
+        </p>
+      </section>
+
+      <section id="privacy">
+        <h2>Privacy</h2>
+        <p>
+          The API does not store calculation inputs. Request bodies are not
+          written to D1 and are not logged. The in-browser calculator never
+          sends a salary figure to the Worker.
         </p>
       </section>
     </article>
   </div>
-  <script is:inline>
-    window.takehomeCopy = function (button) {
-      const source = document.getElementById(button.getAttribute('data-copy'));
-      const text = source ? source.textContent : '';
-      button.textContent = 'Copied';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).catch(function () {});
-      }
-    };
+  <script>
+    document.querySelectorAll('button.copy').forEach((button) => {
+      button.addEventListener('click', () => {
+        const source = document.getElementById(button.getAttribute('data-copy'));
+        const text = source ? source.textContent : '';
+        button.textContent = 'Copied';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).catch(() => {});
+        }
+      });
+    });
   </script>
 </Base>

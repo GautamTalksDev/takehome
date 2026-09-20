@@ -1,6 +1,6 @@
 {
   "corpus": "pdoc-bonus-2026",
-  "notes": "Twenty PDOC bonus cases. Expected amounts are PDOC-only; never fill from the engine. PENDING_PDOC until captured through tools/pdoc-oracle.",
+  "notes": "Twenty PDOC bonus cases. Expected amounts are PDOC-only; never fill from the engine. Captured 2026-09-19 via tools/pdoc-oracle against live PDOC (locator: Total current bonus payable). total_deductions is PDOC totalAllDeductions (sum of the PDOC tax/CPP/EI lines); the bonus calculate payload's totalDeductions field is tax-only. Own class; not in the Option 1 PDOC rate 8838/9002.",
   "vectors": [
     {
       "id": "on-weekly-1000-bonus-2500",
@@ -16,21 +16,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "405.09",
+        "provincial_tax": "165.05",
+        "cpp": "204.25",
+        "cpp2": "0.00",
+        "ei": "57.05",
+        "total_deductions": "831.44",
+        "net_pay": "2668.56"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:12:39.324Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -48,21 +48,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "292.61",
+        "provincial_tax": "138.26",
+        "cpp": "170.49",
+        "cpp2": "0.00",
+        "ei": "48.90",
+        "total_deductions": "650.26",
+        "net_pay": "2349.74"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:12:53.159Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -80,21 +80,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "810.16",
+        "provincial_tax": "429.04",
+        "cpp": "408.49",
+        "cpp2": "0.00",
+        "ei": "114.10",
+        "total_deductions": "1761.79",
+        "net_pay": "5238.20"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:12:56.101Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -112,21 +112,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "810.16",
+        "provincial_tax": "429.04",
+        "cpp": "408.49",
+        "cpp2": "0.00",
+        "ei": "114.10",
+        "total_deductions": "1761.79",
+        "net_pay": "5238.21"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:12:58.599Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -144,21 +144,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "810.17",
+        "provincial_tax": "429.04",
+        "cpp": "408.49",
+        "cpp2": "0.00",
+        "ei": "114.10",
+        "total_deductions": "1761.80",
+        "net_pay": "5238.21"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:01.810Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -176,21 +176,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "569.30",
+        "provincial_tax": "293.21",
+        "cpp": "339.65",
+        "cpp2": "0.00",
+        "ei": "97.80",
+        "total_deductions": "1299.96",
+        "net_pay": "4700.04"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:05.385Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -208,21 +208,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "266.60",
+        "provincial_tax": "113.92",
+        "cpp": "115.00",
+        "cpp2": "0.00",
+        "ei": "32.60",
+        "total_deductions": "528.12",
+        "net_pay": "1471.88"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:07.620Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -240,21 +240,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "513.03",
+        "provincial_tax": "368.23",
+        "cpp": "229.32",
+        "cpp2": "0.00",
+        "ei": "65.20",
+        "total_deductions": "1175.78",
+        "net_pay": "2824.22"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:10.856Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -272,21 +272,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "456.84",
+        "provincial_tax": "337.73",
+        "cpp": "228.05",
+        "cpp2": "0.00",
+        "ei": "63.57",
+        "total_deductions": "1086.19",
+        "net_pay": "2813.81"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:14.333Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -304,21 +304,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "422.00",
+        "provincial_tax": "455.90",
+        "cpp": "229.99",
+        "cpp2": "0.00",
+        "ei": "65.20",
+        "total_deductions": "1173.09",
+        "net_pay": "2826.91"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:16.486Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -336,21 +336,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "310.52",
+        "provincial_tax": "242.08",
+        "cpp": "220.65",
+        "cpp2": "0.00",
+        "ei": "65.20",
+        "total_deductions": "838.45",
+        "net_pay": "3161.55"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:20.559Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -368,21 +368,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "236.87",
+        "provincial_tax": "228.68",
+        "cpp": "126.90",
+        "cpp2": "0.00",
+        "ei": "35.86",
+        "total_deductions": "628.31",
+        "net_pay": "1571.69"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:22.933Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -400,21 +400,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "629.02",
+        "provincial_tax": "605.97",
+        "cpp": "325.19",
+        "cpp2": "0.00",
+        "ei": "91.28",
+        "total_deductions": "1651.46",
+        "net_pay": "3948.54"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:28.425Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -432,21 +432,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "929.20",
+        "provincial_tax": "401.82",
+        "cpp": "428.90",
+        "cpp2": "0.00",
+        "ei": "122.25",
+        "total_deductions": "1882.17",
+        "net_pay": "5617.83"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:30.792Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -464,21 +464,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "266.59",
+        "provincial_tax": "86.21",
+        "cpp": "115.00",
+        "cpp2": "0.00",
+        "ei": "32.60",
+        "total_deductions": "500.40",
+        "net_pay": "1499.60"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:33.653Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -496,21 +496,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "422.00",
+        "provincial_tax": "192.92",
+        "cpp": "229.99",
+        "cpp2": "0.00",
+        "ei": "65.20",
+        "total_deductions": "910.11",
+        "net_pay": "3089.89"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:36.935Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -527,21 +527,21 @@
         "federal_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "599.53",
+        "provincial_tax": "0.00",
+        "cpp": "204.25",
+        "cpp2": "0.00",
+        "ei": "57.05",
+        "total_deductions": "860.83",
+        "net_pay": "2639.17"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:39.890Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -559,21 +559,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "360.85",
+        "provincial_tax": "205.26",
+        "cpp": "200.54",
+        "cpp2": "0.00",
+        "ei": "57.05",
+        "total_deductions": "823.70",
+        "net_pay": "2676.30"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:43.141Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -591,21 +591,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "406.00",
+        "provincial_tax": "205.68",
+        "cpp": "204.32",
+        "cpp2": "0.00",
+        "ei": "57.05",
+        "total_deductions": "873.05",
+        "net_pay": "2626.95"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:46.041Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     },
@@ -623,21 +623,21 @@
         "provincial_claim_code": 1
       },
       "expected": {
-        "federal_tax": "PENDING_PDOC",
-        "provincial_tax": "PENDING_PDOC",
-        "cpp": "PENDING_PDOC",
-        "cpp2": "PENDING_PDOC",
-        "ei": "PENDING_PDOC",
-        "total_deductions": "PENDING_PDOC",
-        "net_pay": "PENDING_PDOC"
+        "federal_tax": "414.03",
+        "provincial_tax": "191.82",
+        "cpp": "229.32",
+        "cpp2": "0.00",
+        "ei": "65.20",
+        "total_deductions": "900.37",
+        "net_pay": "3099.63"
       },
       "oracle": {
         "source": "CRA PDOC",
         "url": "https://apps.cra-arc.gc.ca/ebci/rhpd/beta/",
-        "retrieved_at": "PENDING",
-        "pdoc_version_string": "",
+        "retrieved_at": "2026-09-19T20:13:49.915Z",
+        "pdoc_version_string": "2026-06-11",
         "observed_edition": "2026-07-01",
-        "browser": "chromium (pdoc-oracle-harness)",
+        "browser": "chromium 153.0.8010.12",
         "operator": "pdoc-oracle-harness"
       }
     }

@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { KEY_HEX_CHARS } from '../src/keys.js';
 import { call, createWorld, ON_WEEKLY } from './helpers.js';
 
 test('19. test and live keys share the np_ prefixes', () => {
   const world = createWorld();
-  assert.match(world.testKey, /^np_test_[0-9a-f]{48}$/);
-  assert.match(world.liveKey, /^np_live_[0-9a-f]{48}$/);
+  assert.match(world.testKey, new RegExp(`^np_test_[0-9a-f]{${KEY_HEX_CHARS}}$`));
+  assert.match(world.liveKey, new RegExp(`^np_live_[0-9a-f]{${KEY_HEX_CHARS}}$`));
 });
 
 test('19. a test key and a live key produce identical engine output', async () => {

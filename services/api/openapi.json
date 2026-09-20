@@ -561,33 +561,61 @@
         }
       }
     },
-    "/v1/billing/checkout": {
+    "/v1/keys": {
+      "get": {
+        "operationId": "listKeys",
+        "summary": "Active key prefixes for this account. Secrets are never returned.",
+        "responses": {
+          "200": {
+            "description": "Prefixes only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/keys/rotate": {
       "post": {
-        "operationId": "createCheckout",
-        "summary": "Stripe Checkout session in CAD for a published self-serve tier.",
+        "operationId": "rotateKey",
+        "summary": "Issue a new key of the given kind. The previous key is revoked immediately. The new secret is shown once.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CheckoutRequest"
+                "$ref": "#/components/schemas/KeyKindRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Checkout URL",
+            "description": "New secret, shown once",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CheckoutResponse"
+                  "$ref": "#/components/schemas/KeyRotateResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "Unknown plan",
+            "description": "Rejected request",
             "content": {
               "application/json": {
                 "schema": {
@@ -605,9 +633,85 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/v1/keys/revoke": {
+      "post": {
+        "operationId": "revokeKey",
+        "summary": "Revoke keys of the given kind immediately. A lost key is regenerated, never retrieved.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KeyKindRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Revoked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyRevokeResponse"
+                }
+              }
+            }
           },
-          "429": {
-            "description": "Rate limited",
+          "400": {
+            "description": "Rejected request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/checkout": {
+      "post": {
+        "operationId": "createCheckout",
+        "summary": "Paid checkout is deferred (ADR-006). Returns billing_unavailable.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Missing or unknown live key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Billing unavailable; all tiers are free during early access",
             "content": {
               "application/json": {
                 "schema": {
@@ -622,21 +726,11 @@
     "/v1/billing/webhook": {
       "post": {
         "operationId": "stripeWebhook",
-        "summary": "Stripe webhook. Upgrades the plan. Never invents overage.",
+        "summary": "Not listening. Billing deferred (ADR-006).",
         "security": [],
         "responses": {
-          "200": {
-            "description": "Received",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/WebhookResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid event",
+          "404": {
+            "description": "No endpoint",
             "content": {
               "application/json": {
                 "schema": {
@@ -678,6 +772,7 @@
       "post": {
         "operationId": "createWebhook",
         "summary": "Register an HTTPS endpoint. Signing secret is shown once.",
+        "description": "The whsec_ secret is returned only on create. Deliveries are HMAC-SHA256 over t + \".\" + body as takehome-signature: t=<unix>,v1=<hex>. Receivers must reject |now - t| > 300 seconds (5 minutes).",
         "requestBody": {
           "required": true,
           "content": {
@@ -720,6 +815,100 @@
           },
           "401": {
             "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/webhooks/{id}": {
+      "get": {
+        "operationId": "getWebhook",
+        "summary": "One webhook endpoint on this account. Unknown or foreign IDs are 404.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Endpoint",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookGetResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown webhook",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteWebhook",
+        "summary": "Delete a webhook endpoint on this account. Unknown or foreign IDs are 404.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDeleteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or unknown key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown webhook",
             "content": {
               "application/json": {
                 "schema": {
@@ -1141,7 +1330,7 @@
     "/health": {
       "get": {
         "operationId": "health",
-        "summary": "Liveness plus a probe calculation.",
+        "summary": "Liveness only. No versions, dependencies, or environment.",
         "security": [],
         "responses": {
           "200": {
@@ -2127,6 +2316,73 @@
           }
         }
       },
+      "WebhookGetResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "id",
+          "url",
+          "created_at"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        }
+      },
+      "WebhookDeleteResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "deleted",
+          "id"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
       "WebhookListResponse": {
         "type": "object",
         "required": [
@@ -2360,27 +2616,15 @@
       "HealthResponse": {
         "type": "object",
         "required": [
-          "status",
-          "rule_set_version",
-          "engine_version",
-          "engine_build_sha256"
+          "status"
         ],
+        "additionalProperties": false,
         "properties": {
           "status": {
             "type": "string",
             "enum": [
               "ok"
             ]
-          },
-          "rule_set_version": {
-            "type": "string"
-          },
-          "engine_version": {
-            "type": "string"
-          },
-          "engine_build_sha256": {
-            "type": "string",
-            "pattern": "^[0-9a-f]{64}$"
           }
         }
       },
@@ -2408,6 +2652,124 @@
           },
           "document": {
             "type": "object"
+          }
+        }
+      },
+      "KeyPrefix": {
+        "type": "object",
+        "required": [
+          "kind",
+          "prefix"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "prefix": {
+            "type": "string",
+            "enum": [
+              "np_test_",
+              "np_live_"
+            ]
+          }
+        }
+      },
+      "KeyListResponse": {
+        "type": "object",
+        "required": [
+          "rule_set_version",
+          "engine_version",
+          "engine_build_sha256",
+          "keys"
+        ],
+        "properties": {
+          "rule_set_version": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "engine_version": {
+            "type": "string"
+          },
+          "engine_build_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyPrefix"
+            }
+          }
+        }
+      },
+      "KeyKindRequest": {
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          }
+        }
+      },
+      "KeyRotateResponse": {
+        "type": "object",
+        "required": [
+          "kind",
+          "key",
+          "message"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "key": {
+            "type": "string",
+            "pattern": "^np_(test|live)_[0-9a-f]{32}$"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "KeyRevokeResponse": {
+        "type": "object",
+        "required": [
+          "kind",
+          "revoked"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "test",
+              "live"
+            ]
+          },
+          "revoked": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
           }
         }
       },
@@ -2445,11 +2807,11 @@
         "properties": {
           "test_key": {
             "type": "string",
-            "pattern": "^np_test_[0-9a-f]{48}$"
+            "pattern": "^np_test_[0-9a-f]{32}$"
           },
           "live_key": {
             "type": "string",
-            "pattern": "^np_live_[0-9a-f]{48}$"
+            "pattern": "^np_live_[0-9a-f]{32}$"
           },
           "message": {
             "type": "string"

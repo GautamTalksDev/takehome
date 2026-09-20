@@ -1,4 +1,9 @@
-# Finding 002 — PDOC midpoint direction (open)
+# Finding 002: PDOC midpoint direction (open)
+
+**Who this is for:** Engineers investigating the open one-cent PDOC disagreements (M-003).
+
+**When you finish:** You know M-003 stays open, what classes exist, and how to reproduce a case.
+
 
 **Record:** M-003 in [`CONFORMANCE.md`](../../CONFORMANCE.md).
 **Status:** open disagreement. Counts against the PDOC agreement rate.
@@ -18,7 +23,7 @@ class, and they are not all “PDOC rounded the midpoint down.”
 | CPP + provincial | 1 | NB `7460.00` P=10 claim 1: CPP +1¢, provincial −1¢ |
 | Federal + provincial | 1 | ON `620.51` P=12 claim 0: federal −1¢, provincial +1¢ |
 
-CPP is one finding: PDOC’s period C is 1¢ below T4127 half-up, 82 times
+CPP is one finding: PDOC’s period C is 1¢ below T4127 (Payroll Deductions Formulas) half-up, 82 times
 including the mixed NB row. Provincial and federal are not that clean.
 Alberta provincials are uniformly engine-higher (32). Ontario provincials
 are mostly engine-lower (7 of 8). A single “always down” rule is false.
@@ -29,7 +34,7 @@ On the **engine’s already-cent T2**, `T2/P` is an exact half-cent for
 **34 of 65** provincial disagreements and not for **31 of 65**.
 `T1/P` is an exact half-cent for **9 of 19** federal disagreements.
 
-So: not all 164 are midpoints in our arithmetic. A second class exists —
+So: not all 164 are midpoints in our arithmetic. A second class exists : 
 1¢ misses where the engine period line is not on a half-cent. Implementing
 `rounding_compat: pdoc` as “IEEE-float at the half” would not zero the
 164, and would mis-handle the 19 provincial cases where PDOC is *higher*.
@@ -40,7 +45,7 @@ examples still stand) but that is not proven for all 82.
 
 ## Direction
 
-Both behaviours exist, in the published corpus, not just in the old 50-form
+Both behaviours exist, in the published corpus, not only in the old 50-form
 probe (47/50 engine-up at discriminating half-cents).
 
 - **PDOC lower** (engine tax/CPP +1¢): all 82 CPP; 45 provincial-only; 15 federal-only.
@@ -82,7 +87,7 @@ shape on the 8% flat.
 
 M4 (tag `v0.5.0-m4`) re-ran the 164-case corpus as an integer-cent probe.
 T2/P half-cent provincials are uniformly engine-higher, so a half-cent-down
-arm on that subset would not fight mixed direction there — but it would
+arm on that subset would not fight mixed direction there: but it would
 still leave the 81 CPP-only rows, the 31 provincial misses that are not
 engine T2/P half-cents, and the mixed-direction tax rows that live off-half.
 No discriminator. `rounding_compat: pdoc` remains
@@ -100,3 +105,6 @@ may still be carrying a sub-cent tail. That is still unnamed.
 All 164 count. M-003 is not exempted as methodology. Do not implement
 `rounding_compat: pdoc` as IEEE-float residue
 ([ADR-003](../ADR-003-rounding-compat.md)).
+
+**Last reviewed:** 2026-09-20  
+**Engine:** 0.1.0

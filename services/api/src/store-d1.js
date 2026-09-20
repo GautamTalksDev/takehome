@@ -52,23 +52,42 @@ export class D1Store {
       .run();
   }
 
-  async insertKey({ account_id, kind, prefix, hash }) {
+  async insertKey({ account_id, kind, prefix, hash, revoked = false }) {
     await this.db
       .prepare(
-        `INSERT INTO api_keys (hash, account_id, kind, prefix) VALUES (?, ?, ?, ?)`,
+        `INSERT INTO api_keys (hash, account_id, kind, prefix, revoked) VALUES (?, ?, ?, ?, ?)`,
       )
-      .bind(hash, account_id, kind, prefix)
+      .bind(hash, account_id, kind, prefix, revoked ? 1 : 0)
       .run();
   }
 
   async getKeyByHash(hash) {
     const row = await this.db
       .prepare(
-        `SELECT hash, account_id, kind, prefix FROM api_keys WHERE hash = ?`,
+        `SELECT hash, account_id, kind, prefix, revoked FROM api_keys WHERE hash = ?`,
       )
       .bind(hash)
       .first();
-    return row ?? null;
+    return mapKey(row);
+  }
+
+  async listKeys(accountId) {
+    const { results } = await this.db
+      .prepare(
+        `SELECT hash, account_id, kind, prefix, revoked FROM api_keys WHERE account_id = ?`,
+      )
+      .bind(accountId)
+      .all();
+    return (results ?? []).map(mapKey);
+  }
+
+  async revokeKind(accountId, kind) {
+    await this.db
+      .prepare(
+        `UPDATE api_keys SET revoked = 1 WHERE account_id = ? AND kind = ?`,
+      )
+      .bind(accountId, kind)
+      .run();
   }
 
   async insertEmailToken({ hash, account_id, expires_at }) {
@@ -80,20 +99,36 @@ export class D1Store {
       .run();
   }
 
-  async consumeEmailToken(hash) {
+  async getEmailToken(hash) {
     const row = await this.db
       .prepare(
         `SELECT hash, account_id, expires_at FROM email_tokens WHERE hash = ?`,
       )
       .bind(hash)
       .first();
-    if (!row) {
-      return null;
-    }
+    return row ?? null;
+  }
+
+  async deleteEmailToken(hash) {
     await this.db
       .prepare(`DELETE FROM email_tokens WHERE hash = ?`)
       .bind(hash)
       .run();
+  }
+
+  async deleteEmailTokensForAccount(accountId) {
+    await this.db
+      .prepare(`DELETE FROM email_tokens WHERE account_id = ?`)
+      .bind(accountId)
+      .run();
+  }
+
+  async consumeEmailToken(hash) {
+    const row = await this.getEmailToken(hash);
+    if (!row) {
+      return null;
+    }
+    await this.deleteEmailToken(hash);
     return row;
   }
 
@@ -162,14 +197,14 @@ export class D1Store {
     return results ?? [];
   }
 
-  async getWebhook(id) {
+  async getWebhook(id, accountId) {
     return (
       (await this.db
         .prepare(
           `SELECT id, account_id, url, secret, created_at
-           FROM webhook_endpoints WHERE id = ?`,
+           FROM webhook_endpoints WHERE id = ? AND account_id = ?`,
         )
-        .bind(id)
+        .bind(id, accountId)
         .first()) ?? null
     );
   }
@@ -186,13 +221,14 @@ export class D1Store {
     await this.db
       .prepare(
         `INSERT INTO webhook_deliveries
-         (id, endpoint_id, event, payload, status, attempts, last_error,
+         (id, endpoint_id, account_id, event, payload, status, attempts, last_error,
           last_http_status, replay_of, created_at, delivered_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       )
       .bind(
         row.id,
         row.endpoint_id,
+        row.account_id,
         row.event,
         row.payload,
         row.status,
@@ -207,15 +243,18 @@ export class D1Store {
     return row;
   }
 
-  async getDelivery(id) {
+  async getDelivery(id, accountId) {
     return (
       (await this.db
         .prepare(
-          `SELECT id, endpoint_id, event, payload, status, attempts, last_error,
-                  last_http_status, replay_of, created_at, delivered_at
-           FROM webhook_deliveries WHERE id = ?`,
+          `SELECT d.id, d.endpoint_id, d.account_id, d.event, d.payload, d.status, d.attempts,
+                  d.last_error, d.last_http_status, d.replay_of, d.created_at,
+                  d.delivered_at
+           FROM webhook_deliveries d
+           JOIN webhook_endpoints e ON e.id = d.endpoint_id
+           WHERE d.id = ? AND d.account_id = ?`,
         )
-        .bind(id)
+        .bind(id, accountId)
         .first()) ?? null
     );
   }
@@ -223,12 +262,12 @@ export class D1Store {
   async listDeliveries(accountId) {
     const { results } = await this.db
       .prepare(
-        `SELECT d.id, d.endpoint_id, d.event, d.payload, d.status, d.attempts,
+        `SELECT d.id, d.endpoint_id, d.account_id, d.event, d.payload, d.status, d.attempts,
                 d.last_error, d.last_http_status, d.replay_of, d.created_at,
                 d.delivered_at
          FROM webhook_deliveries d
          JOIN webhook_endpoints e ON e.id = d.endpoint_id
-         WHERE e.account_id = ?
+         WHERE d.account_id = ?
          ORDER BY d.created_at DESC`,
       )
       .bind(accountId)
@@ -237,7 +276,14 @@ export class D1Store {
   }
 
   async updateDelivery(id, patch) {
-    const row = await this.getDelivery(id);
+    const row = await this.db
+      .prepare(
+        `SELECT id, endpoint_id, account_id, event, payload, status, attempts, last_error,
+                last_http_status, replay_of, created_at, delivered_at
+         FROM webhook_deliveries WHERE id = ?`,
+      )
+      .bind(id)
+      .first();
     if (!row) {
       return null;
     }
@@ -270,5 +316,18 @@ function mapAccount(row) {
     plan: row.plan,
     stripe_customer_id: row.stripe_customer_id ?? null,
     created_at: row.created_at,
+  };
+}
+
+function mapKey(row) {
+  if (!row) {
+    return null;
+  }
+  return {
+    hash: row.hash,
+    account_id: row.account_id,
+    kind: row.kind,
+    prefix: row.prefix,
+    revoked: Boolean(row.revoked),
   };
 }

@@ -177,9 +177,47 @@ assert.ok(existsSync(path.join(DIST, 'embed.js')), 'embed.js missing from dist')
 const embedSrc = readFileSync(path.join(DIST, 'embed.js'), 'utf8');
 assert.match(embedSrc, /attachShadow/);
 const embedPage = readFileSync(distFileFor('/embed/'), 'utf8');
-assert.match(embedPage, /https:\/\/takehome\.gautamkhosla\.com\/embed\.js/);
+assert.match(embedPage, /https:\/\/takehome\.gautamkhosla\.com\/embed\/v0\.1\.0\/embed\.js/);
 assert.match(embedPage, /job board/i);
 assert.doesNotMatch(embedPage, /engine\/calculator\.js/);
+
+const leakedFixtures = htmlFiles.filter((file) =>
+  /^embed-.+\.html$/.test(path.basename(file)),
+);
+assert.equal(
+  leakedFixtures.length,
+  0,
+  `Playwright embed-*.html fixtures must not ship in dist:\n${leakedFixtures
+    .map((file) => path.relative(DIST, file))
+    .join('\n')}`,
+);
+
+const publicDir = path.join(ROOT, 'public');
+const publicLeaks = readdirSync(publicDir).filter((name) =>
+  /^embed-.+\.html$/.test(name),
+);
+assert.equal(
+  publicLeaks.length,
+  0,
+  `public/ must not contain Playwright fixtures: ${publicLeaks.join(', ')}`,
+);
+
+const pdocLeaks = walk(DIST).filter((file) => {
+  const rel = path.relative(DIST, file);
+  return (
+    rel.includes(`${path.sep}pdoc-cache${path.sep}`) ||
+    rel.includes(`${path.sep}pdoc-screenshots${path.sep}`) ||
+    rel.startsWith(`pdoc-cache${path.sep}`) ||
+    rel.startsWith(`pdoc-screenshots${path.sep}`)
+  );
+});
+assert.equal(
+  pdocLeaks.length,
+  0,
+  `PDOC cache/screenshots must not ship in dist:\n${pdocLeaks
+    .map((file) => path.relative(DIST, file))
+    .join('\n')}`,
+);
 
 console.log(
   `site-graph ok: ${pages.length} pages, ${htmlFiles.length} html files, sitemap complete, 0 internal 404s`,

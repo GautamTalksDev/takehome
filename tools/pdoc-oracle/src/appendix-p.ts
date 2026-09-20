@@ -80,6 +80,26 @@ export const STEP2 = {
     value: "WITH_BONUS",
     label: /A bonus payment/i,
   },
+  /**
+   * Live PDOC (2026-09-19, after selecting WITH_BONUS). Angular ids are
+   * ephemeral; these labels are the stable locators.
+   *
+   * Do **not** use getByLabel(/bonus/i): that also matches the salaryType
+   * radios and the previous-bonus / F5B-YTD boxes. Filling nth(last) wrote
+   * the current bonus into the CPP-additional-from-previous field, left
+   * "Total current bonus payable" empty (required), and timed out on
+   * waitForURL(/step3/).
+   */
+  bonusAmount: { label: /Total current bonus payable/i },
+  bonusRrsp: { label: /deduction amounts from current bonus/i },
+  previousBonus: { label: /^Previous bonus/i },
+  previousBonusRrsp: {
+    label: /from previous bonus\(es\) and retroactive payment/i,
+  },
+  previousBonusCppAdditional: {
+    label:
+      /Canada Pension Plan additional contributions deducted from previous bonus/i,
+  },
   next: { role: "button" as const, name: "Next" },
 };
 

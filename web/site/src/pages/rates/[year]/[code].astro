@@ -36,9 +36,9 @@ function optionLabel(key) {
 }
 ---
 
-<Base title={`${province.name} payroll rates, ${year.label} — Takehome`}>
+<Base title={`${province.name} payroll rates, ${year.label}: Takehome`}>
   <article class="prose">
-    <h1>{province.name} payroll rates — {year.label}</h1>
+    <h1>{province.name} payroll rates: {year.label}</h1>
     <p>
       {year.edition}, rule set {year.version}. {facts.t2Line}
     </p>
@@ -107,7 +107,7 @@ function optionLabel(key) {
     {
       province.slug === 'outsidecanada' ? (
         <>
-          <h2>Outside Canada — no provincial table</h2>
+          <h2>Outside Canada: no provincial table</h2>
           <p>
             T2 is zero. Federal tax is increased by the 48% surtax in the
             federal file. CPP and EI still use the tables above.
@@ -122,7 +122,7 @@ function optionLabel(key) {
             <>
               <h2>
                 {province.name} brackets
-                {Object.keys(rowsByOption).length > 1 ? ` — ${optionLabel(key)}` : ''}
+                {Object.keys(rowsByOption).length > 1 ? `: ${optionLabel(key)}` : ''}
               </h2>
               <table>
                 <thead>

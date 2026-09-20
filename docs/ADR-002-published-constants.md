@@ -1,12 +1,16 @@
 # ADR-002: Published whole-dollar K
 
+**Who this is for:** Engine contributors working on bracket tables and conformance against PDOC.
+
+**When you finish:** You know why annual tax can jump a dollar at a threshold and why that is intentional.
+
 ## Status
 
 Accepted (M1)
 
 ## Context
 
-T4127 computes annual federal (and provincial) tax as `(R × A) − K` on the
+T4127 (Payroll Deductions Formulas) computes annual federal (and provincial) tax as `(R × A) − K` on the
 occupied bracket, rather than summing marginal slices. Algebraically K is
 
 ```text
@@ -20,12 +24,12 @@ half-up-to-the-dollar rule as TD1 claim indexing (`round_claim_to_dollar`).
 The exact identity `(R × A) − K_exact = Σ marginal slices` therefore fails
 against the published table by `|K_exact − K_published|`, which is at most
 fifty cents per bracket. Crossing a threshold by one cent can move annual T3
-by up to one dollar — the difference of two such residuals — rather than by
+by up to one dollar, the difference of two such residuals, rather than by
 one cent.
 
 An engine could store `K_exact` and match the algebra. PDOC uses the published
 constants. T4032 uses the published constants. Every payroll system in Canada
-uses the published constants. Netpay's claim is agreement with PDOC to the
+uses the published constants. Takehome's claim is agreement with PDOC to the
 cent.
 
 ## Decision
@@ -47,7 +51,10 @@ K still fails immediately; the intended imprecision is named and bounded.
 - Annual T3/T4 is discontinuous by at most $1.00 at each bracket threshold.
   The jump equals the difference of the two adjacent K rounding residuals.
   Measured 2026 jumps for all thirteen bracket tables (both 2026 editions)
-  live in `crates/netpay-core/tests/vectors/bracket_discontinuity_2026.json`.
+  live in `crates/takehome-core/tests/vectors/bracket_discontinuity_2026.json`.
 - At P = 52 the largest possible withholding jump is under two cents.
 - PDOC exhibits the same discontinuity. Matching it is conformance, not a
   defect. See `CONFORMANCE.md` §Methodology.
+
+**Last reviewed:** 2026-09-20  
+**Engine:** 0.1.0

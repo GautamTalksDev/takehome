@@ -22,6 +22,12 @@ export const DOCS = {
   plan_limit: 'https://takehome.gautamkhosla.com/pricing/',
   batch_too_large: 'https://takehome.gautamkhosla.com/docs/',
   unknown_plan: 'https://takehome.gautamkhosla.com/pricing/',
+  billing_unavailable: 'https://takehome.gautamkhosla.com/pricing/',
+  payload_too_large:
+    'https://takehome.gautamkhosla.com/how-payroll-deductions-work-in-canada',
+  unsupported_media_type:
+    'https://takehome.gautamkhosla.com/how-payroll-deductions-work-in-canada',
+  store: 'https://takehome.gautamkhosla.com/docs/',
 };
 
 const money = {
@@ -418,6 +424,42 @@ export const schemas = {
       created_at: { type: 'string' },
     },
   },
+  WebhookGetResponse: {
+    type: 'object',
+    required: [
+      'rule_set_version',
+      'engine_version',
+      'engine_build_sha256',
+      'id',
+      'url',
+      'created_at',
+    ],
+    properties: {
+      rule_set_version: { type: ['string', 'null'] },
+      engine_version: { type: 'string' },
+      engine_build_sha256: sha,
+      id: { type: 'string' },
+      url: { type: 'string', format: 'uri' },
+      created_at: { type: 'string' },
+    },
+  },
+  WebhookDeleteResponse: {
+    type: 'object',
+    required: [
+      'rule_set_version',
+      'engine_version',
+      'engine_build_sha256',
+      'deleted',
+      'id',
+    ],
+    properties: {
+      rule_set_version: { type: ['string', 'null'] },
+      engine_version: { type: 'string' },
+      engine_build_sha256: sha,
+      deleted: { type: 'boolean' },
+      id: { type: 'string' },
+    },
+  },
   WebhookListResponse: {
     type: 'object',
     required: [
@@ -538,17 +580,10 @@ export const schemas = {
   },
   HealthResponse: {
     type: 'object',
-    required: [
-      'status',
-      'rule_set_version',
-      'engine_version',
-      'engine_build_sha256',
-    ],
+    required: ['status'],
+    additionalProperties: false,
     properties: {
       status: { type: 'string', enum: ['ok'] },
-      rule_set_version: { type: 'string' },
-      engine_version: { type: 'string' },
-      engine_build_sha256: sha,
     },
   },
   OpenApiResponse: {
@@ -564,6 +599,60 @@ export const schemas = {
       engine_version: { type: 'string' },
       engine_build_sha256: sha,
       document: { type: 'object' },
+    },
+  },
+  KeyPrefix: {
+    type: 'object',
+    required: ['kind', 'prefix'],
+    additionalProperties: false,
+    properties: {
+      kind: { type: 'string', enum: ['test', 'live'] },
+      prefix: { type: 'string', enum: ['np_test_', 'np_live_'] },
+    },
+  },
+  KeyListResponse: {
+    type: 'object',
+    required: [
+      'rule_set_version',
+      'engine_version',
+      'engine_build_sha256',
+      'keys',
+    ],
+    properties: {
+      rule_set_version: { type: ['string', 'null'] },
+      engine_version: { type: 'string' },
+      engine_build_sha256: sha,
+      keys: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/KeyPrefix' },
+      },
+    },
+  },
+  KeyKindRequest: {
+    type: 'object',
+    required: ['kind'],
+    additionalProperties: false,
+    properties: {
+      kind: { type: 'string', enum: ['test', 'live'] },
+    },
+  },
+  KeyRotateResponse: {
+    type: 'object',
+    required: ['kind', 'key', 'message'],
+    additionalProperties: false,
+    properties: {
+      kind: { type: 'string', enum: ['test', 'live'] },
+      key: { type: 'string', pattern: '^np_(test|live)_[0-9a-f]{32}$' },
+      message: { type: 'string' },
+    },
+  },
+  KeyRevokeResponse: {
+    type: 'object',
+    required: ['kind', 'revoked'],
+    additionalProperties: false,
+    properties: {
+      kind: { type: 'string', enum: ['test', 'live'] },
+      revoked: { type: 'boolean', enum: [true] },
     },
   },
 };

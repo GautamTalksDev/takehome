@@ -12,8 +12,8 @@ test('22. live deductions responses carry limit, remaining, reset', async () => 
     world,
   );
   assert.equal(status, 200);
-  assert.equal(response.headers.get('x-usage-limit'), '1000');
-  assert.equal(response.headers.get('x-usage-remaining'), '999');
+  assert.equal(response.headers.get('x-usage-limit'), '100000');
+  assert.equal(response.headers.get('x-usage-remaining'), '99999');
   assert.equal(response.headers.get('x-usage-reset'), '2026-10-01T00:00:00Z');
 });
 

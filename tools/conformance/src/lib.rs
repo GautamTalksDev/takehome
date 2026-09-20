@@ -28,6 +28,14 @@ const BONUS_VECTORS: &str = include_str!(concat!(
     "/../../crates/takehome-core/tests/vectors/pdoc_bonus_2026.json"
 ));
 const GRID_PDOC_BOUNDARY_JSON: &str = include_str!("grid_pdoc_boundary_2026.json");
+const SCREENSHOT_CATALOG_JSON: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/pdoc-cache/screenshot-hashes.json"
+));
+const CORPUS_ARCHIVE_JSON: &str = include_str!(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../../data/pdoc-cache/corpus-archive.json"
+));
 
 #[derive(Debug, Deserialize)]
 struct GridPdocSnapshot {
@@ -101,6 +109,30 @@ pub struct Report {
     pub agreement_rate: Option<String>,
     pub coverage_gaps: Vec<String>,
     pub methodology: Vec<String>,
+    pub pdoc_evidence: PdocEvidence,
+}
+
+/// Ruling (a): records published, screenshots local, hashes bound here.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PdocEvidence {
+    pub ruling: String,
+    pub records_published: bool,
+    pub screenshots_published: bool,
+    pub record_count: u64,
+    pub screenshot_hash_count: u64,
+    pub screenshot_catalog_sha256: String,
+    pub catalog_path: String,
+    pub archive_filename: String,
+    pub archive_sha256: String,
+    pub archive_download: String,
+    pub m1_screenshot_hashes: Vec<M1ScreenshotHash>,
+}
+
+/// One M1 vector id and the SHA-256 of its local results-page PNG.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct M1ScreenshotHash {
+    pub id: String,
+    pub sha256: String,
 }
 
 /// Generator failure.
@@ -116,8 +148,8 @@ pub enum ReportError {
     Io(#[from] std::io::Error),
 }
 
-/// Option 1 PDOC rate (M1 + July grid). The bonus class is named pending and
-/// stays out of the denominator until amounts are captured from PDOC.
+/// Option 1 PDOC rate (M1 + July grid). Bonus is its own PDOC class and stays
+/// out of the denominator even after capture (Chapter 4 TB, not Option 1 salary).
 fn is_rate_bearing_pdoc(c: &Corpus) -> bool {
     c.oracle_class == "pdoc" && c.id != "pdoc-bonus-2026"
 }
@@ -236,6 +268,7 @@ pub fn report_from_repo() -> Result<Report, ReportError> {
             interiors,
         ],
         hash_rules(&workspace_root().join("data/rules"))?,
+        pdoc_evidence_from_embedded()?,
     );
     report.pdoc_identity = format!("2026-06-11 (M1); {} (grid queue)", snap.pdoc_identity);
     report.browser = snap.browser;
@@ -250,6 +283,7 @@ pub fn assemble_report(
     census: Vec<CensusRow>,
     corpora: Vec<Corpus>,
     rule_set_sha256: String,
+    pdoc_evidence: PdocEvidence,
 ) -> Report {
     let pdoc_complete = corpora
         .iter()
@@ -319,14 +353,14 @@ pub fn assemble_report(
         coverage_gaps: vec![
             "Quebec / QPIP: EngineError::JurisdictionNotSupported. Never a federal-only T2=0 success. docs/jurisdictions.md.".to_string(),
             "Interior log-ladder of grid 2026.1: engine invariants (§16.2 proptests over thirteen jurisdictions) and differential oracle only. Not a per-cell PDOC comparison.".to_string(),
-            "Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle — same as the interior ladder. Live PDOC salary UI cannot enter them.".to_string(),
+            "Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle: same as the interior ladder. Live PDOC salary UI cannot enter them.".to_string(),
             grid_gap,
             "January-only BC/NL/PE amounts retired from live PDOC: invariants + differential vs July sibling.".to_string(),
             "PDOC does not expose Option 2 (cumulative averaging). Live PDOC (observed 2026-06-11, screen WLCM) offers Salary, Commission, Pension, and CPP/EI verification only; there is no Option 2 / S1 / cumulative-averaging control, so no PDOC vectors were captured. Option 2 is a distinct oracle class `t4127_worked_examples` (T4127 Chapter 5 worked examples plus invariants) with weaker evidence than PDOC. It does not inherit the Option 1 PDOC agreement rate.".to_string(),
             "DateBeforeCoverage cells: engine error path, not a PDOC form.".to_string(),
             "M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented.".to_string(),
-            "PDOC bonus class `pdoc-bonus-2026`: 20 defined cases. Expected amounts stay PENDING_PDOC until captured through tools/pdoc-oracle; never filled from the engine. Named pending; not in the overall Option 1 PDOC rate.".to_string(),
-            "Year projection `year-projection-2026`: oracle class `invariants` (API tests 22–29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md.".to_string(),
+            "PDOC bonus class `pdoc-bonus-2026`: 20 cases captured from live PDOC on 2026-09-19 (locator: Total current bonus payable). Own class; not in the overall Option 1 PDOC rate 8838/9002. One-cent field disagreements are listed on this corpus (same neighbourhood as M-003); expected amounts are PDOC, never the engine.".to_string(),
+            "Year projection `year-projection-2026`: oracle class `invariants` (API tests 22-29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md.".to_string(),
         ],
         methodology: vec![
             "defect-vs-disagreement".to_string(),
@@ -334,8 +368,114 @@ pub fn assemble_report(
             "M-002".to_string(),
             "M-003".to_string(),
             "ADR-003".to_string(),
+            "pdoc-evidence-records-only".to_string(),
         ],
+        pdoc_evidence,
     }
+}
+
+#[derive(Debug, Deserialize)]
+struct ScreenshotCatalogFile {
+    ruling: String,
+    hashes: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CorpusArchiveFile {
+    filename: String,
+    sha256: String,
+    catalog_digest: String,
+    download: String,
+}
+
+fn is_sha256_hex(s: &str) -> bool {
+    s.len() == 64 && s.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+}
+
+/// SHA-256 of sorted `key<space>sha256\\n` lines. Independent of JSON pretty-print.
+pub fn catalog_digest(hashes: &BTreeMap<String, String>) -> String {
+    let mut hasher = Sha256::new();
+    for (key, value) in hashes {
+        hasher.update(key.as_bytes());
+        hasher.update(b" ");
+        hasher.update(value.as_bytes());
+        hasher.update(b"\n");
+    }
+    format!("{:x}", hasher.finalize())
+}
+
+/// Load the committed screenshot catalog and M1 vector hashes.
+pub fn pdoc_evidence_from_embedded() -> Result<PdocEvidence, ReportError> {
+    let file: ScreenshotCatalogFile = serde_json::from_str(SCREENSHOT_CATALOG_JSON)?;
+    if file.ruling != "records-only" {
+        return Err(ReportError::Message(format!(
+            "screenshot catalog ruling is {}, expected records-only",
+            file.ruling
+        )));
+    }
+    for (key, hash) in &file.hashes {
+        if !is_sha256_hex(hash) {
+            return Err(ReportError::Message(format!(
+                "{key}: screenshot hash is not 64 lowercase hex"
+            )));
+        }
+    }
+    let count =
+        u64::try_from(file.hashes.len()).map_err(|_| ReportError::Message("hash count".into()))?;
+    let digest = catalog_digest(&file.hashes);
+    let archive: CorpusArchiveFile = serde_json::from_str(CORPUS_ARCHIVE_JSON)?;
+    if archive.catalog_digest != digest {
+        return Err(ReportError::Message(format!(
+            "corpus-archive.json catalog_digest {} does not match screenshot catalog {}",
+            archive.catalog_digest, digest
+        )));
+    }
+    if !is_sha256_hex(&archive.sha256) {
+        return Err(ReportError::Message(
+            "corpus-archive.json sha256 is not 64 lowercase hex".into(),
+        ));
+    }
+    if archive.filename != "takehome-conformance-corpus-2026.1.tar.zst" {
+        return Err(ReportError::Message(format!(
+            "unexpected corpus archive filename {}",
+            archive.filename
+        )));
+    }
+    Ok(PdocEvidence {
+        ruling: "records-only".to_string(),
+        records_published: true,
+        screenshots_published: false,
+        record_count: count,
+        screenshot_hash_count: count,
+        screenshot_catalog_sha256: digest,
+        catalog_path: "data/pdoc-cache/screenshot-hashes.json".to_string(),
+        archive_filename: archive.filename,
+        archive_sha256: archive.sha256,
+        archive_download: archive.download,
+        m1_screenshot_hashes: m1_screenshot_hashes()?,
+    })
+}
+
+fn m1_screenshot_hashes() -> Result<Vec<M1ScreenshotHash>, ReportError> {
+    let file: VectorFile = serde_json::from_str(M1_VECTORS)?;
+    let mut out = Vec::new();
+    for v in file.vectors {
+        let sha = v
+            .oracle
+            .screenshot_sha256
+            .ok_or_else(|| ReportError::Message(format!("{}: missing screenshot_sha256", v.id)))?;
+        if !is_sha256_hex(&sha) {
+            return Err(ReportError::Message(format!(
+                "{}: screenshot_sha256 is not 64 lowercase hex",
+                v.id
+            )));
+        }
+        out.push(M1ScreenshotHash {
+            id: v.id,
+            sha256: sha,
+        });
+    }
+    Ok(out)
 }
 
 /// Render CONFORMANCE.md. Incomplete runs contain no overall agreement rate.
@@ -439,6 +579,8 @@ impl ExpectedAmounts {
 #[derive(Debug, Deserialize)]
 struct OracleMeta {
     retrieved_at: String,
+    #[serde(default)]
+    screenshot_sha256: Option<String>,
 }
 
 fn measure_m1() -> Result<Corpus, ReportError> {
@@ -766,10 +908,16 @@ mod tests {
     }
 
     fn report(corpora: Vec<Corpus>) -> Report {
-        assemble_report(empty_sampling(), census(), corpora, "deadbeef".to_string())
+        assemble_report(
+            empty_sampling(),
+            census(),
+            corpora,
+            "deadbeef".to_string(),
+            super::pdoc_evidence_from_embedded().expect("screenshot catalog"),
+        )
     }
 
-    /// Test 43 — incomplete run: in_progress, no overall rate.
+    /// Test 43: incomplete run: in_progress, no overall rate.
     #[test]
     fn incomplete_run_has_no_agreement_rate() {
         let m1 = Corpus::from_counts("m1", "pdoc", 20, 20, 20, Vec::new());
@@ -935,7 +1083,7 @@ mod tests {
         assert_eq!(t1_half, 9);
     }
 
-    /// Test 52 — named pending PDOC bonus class does not wipe the Option 1 rate.
+    /// Test 52: named pending PDOC bonus class does not wipe the Option 1 rate.
     #[test]
     fn bonus_pending_does_not_block_overall_pdoc_rate() {
         let m1 = Corpus::from_counts("m1-ontario-2026-01", "pdoc", 20, 20, 20, Vec::new());
@@ -986,7 +1134,7 @@ mod tests {
         assert!(report.agreement_rate.is_none());
     }
 
-    /// Test 52 — year-projection corpus: eight API invariants, oracle `invariants`.
+    /// Test 52: year-projection corpus: eight API invariants, oracle `invariants`.
     #[test]
     fn year_projection_corpus_is_invariants_oracle() {
         let corpus = super::year::measure().expect("year projection");
@@ -1004,7 +1152,7 @@ mod tests {
         assert!(corpus.agreement_rate.is_none());
     }
 
-    /// Test 52 — Option 2 stays a weaker oracle and is not folded into PDOC.
+    /// Test 52: Option 2 stays a weaker oracle and is not folded into PDOC.
     #[test]
     fn option2_corpus_is_t4127_worked_examples_not_pdoc() {
         let corpus = super::measure_option2().expect("option 2");
@@ -1015,7 +1163,7 @@ mod tests {
         assert!(corpus.agreement_rate.is_none());
     }
 
-    /// Test 52/53 — M4 engine vs committed PDOC queue: 8838/9002, all 164 listed.
+    /// Test 52/53: M4 engine vs committed PDOC queue: 8838/9002, all 164 listed.
     #[test]
     fn m4_repo_report_pdoc_rate_has_not_regressed() {
         let report = super::report_from_repo().expect("report");
@@ -1030,8 +1178,14 @@ mod tests {
             .iter()
             .find(|c| c.id == "pdoc-bonus-2026")
             .unwrap();
-        assert_eq!(bonus.pending, 20);
-        assert_eq!(bonus.cases_measured, 0);
+        assert_eq!(bonus.pending, 0);
+        assert_eq!(bonus.cases_measured, 20);
+        assert_eq!(bonus.cases_defined, 20);
+        assert_eq!(
+            bonus.exact_matches + u64::try_from(bonus.disagreements.len()).unwrap(),
+            20
+        );
+        assert!(bonus.agreement_rate.is_some());
         let grid = report
             .corpora
             .iter()
@@ -1054,13 +1208,13 @@ mod tests {
         assert!(md.contains("t4127-option2-2026"));
         assert!(md.contains("year-projection-2026"));
         assert!(md.contains("pdoc-bonus-2026"));
-        assert!(md.contains("PENDING_PDOC"));
+        assert!(md.contains("Total current bonus payable"));
         assert!(md.contains("PDOC does not expose Option 2"));
         assert!(report.rule_set_versions.iter().any(|v| v == "2027-01-01"));
         assert_eq!(report.sampling.unique_form_boundary_july, 9762);
     }
 
-    /// Test 54 — integer-cent probe: a T1/T2 half-cent-down arm cannot zero the 164.
+    /// Test 54: integer-cent probe: a T1/T2 half-cent-down arm cannot zero the 164.
     #[test]
     fn half_cent_down_arm_cannot_zero_the_164() {
         use takehome_core::request::{Request, RequestError, RoundingCompat};
@@ -1122,5 +1276,52 @@ mod tests {
             err,
             EngineError::Request(RequestError::RoundingCompatPdocNotImplemented)
         ));
+    }
+
+    /// Ruling (a): records published, screenshots local, hashes in CONFORMANCE.md.
+    #[test]
+    fn pdoc_evidence_is_records_only_and_hashes_are_in_markdown() {
+        let report = super::report_from_repo().expect("report");
+        let ev = &report.pdoc_evidence;
+        assert_eq!(ev.ruling, "records-only");
+        assert!(ev.records_published);
+        assert!(!ev.screenshots_published);
+        assert_eq!(ev.record_count, ev.screenshot_hash_count);
+        assert!(ev.screenshot_hash_count > 0);
+        assert_eq!(ev.m1_screenshot_hashes.len(), 20);
+        assert_eq!(ev.screenshot_catalog_sha256.len(), 64);
+        let md = super::render_markdown(&report);
+        assert!(md.contains(&ev.screenshot_catalog_sha256));
+        assert!(md.contains("data/pdoc-screenshots"));
+        assert!(md.contains("records-only"));
+        assert!(md.contains(&ev.archive_filename));
+        assert!(md.contains(&ev.archive_sha256));
+        assert!(md.contains(&ev.archive_download));
+        assert!(md.contains("sha256sum -c"));
+        assert!(md.contains("tar --zstd -xf"));
+        for row in &ev.m1_screenshot_hashes {
+            assert!(
+                md.contains(&row.sha256),
+                "CONFORMANCE.md must list screenshot hash for {}",
+                row.id
+            );
+        }
+    }
+
+    #[test]
+    fn screenshot_catalog_digest_moves_when_a_hash_is_added_or_dropped() {
+        let mut hashes = BTreeMap::new();
+        hashes.insert("keep".into(), "a".repeat(64));
+        hashes.insert("qpip".into(), "b".repeat(64));
+        let baseline = super::catalog_digest(&hashes);
+        hashes.insert("ZZZ_NOT_A_FACTOR".into(), "c".repeat(64));
+        assert_ne!(super::catalog_digest(&hashes), baseline);
+        hashes.remove("qpip");
+        hashes.remove("ZZZ_NOT_A_FACTOR");
+        assert_ne!(super::catalog_digest(&hashes), baseline);
+        assert_eq!(
+            super::catalog_digest(&BTreeMap::new()),
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
     }
 }

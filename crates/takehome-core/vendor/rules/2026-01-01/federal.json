@@ -1,0 +1,26 @@
+{
+  "brackets": [
+    { "threshold": "0", "rate": "0.1400", "constant": "0.00" },
+    { "threshold": "58523.00", "rate": "0.2050", "constant": "3804.00" },
+    { "threshold": "117045.00", "rate": "0.2600", "constant": "10241.00" },
+    { "threshold": "181440.00", "rate": "0.2900", "constant": "15685.00" },
+    { "threshold": "258482.00", "rate": "0.3300", "constant": "26024.00" }
+  ],
+  "lowest_rate": "0.1400",
+  "basic_personal_amount": {
+    "type": "dynamic",
+    "formula": {},
+    "max": "16452.00",
+    "min": "14829.00",
+    "phaseout_start": "181440.00",
+    "phaseout_end": "258482.00"
+  },
+  "canada_employment_amount": "1501.00",
+  "index_rate": "0.020",
+  "lcf": {
+    "rate": "0.150",
+    "max": "750.00"
+  },
+  "abatement": "0.165",
+  "surtax_flat": "0.48"
+}

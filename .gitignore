@@ -34,8 +34,13 @@ __pycache__/
 data/sources/**/*.html
 !data/sources/.gitkeep
 crates/takehome-core/wip/
-data/pdoc-cache/**
+# PDOC evidence, ruling (a): catalog and identity in git; 9010 records
+# ship as the GitHub-release archive, never in history.
+data/pdoc-cache/*
 !data/pdoc-cache/.gitkeep
+!data/pdoc-cache/pdoc-identity.json
+!data/pdoc-cache/screenshot-hashes.json
+!data/pdoc-cache/corpus-archive.json
 data/pdoc-screenshots/**
 !data/pdoc-screenshots/.gitkeep
 data/grids/**

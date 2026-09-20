@@ -117,8 +117,10 @@ test('30. demo page embeds the widget and pitches job boards', async ({
   await expect(page.locator('h1')).toContainText(/embed/i);
   await expect(page.locator('main')).toContainText(/job boards/i);
   await expect(page.locator('main')).toContainText(
-    'src="https://takehome.gautamkhosla.com/embed.js"',
+    'src="https://takehome.gautamkhosla.com/embed/v0.1.0/embed.js"',
   );
+  await expect(page.locator('main')).toContainText('integrity="sha384-');
+  await expect(page.locator('main')).toContainText('crossorigin="anonymous"');
   await expect(page.locator('main')).not.toContainText(/contact sales/i);
   const widget = page.locator('[data-testid="takehome-embed"]');
   await expect(widget).toHaveAttribute('data-ready', 'true', { timeout: 30_000 });

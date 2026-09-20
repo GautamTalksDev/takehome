@@ -16,6 +16,7 @@ export async function watch({
   fetchImpl,
   openIssue,
   readSnapshot,
+  onAlert,
 }) {
   const issues = [];
   const seenCsv = new Set();
@@ -45,8 +46,7 @@ export async function watch({
           readSnapshot,
         });
         if (drift) {
-          await openIssue(drift);
-          issues.push(drift);
+          await reportDrift(drift, openIssue, onAlert, issues);
         }
       }
     }
@@ -63,8 +63,7 @@ export async function watch({
       readSnapshot,
     });
     if (drift) {
-      await openIssue(drift);
-      issues.push(drift);
+      await reportDrift(drift, openIssue, onAlert, issues);
     }
   }
 
@@ -84,12 +83,19 @@ export async function watch({
       readSnapshot,
     });
     if (drift) {
-      await openIssue(drift);
-      issues.push(drift);
+      await reportDrift(drift, openIssue, onAlert, issues);
     }
   }
 
   return { issues };
+}
+
+async function reportDrift(drift, openIssue, onAlert, issues) {
+  await openIssue(drift);
+  if (typeof onAlert === 'function') {
+    await onAlert({ type: 'rules_watch_drift', id: drift.id });
+  }
+  issues.push(drift);
 }
 
 async function getCanonical(fetchImpl, url, kind) {

@@ -1,0 +1,11 @@
+%%{init: {'theme': 'base'}}%%
+flowchart TB
+  Core[takehome-core Rust] --> Native[Native CLI and Python]
+  Core --> Wasm[takehome-wasm]
+  Wasm --> Browser[Browser calculator<br/>no network after load]
+  Wasm --> Node[Node takehome-ca]
+  Wasm --> Worker[Cloudflare Worker API]
+  Hash[engine_build_sha256] -.->|same bytes claim| Browser
+  Hash -.-> Node
+  Hash -.-> Worker
+  Hash -.-> Native

@@ -3,6 +3,7 @@ import { PROVINCES } from '../lib/provinces.js';
 import '../styles/site.css';
 
 const apiOrigin = import.meta.env.PUBLIC_API_ORIGIN ?? '';
+const noindex = import.meta.env.PUBLIC_NOINDEX === '1';
 const { title, engine = true } = Astro.props;
 ---
 
@@ -12,22 +13,16 @@ const { title, engine = true } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : null
+    }
     <meta
       name="description"
       content="Canadian payroll deductions from the T4127 formulas, in the browser. No salary figure leaves the browser."
     />
     <link rel="alternate" type="application/rss+xml" title="Takehome changes" href="/changes.xml" />
-    <style is:inline>
-      .nav-menu > ul {
-        display: none;
-      }
-      .site-nav a,
-      .nav-menu > summary {
-        min-height: 44px;
-        display: inline-flex;
-        align-items: center;
-      }
-    </style>
   </head>
   <body>
     <header>

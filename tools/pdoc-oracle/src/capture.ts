@@ -14,6 +14,7 @@ import {
   PAY_PERIOD_VALUE,
   PROVINCE_VALUE,
   RESULTS,
+  STEP2,
   STEP3,
 } from "./appendix-p.ts";
 import { PolicyError } from "./pdoc.ts";
@@ -27,6 +28,10 @@ export type CaptureInput = {
   provincialClaimCode: number | "E";
   cppMonths?: number;
   bonus?: string | null;
+  ytdBonus?: string | null;
+  bonusRrsp?: string | null;
+  ytdBonusRrsp?: string | null;
+  f5bYtd?: string | null;
   ytdCpp?: string | null;
   ytdCpp2?: string | null;
   ytdPensionableEarnings?: string | null;
@@ -153,21 +158,26 @@ export async function fillSalaryForm(
 
   await fillLabeled(page, /Salary or wages income per pay period/i, input.grossPay);
   if (input.bonus) {
-    await clickNamed(page, "A bonus payment");
-    const bonusBoxes = page.getByLabel(/bonus/i);
-    const n = await bonusBoxes.count();
-    // Radio is labelled "A bonus payment"; the amount box is a later control.
-    if (n > 1) {
-      const box = bonusBoxes.nth(n - 1);
-      await box.click({ force: true });
-      await box.fill("");
-      await box.pressSequentially(input.bonus, { delay: 15 });
-      await box.blur();
-    } else {
-      await fillLabeled(page, /bonus payment amount|amount of (the )?bonus/i, input.bonus);
+    await page
+      .locator(`input[name="${STEP2.withBonus.name}"][value="${STEP2.withBonus.value}"]`)
+      .check({ force: true });
+    await fillLabeled(page, STEP2.bonusAmount.label, input.bonus);
+    if (input.bonusRrsp) {
+      await fillLabeled(page, STEP2.bonusRrsp.label, input.bonusRrsp);
+    }
+    if (input.ytdBonus) {
+      await fillLabeled(page, STEP2.previousBonus.label, input.ytdBonus);
+    }
+    if (input.ytdBonusRrsp) {
+      await fillLabeled(page, STEP2.previousBonusRrsp.label, input.ytdBonusRrsp);
+    }
+    if (input.f5bYtd) {
+      await fillLabeled(page, STEP2.previousBonusCppAdditional.label, input.f5bYtd);
     }
   } else {
-    await clickNamed(page, "No bonus or retroactive payment");
+    await page
+      .locator(`input[name="${STEP2.noBonus.name}"][value="${STEP2.noBonus.value}"]`)
+      .check({ force: true });
   }
   await clickNamed(page, "Next");
   await waitStep(page, /\/step3/, /Claim codes|TD1 form/i);
@@ -249,7 +259,7 @@ export async function fillSalaryForm(
   const raw = await apiRes.text();
   const json = JSON.parse(raw.replace(/^\)\]\}',?\s*/, ""));
   await page.waitForURL(/\/results/, { timeout: 60_000 }).catch(() => undefined);
-  return outputFromCalculateApi(json);
+  return outputFromCalculateApi(json, input.bonus ? "bonus" : "salary");
 }
 
 function moneyField(v: unknown): string {
@@ -258,20 +268,30 @@ function moneyField(v: unknown): string {
   throw new PolicyError(`Expected money field, got ${typeof v}`);
 }
 
-export function outputFromCalculateApi(json: Record<string, unknown>): CaptureOutput {
+export function outputFromCalculateApi(
+  json: Record<string, unknown>,
+  kind: "salary" | "bonus" = "salary",
+): CaptureOutput {
   const federal = moneyField(json.federalTaxDeduction);
   const additional = moneyField(json.requestedAdditionalTaxDeductions ?? 0);
   // Match M1 mapping: federal line includes additional tax L.
   const fedTotal = moneyFromText(
     (Number(federal) + Number(additional)).toFixed(2),
   );
+  // Bonus calculate payload: totalDeductions is tax-only; the PDOC results
+  // total is totalAllDeductions (tax + CPP + EI). Salary payloads keep
+  // totalDeductions so M1 mapping is unchanged.
+  const total =
+    kind === "bonus" && json.totalAllDeductions != null
+      ? json.totalAllDeductions
+      : json.totalDeductions;
   return {
     federal_tax: fedTotal,
     provincial_tax: moneyField(json.provincialTaxDeduction),
     cpp: moneyField(json.cppOrQppDeductions),
     cpp2: moneyField(json.secondCppOrQppDeductions ?? 0),
     ei: moneyField(json.employmentInsuranceDeductions),
-    total_deductions: moneyField(json.totalDeductions),
+    total_deductions: moneyField(total),
     net_pay: moneyField(json.netAmount),
   };
 }

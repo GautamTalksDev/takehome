@@ -1,17 +1,23 @@
 /**
  * Outbound rule-set webhooks (spec §12.3).
  *
- * HMAC-SHA256 over `timestamp.body`, Stripe-style header
- * `takehome-signature: t=<unix>,v1=<hex>`. Retries with exponential backoff.
- * The sleep function is injected so tests never wait on a wall clock.
+ * HMAC-SHA256 over `timestamp.body` (never the body alone), Stripe-style
+ * header `takehome-signature: t=<unix>,v1=<hex>`. Receivers must reject
+ * `|now - t| > 300` seconds (5 minutes) — that is the replay window.
+ * Delivery uses redirect: "manual", an AbortSignal timeout, and a capped
+ * body read; the response body is discarded, never stored. The sleep
+ * function is injected so tests never wait on a wall clock.
  */
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac } from 'node:crypto';
+import { equalDigest } from './keys.js';
 
 export const SIGNATURE_HEADER = 'takehome-signature';
 export const BACKOFF_MS = Object.freeze([1000, 2000, 4000]);
 export const MAX_ATTEMPTS = 3;
 export const TOLERANCE_SEC = 300;
+export const DELIVERY_TIMEOUT_MS = 5000;
+export const MAX_RESPONSE_BODY_BYTES = 4096;
 
 export function signPayload(secret, body, timestampSec) {
   const t = String(timestampSec);
@@ -36,7 +42,7 @@ export function verifySignature(secret, body, header, nowSec, toleranceSec = TOL
   if (!expectedMac || !gotMac || expectedMac.length !== gotMac.length) {
     return false;
   }
-  return timingSafeEqual(expectedMac, gotMac);
+  return equalDigest(expectedMac, gotMac);
 }
 
 function parseSignature(header) {
@@ -61,6 +67,40 @@ function signatureMac(header) {
   return Buffer.from(parsed.v1, 'hex');
 }
 
+function isAbortError(err) {
+  if (!err || typeof err !== 'object') {
+    return false;
+  }
+  return err.name === 'AbortError' || err.code === 'ABORT_ERR';
+}
+
+function isRedirectStatus(status) {
+  return status >= 300 && status < 400;
+}
+
+async function discardBodyCapped(response, maxBytes) {
+  if (!response || !response.body || typeof response.body.getReader !== 'function') {
+    return;
+  }
+  const reader = response.body.getReader();
+  let read = 0;
+  try {
+    while (read < maxBytes) {
+      const { done, value } = await reader.read();
+      if (done) {
+        return;
+      }
+      read += value ? value.byteLength : 0;
+    }
+  } finally {
+    try {
+      await reader.cancel();
+    } catch {
+      // The stream is attacker-controlled; drop it either way.
+    }
+  }
+}
+
 export async function deliverWithRetry({
   url,
   body,
@@ -70,6 +110,8 @@ export async function deliverWithRetry({
   sleep,
   maxAttempts = MAX_ATTEMPTS,
   backoffMs = BACKOFF_MS,
+  timeoutMs = DELIVERY_TIMEOUT_MS,
+  maxBodyBytes = MAX_RESPONSE_BODY_BYTES,
 }) {
   let lastStatus = null;
   let lastError = null;
@@ -79,6 +121,8 @@ export async function deliverWithRetry({
       await sleep(delay);
     }
     const signature = signPayload(secret, body, timestampSec);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const response = await fetchImpl(url, {
         method: 'POST',
@@ -87,8 +131,11 @@ export async function deliverWithRetry({
           [SIGNATURE_HEADER]: signature,
         },
         body,
+        redirect: 'manual',
+        signal: controller.signal,
       });
       lastStatus = response.status;
+      await discardBodyCapped(response, maxBodyBytes);
       if (response.ok) {
         return {
           ok: true,
@@ -98,8 +145,17 @@ export async function deliverWithRetry({
         };
       }
       lastError = `HTTP ${response.status}`;
+      if (isRedirectStatus(response.status)) {
+        break;
+      }
     } catch (err) {
+      if (isAbortError(err) || controller.signal.aborted) {
+        lastError = 'webhook delivery timed out';
+        break;
+      }
       lastError = err instanceof Error ? err.message : String(err);
+    } finally {
+      clearTimeout(timer);
     }
   }
   return {

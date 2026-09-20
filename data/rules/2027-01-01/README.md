@@ -1,4 +1,4 @@
-# PREVIEW — 2027-01-01 (proposed, not enacted)
+# PREVIEW: 2027-01-01 (proposed, not enacted)
 
 This directory is **not** a CRA T4127 edition.
 

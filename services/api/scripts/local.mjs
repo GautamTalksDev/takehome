@@ -12,6 +12,8 @@ const env = {
   CLOCK_DATE: process.env.CLOCK_DATE ?? '2026-09-16',
   RATE_LIMIT_MAX: '10000',
   RATE_LIMIT_WINDOW_MS: '60000',
+  SIGNUP_RATE_LIMIT_MAX: '10000',
+  VERIFY_RATE_LIMIT_MAX: '10000',
   STORE: store,
   MAILBOX: mailbox,
   ECHO_VERIFY_URL: process.env.ECHO_VERIFY_URL ?? '1',

@@ -16,7 +16,7 @@ Do not hand-edit rates or counts; change the run and regenerate.
 A **disagreement** is: correctly-specified identical inputs, engine and PDOC
 both given exactly what the operator intended, outputs differ. That is a
 finding about the world. It is published here with the full input, both
-outputs, the delta, and an explanation — including cases where we conclude
+outputs, the delta, and an explanation: including cases where we conclude
 PDOC is wrong.
 
 A disagreement is **not**: a bug in the harness, a mis-mapped request or
@@ -35,7 +35,7 @@ Until every defined vector in a corpus is measured, this document states
 an agreement rate on a partial run. A completed corpus states how many match
 and lists every disagreement.
 
-### M-001 — Published whole-dollar K (ADR-002)
+### M-001: Published whole-dollar K (ADR-002)
 
 Annual T3/T4 is discontinuous by at most $1.00 at each bracket threshold,
 because the CRA publishes the K constants rounded to whole dollars. PDOC
@@ -58,10 +58,10 @@ Canada 48% T1 surtax, and allows two cents of period rounding.
 Decision:
 [`docs/ADR-002-published-constants.md`](docs/ADR-002-published-constants.md).
 
-### M-002 — PDOC K2 maximum in the reaching period
+### M-002: PDOC K2 maximum in the reaching period
 
 T4127 Chapter 3 tells the calculator to use the maximum base CPP contribution
-“in that pay period” — the period year-to-date first reaches the annual CPP
+“in that pay period”: the period year-to-date first reaches the annual CPP
 maximum. PDOC does not. Its federal CPP credit base is
 `max(P × C × ratio, D × ratio)` capped at `base_max`, which on the measured
 vector is `D × ratio` = 3494.12 rather than `base_max` = 3519.45.
@@ -79,13 +79,13 @@ Federal + Additional). `employee.total_tax` is the sum of the two
 separately rounded federal and provincial lines a user can add up on
 screen; `breakdown.T` is T4127 Step 6 `round((T1+T2)/P)+L` and may differ
 by one cent. Claim code 1 must be entered via PDOC **Claim codes**,
-not a fixed TD1 dollar amount — fixed `$16,452` does not phase out BPAF.
+not a fixed TD1 dollar amount: fixed `$16,452` does not phase out BPAF.
 `employee.total_deductions` includes union dues.
 
-### M-003 — PDOC midpoint direction (open)
+### M-003: PDOC midpoint direction (open)
 
 Live cent delta: T4127 half-up at an exact midpoint goes up; PDOC’s line is
-sometimes 1¢ lower. Counts against the agreement rate — not exempted as
+sometimes 1¢ lower. Counts against the agreement rate: not exempted as
 methodology. Not Alberta-specific; AB is dense because 8% flat on round
 grosses manufactures halves. Observed down-classes: AB provincial `T2/P`,
 AB CPP, NL `4333.33` P=12, NL `1718.39` P=26 (neighbour `1718.40` goes up),
@@ -96,7 +96,7 @@ NU 14, NS 12, MB 11, YT 11, NL 10, PE 8, SK 8, NB 6, NT 6, OutsideCanada 6);
 **780** forms the salary UI accepted as queue items but PDOC step-2 would
 not advance. Those 780 are named, not pending, and not in the rate.
 
-Product: [`ADR-003`](docs/ADR-003-rounding-compat.md) — `rounding_compat`
+Product: [`ADR-003`](docs/ADR-003-rounding-compat.md): `rounding_compat`
 (`t4127` default; `pdoc` is a typed not-implemented error until finding 002).
 
 Full write-up:
@@ -104,18 +104,28 @@ Full write-up:
 
 ### M4 named classes (not folded into 8838/9002)
 
-- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors. Expected amounts stay `PENDING_PDOC` until captured through `tools/pdoc-oracle`; never filled from the engine. Named pending; excluded from the overall Option 1 PDOC rate.
-- **`year-projection-2026`**: engine invariants (API tests 22–29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
+- **`pdoc-bonus-2026`**: 20 PDOC bonus vectors captured 2026-09-19 through `tools/pdoc-oracle` (locator: Total current bonus payable). Own class; excluded from the overall Option 1 PDOC rate. One-cent disagreements listed on the corpus; expected amounts stay PDOC.
+- **`year-projection-2026`**: engine invariants (API tests 22-29). Oracle class `invariants`. Caps, YMPE/CPP2, BC January/July split, federal sum vs T1 within P cents, 53-week / 27-biweekly exemptions.
 - **`t4127-option2-2026`**: T4127 Chapter 5 worked examples plus invariants. Live PDOC has no Option 2 control. Weaker evidence than PDOC; does not inherit the Option 1 agreement rate.
+
+### PDOC evidence publication (ruling a)
+
+JSON cache records are published as the GitHub release archive
+`takehome-conformance-corpus-2026.1.tar.zst`, not in git. `pdoc-identity.json`
+and `screenshot-hashes.json` stay in the repo so the catalog digest is
+checkable without a 38 MB clone. PNG screenshots stay local
+(`data/pdoc-screenshots/`, gitignored). This document records the catalog
+digest, the archive SHA-256, and the twenty M1 screenshot hashes. Publication
+tests extract the archive and break the catalog on purpose.
 
 ## Sampling design
 
 Published PDOC queue: every **distinct** July live-edition boundary
-form the salary UI can enter — **ten** of fourteen legal P, both claim
+form the salary UI can enter: **ten** of fourteen legal P, both claim
 codes, fingerprint-deduped. The earlier **15,264** figure assumed all
 fourteen P; PDOC cannot capture annual / semi-annual / quarterly /
 hourly (`1`, `2`, `4`, `2000`). Those forms, plus `$0` and sub-dollar
-gross, are the named **`uncapturable`** class below — validated by
+gross, are the named **`uncapturable`** class below: validated by
 invariants and the differential oracle (same as the interior ladder),
 not by silently shortening a queue that still claims 15,264.
 
@@ -145,9 +155,9 @@ cache hits from overlapping forms).
 | | |
 |--|--|
 | grid_version | `2026.1` |
-| engine_build_sha256 | `b793f5379e9b1cfa268c3eea3472fd31921565ea1766b980f77652e646dd2134` |
+| engine_build_sha256 | `b8a89f98fa2fcf25715aa6171bdf0b2d2b00ad2fe595b1187c119bb7cd9c77bd` |
 | rule_set_versions | `2026-01-01`, `2026-07-01`, `2027-01-01` |
-| rule_set_sha256 | `d864a7e991a770ece4649bad21be4aa7db7e9f4a331d8c2e87ac0de5e4aa52d2` |
+| rule_set_sha256 | `cf000bd165fe7b7d6f5244ff2111a9afe54ce5931e5574c6688784457f62b897` |
 | PDOC identity | `2026-06-11 (M1); form:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (grid queue)` |
 | browser | chromium 153.0.8010.12 |
 | harness | pdoc-oracle-harness |
@@ -208,10 +218,10 @@ Full slice table: [`conformance.json`](conformance.json) `census`.
 |--|--|
 | oracle class | `pdoc` |
 | defined | 20 |
-| measured | 0 |
-| pending | 20 |
-| exact matches | 0 |
-| agreement rate | *named pending class; expected amounts stay PENDING_PDOC until capture. Not in the overall Option 1 PDOC rate.*
+| measured | 20 |
+| pending | 0 |
+| exact matches | 7 |
+| agreement rate | `7/20` |
 
 ### `year-projection-2026`
 
@@ -222,7 +232,7 @@ Full slice table: [`conformance.json`](conformance.json) `census`.
 | measured | 8 |
 | pending | 0 |
 | exact matches | 8 |
-| agreement rate | *not a PDOC corpus; year-projection invariants (API tests 22–29), not per-cell PDOC* |
+| agreement rate | *not a PDOC corpus; year-projection invariants (API tests 22-29), not per-cell PDOC* |
 
 ### `t4127-option2-2026`
 
@@ -272,172 +282,237 @@ Full slice table: [`conformance.json`](conformance.json) `census`.
 
 | id | provincial_tax | federal_tax | cpp | net_pay |
 |--|--|--|--|--|
-| `AB-P10-11704.49-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P10-11704.51-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P10-15425.91-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P10-18144.00-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P10-24681.29-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `AB-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `AB-P10-6120.01-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `AB-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `AB-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `AB-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `AB-P12-12854.91-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P12-15425.91-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P12-20567.75-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P12-21540.17-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P12-30851.66-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P13-13956.93-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P13-14239.31-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P13-18985.63-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P13-19883.24-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P22-11218.78-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P22-16828.18-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P22-5320.24-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P22-7011.76-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P22-8247.27-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P24-2550.00-F0-P0` | — | 0.01 | — | -0.01 |
-| `AB-P24-2550.00-F1-P1` | — | 0.01 | — | -0.01 |
-| `AB-P24-3108.33-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P24-3541.66-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P26-4501.72-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P26-5933.03-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P26-9492.82-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P26-9941.61-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P27-4334.99-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P27-6720.01-F0-P0` | 0.01 | — | — | -0.01 |
-| `AB-P52-1434.62-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P52-1634.62-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P52-4746.39-F1-P1` | 0.01 | — | — | -0.01 |
-| `AB-P53-2208.39-F0-P0` | 0.01 | — | — | -0.01 |
-| `BC-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `BC-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `BC-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `BC-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `BC-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `BC-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `BC-P13-4501.76-F0-P0` | -0.01 | — | — | 0.01 |
-| `BC-P13-4501.76-F1-P1` | -0.01 | — | — | 0.01 |
-| `BC-P24-2098.47-F0-P0` | — | 0.01 | — | -0.01 |
-| `BC-P24-2098.47-F1-P1` | — | 0.01 | — | -0.01 |
-| `BC-P26-1728.93-F1-P1` | — | 0.01 | — | -0.01 |
-| `BC-P53-1104.22-F0-P0` | 0.01 | — | — | -0.01 |
-| `BC-P53-950.24-F0-P0` | — | 0.01 | — | -0.01 |
-| `BC-P240-106.55-F1-P1` | — | -0.01 | — | 0.01 |
-| `MB-P10-40000.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `MB-P10-40000.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `MB-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `MB-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `MB-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `MB-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `MB-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `MB-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `MB-P13-3615.39-F0-P0` | 0.01 | — | — | -0.01 |
-| `MB-P26-2250.87-F1-P1` | 0.01 | — | — | -0.01 |
-| `MB-P26-2250.89-F0-P0` | 0.01 | — | — | -0.01 |
-| `NB-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NB-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NB-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NB-P10-7460.00-F1-P1` | -0.01 | — | 0.01 | — |
-| `NB-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NB-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NL-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NL-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NL-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NL-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NL-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NL-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NL-P13-3436.78-F0-P0` | — | 0.01 | — | -0.01 |
-| `NL-P26-1718.39-F0-P0` | 0.01 | — | — | -0.01 |
-| `NL-P53-842.97-F0-P0` | — | -0.01 | — | 0.01 |
-| `NL-P240-930.59-F1-P1` | -0.01 | — | — | 0.01 |
-| `NS-P10-3099.50-F0-P0` | 0.01 | — | — | -0.01 |
-| `NS-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NS-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NS-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NS-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NS-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NS-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NS-P13-2384.24-F1-P1` | — | 0.01 | — | -0.01 |
-| `NS-P22-1408.87-F0-P0` | — | 0.01 | — | -0.01 |
-| `NS-P22-2817.78-F0-P0` | 0.01 | — | — | -0.01 |
-| `NS-P26-1192.11-F0-P0` | — | 0.01 | — | -0.01 |
-| `NS-P240-258.29-F1-P1` | -0.01 | — | — | 0.01 |
-| `NT-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NT-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NT-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NT-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NT-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NT-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NU-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NU-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NU-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NU-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NU-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `NU-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `NU-P13-4501.76-F0-P0` | 0.01 | — | — | -0.01 |
-| `NU-P22-2536.41-F0-P0` | 0.01 | — | — | -0.01 |
-| `NU-P24-2325.05-F1-P1` | -0.01 | — | — | 0.01 |
-| `NU-P26-2250.90-F1-P1` | 0.01 | — | — | -0.01 |
-| `NU-P53-94.34-F0-P0` | -0.01 | — | — | 0.01 |
-| `NU-P53-94.35-F0-P0` | -0.01 | — | — | 0.01 |
-| `NU-P240-1077.00-F0-P0` | -0.01 | — | — | 0.01 |
-| `NU-P240-310.82-F1-P1` | -0.01 | — | — | 0.01 |
-| `ON-P10-15000.01-F1-P1` | -0.01 | — | — | 0.01 |
-| `ON-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `ON-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `ON-P10-5852.29-F1-P1` | -0.01 | — | — | 0.01 |
-| `ON-P10-744.59-F0-P0` | -0.01 | — | — | 0.01 |
-| `ON-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `ON-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `ON-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `ON-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `ON-P12-21540.18-F0-P0` | -0.01 | — | — | 0.01 |
-| `ON-P12-620.51-F0-P0` | 0.01 | -0.01 | — | — |
-| `ON-P13-19883.24-F0-P0` | -0.01 | — | — | 0.01 |
-| `ON-P13-2769.23-F1-P1` | -0.01 | — | — | 0.01 |
-| `ON-P13-2769.24-F1-P1` | -0.01 | — | — | 0.01 |
-| `ON-P13-4145.46-F1-P1` | — | 0.01 | — | -0.01 |
-| `ON-P13-447.54-F0-P0` | — | 0.01 | — | -0.01 |
-| `ON-P13-447.55-F0-P0` | — | 0.01 | — | -0.01 |
-| `ON-P22-909.10-F1-P1` | — | 0.01 | — | -0.01 |
-| `OutsideCanada-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `OutsideCanada-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `OutsideCanada-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `OutsideCanada-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `OutsideCanada-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `OutsideCanada-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `PE-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `PE-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `PE-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `PE-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `PE-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `PE-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `PE-P13-5063.09-F1-P1` | — | -0.01 | — | 0.01 |
-| `PE-P240-445.37-F1-P1` | -0.01 | — | — | 0.01 |
-| `SK-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `SK-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `SK-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `SK-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `SK-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `SK-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `SK-P12-4544.33-F1-P1` | 0.01 | — | — | -0.01 |
-| `SK-P52-1048.69-F1-P1` | — | 0.01 | — | -0.01 |
-| `YT-P10-500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `YT-P10-500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `YT-P10-50000.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `YT-P10-50000.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `YT-P10-7460.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `YT-P10-7460.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `YT-P10-8500.00-F0-P0` | — | — | 0.01 | -0.01 |
-| `YT-P10-8500.00-F1-P1` | — | — | 0.01 | -0.01 |
-| `YT-P13-384.60-F0-P0` | 0.01 | — | — | -0.01 |
-| `YT-P13-384.61-F0-P0` | 0.01 | — | — | -0.01 |
-| `YT-P24-208.33-F0-P0` | -0.01 | — | — | 0.01 |
+| `on-weekly-1000-bonus-2500` | 0.01 | - | - | -0.01 |
+| `on-biweekly-2000-bonus-1000` | 0.01 | - | - | -0.01 |
+| `on-biweekly-2000-bonus-4999.99` | 0.01 | - | - | -0.01 |
+| `on-biweekly-2000-bonus-5000` | 0.01 | - | - | -0.01 |
+| `on-biweekly-2000-bonus-5000.01` | 0.01 | - | - | -0.01 |
+| `ab-monthly-4000-bonus-2000` | - | -0.01 | - | 0.01 |
+| `bc-weekly-1200-bonus-800` | - | -0.01 | - | 0.01 |
+| `mb-semimonthly-2500-bonus-1500` | -0.01 | - | - | 0.01 |
+| `sk-weekly-900-bonus-3000` | -0.01 | -0.01 | - | 0.02 |
+| `nb-monthly-3500-bonus-500` | 0.01 | - | - | -0.01 |
+| `nl-weekly-1100-bonus-1100` | -0.01 | - | - | 0.01 |
+| `pe-biweekly-1600-bonus-4000` | -0.01 | 0.01 | - | - |
+| `on-53-weekly-1000-bonus-2500` | -0.01 | -0.01 | - | 0.02 |
+| `AB-P10-11704.49-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P10-11704.51-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P10-15425.91-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P10-18144.00-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P10-24681.29-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `AB-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `AB-P10-6120.01-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `AB-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `AB-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `AB-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `AB-P12-12854.91-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P12-15425.91-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P12-20567.75-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P12-21540.17-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P12-30851.66-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P13-13956.93-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P13-14239.31-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P13-18985.63-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P13-19883.24-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P22-11218.78-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P22-16828.18-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P22-5320.24-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P22-7011.76-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P22-8247.27-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P24-2550.00-F0-P0` | - | 0.01 | - | -0.01 |
+| `AB-P24-2550.00-F1-P1` | - | 0.01 | - | -0.01 |
+| `AB-P24-3108.33-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P24-3541.66-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P26-4501.72-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P26-5933.03-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P26-9492.82-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P26-9941.61-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P27-4334.99-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P27-6720.01-F0-P0` | 0.01 | - | - | -0.01 |
+| `AB-P52-1434.62-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P52-1634.62-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P52-4746.39-F1-P1` | 0.01 | - | - | -0.01 |
+| `AB-P53-2208.39-F0-P0` | 0.01 | - | - | -0.01 |
+| `BC-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `BC-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `BC-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `BC-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `BC-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `BC-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `BC-P13-4501.76-F0-P0` | -0.01 | - | - | 0.01 |
+| `BC-P13-4501.76-F1-P1` | -0.01 | - | - | 0.01 |
+| `BC-P24-2098.47-F0-P0` | - | 0.01 | - | -0.01 |
+| `BC-P24-2098.47-F1-P1` | - | 0.01 | - | -0.01 |
+| `BC-P26-1728.93-F1-P1` | - | 0.01 | - | -0.01 |
+| `BC-P53-1104.22-F0-P0` | 0.01 | - | - | -0.01 |
+| `BC-P53-950.24-F0-P0` | - | 0.01 | - | -0.01 |
+| `BC-P240-106.55-F1-P1` | - | -0.01 | - | 0.01 |
+| `MB-P10-40000.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `MB-P10-40000.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `MB-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `MB-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `MB-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `MB-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `MB-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `MB-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `MB-P13-3615.39-F0-P0` | 0.01 | - | - | -0.01 |
+| `MB-P26-2250.87-F1-P1` | 0.01 | - | - | -0.01 |
+| `MB-P26-2250.89-F0-P0` | 0.01 | - | - | -0.01 |
+| `NB-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NB-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NB-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NB-P10-7460.00-F1-P1` | -0.01 | - | 0.01 | - |
+| `NB-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NB-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NL-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NL-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NL-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NL-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NL-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NL-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NL-P13-3436.78-F0-P0` | - | 0.01 | - | -0.01 |
+| `NL-P26-1718.39-F0-P0` | 0.01 | - | - | -0.01 |
+| `NL-P53-842.97-F0-P0` | - | -0.01 | - | 0.01 |
+| `NL-P240-930.59-F1-P1` | -0.01 | - | - | 0.01 |
+| `NS-P10-3099.50-F0-P0` | 0.01 | - | - | -0.01 |
+| `NS-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NS-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NS-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NS-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NS-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NS-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NS-P13-2384.24-F1-P1` | - | 0.01 | - | -0.01 |
+| `NS-P22-1408.87-F0-P0` | - | 0.01 | - | -0.01 |
+| `NS-P22-2817.78-F0-P0` | 0.01 | - | - | -0.01 |
+| `NS-P26-1192.11-F0-P0` | - | 0.01 | - | -0.01 |
+| `NS-P240-258.29-F1-P1` | -0.01 | - | - | 0.01 |
+| `NT-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NT-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NT-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NT-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NT-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NT-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NU-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NU-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NU-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NU-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NU-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `NU-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `NU-P13-4501.76-F0-P0` | 0.01 | - | - | -0.01 |
+| `NU-P22-2536.41-F0-P0` | 0.01 | - | - | -0.01 |
+| `NU-P24-2325.05-F1-P1` | -0.01 | - | - | 0.01 |
+| `NU-P26-2250.90-F1-P1` | 0.01 | - | - | -0.01 |
+| `NU-P53-94.34-F0-P0` | -0.01 | - | - | 0.01 |
+| `NU-P53-94.35-F0-P0` | -0.01 | - | - | 0.01 |
+| `NU-P240-1077.00-F0-P0` | -0.01 | - | - | 0.01 |
+| `NU-P240-310.82-F1-P1` | -0.01 | - | - | 0.01 |
+| `ON-P10-15000.01-F1-P1` | -0.01 | - | - | 0.01 |
+| `ON-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `ON-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `ON-P10-5852.29-F1-P1` | -0.01 | - | - | 0.01 |
+| `ON-P10-744.59-F0-P0` | -0.01 | - | - | 0.01 |
+| `ON-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `ON-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `ON-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `ON-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `ON-P12-21540.18-F0-P0` | -0.01 | - | - | 0.01 |
+| `ON-P12-620.51-F0-P0` | 0.01 | -0.01 | - | - |
+| `ON-P13-19883.24-F0-P0` | -0.01 | - | - | 0.01 |
+| `ON-P13-2769.23-F1-P1` | -0.01 | - | - | 0.01 |
+| `ON-P13-2769.24-F1-P1` | -0.01 | - | - | 0.01 |
+| `ON-P13-4145.46-F1-P1` | - | 0.01 | - | -0.01 |
+| `ON-P13-447.54-F0-P0` | - | 0.01 | - | -0.01 |
+| `ON-P13-447.55-F0-P0` | - | 0.01 | - | -0.01 |
+| `ON-P22-909.10-F1-P1` | - | 0.01 | - | -0.01 |
+| `OutsideCanada-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `OutsideCanada-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `OutsideCanada-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `OutsideCanada-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `OutsideCanada-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `OutsideCanada-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `PE-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `PE-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `PE-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `PE-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `PE-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `PE-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `PE-P13-5063.09-F1-P1` | - | -0.01 | - | 0.01 |
+| `PE-P240-445.37-F1-P1` | -0.01 | - | - | 0.01 |
+| `SK-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `SK-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `SK-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `SK-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `SK-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `SK-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `SK-P12-4544.33-F1-P1` | 0.01 | - | - | -0.01 |
+| `SK-P52-1048.69-F1-P1` | - | 0.01 | - | -0.01 |
+| `YT-P10-500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `YT-P10-500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `YT-P10-50000.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `YT-P10-50000.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `YT-P10-7460.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `YT-P10-7460.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `YT-P10-8500.00-F0-P0` | - | - | 0.01 | -0.01 |
+| `YT-P10-8500.00-F1-P1` | - | - | 0.01 | -0.01 |
+| `YT-P13-384.60-F0-P0` | 0.01 | - | - | -0.01 |
+| `YT-P13-384.61-F0-P0` | 0.01 | - | - | -0.01 |
+| `YT-P24-208.33-F0-P0` | -0.01 | - | - | 0.01 |
 
 Full request / engine / PDOC maps: [`conformance.json`](conformance.json) `corpora[].disagreements`.
+
+### `on-weekly-1000-bonus-2500`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `on-biweekly-2000-bonus-1000`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `on-biweekly-2000-bonus-4999.99`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `on-biweekly-2000-bonus-5000`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `on-biweekly-2000-bonus-5000.01`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `ab-monthly-4000-bonus-2000`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `bc-weekly-1200-bonus-800`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `mb-semimonthly-2500-bonus-1500`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `sk-weekly-900-bonus-3000`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `nb-monthly-3500-bonus-500`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `nl-weekly-1100-bonus-1100`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `pe-biweekly-1600-bonus-4000`
+
+engine and PDOC differ on identically specified bonus inputs
+
+### `on-53-weekly-1000-bonus-2500`
+
+engine and PDOC differ on identically specified bonus inputs
 
 ### `AB-P10-11704.49-F0-P0`
 
@@ -1095,14 +1170,14 @@ M-003 PDOC midpoint direction: 1¢ engine vs PDOC on identically specified input
 
 M-003 PDOC midpoint direction: 1¢ engine vs PDOC on identically specified inputs. Counts in the agreement rate.
 
-### Closed — D-007 biweekly mid-year K2
+### Closed: D-007 biweekly mid-year K2
 
 **Vector:** `on-biweekly-midyear-k2-max` (matches under `pdoc_observed`).
 Published as **M-002**. PDOC does not force `base_max` in the reaching
 period. That is a fact about PDOC, stated with inversion in
 [findings/001](docs/findings/001-k2-maximum-in-reaching-period.md).
 
-### Open — M-003 PDOC midpoint direction
+### Open: M-003 PDOC midpoint direction
 
 Live disagreement (counts in the rate). T4127 half-up at a midpoint
 goes up; PDOC is sometimes 1¢ lower. Not Alberta-specific (AB is dense).
@@ -1114,21 +1189,71 @@ Finished July queue: 164 one-cent disagreements (counted in the rate) and
 
 ## Cases where PDOC is believed wrong
 
-None settled. M-003 is an open PDOC midpoint-direction delta — not a declared PDOC error.
+None settled. M-003 is an open PDOC midpoint-direction delta: not a declared PDOC error.
 M-002 remains a selectable `k2_method` difference under the default.
 
 ## Coverage gaps
 
 - Quebec / QPIP: EngineError::JurisdictionNotSupported. Never a federal-only T2=0 success. docs/jurisdictions.md.
 - Interior log-ladder of grid 2026.1: engine invariants (§16.2 proptests over thirteen jurisdictions) and differential oracle only. Not a per-cell PDOC comparison.
-- Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle — same as the interior ladder. Live PDOC salary UI cannot enter them.
+- Uncapturable boundary forms (P ∈ {1,2,4,2000}, $0 and sub-dollar gross): invariants + differential oracle: same as the interior ladder. Live PDOC salary UI cannot enter them.
 - Grid PDOC stratum: 9762 distinct capturable July forms (fingerprint-deduped). Queue finished: 8818 match, 164 M-003 1¢ disagreements (counted), 780 PDOC step-2 would not advance (named, not in the rate). Superseded all-14-P count was 15264.
 - January-only BC/NL/PE amounts retired from live PDOC: invariants + differential vs July sibling.
 - PDOC does not expose Option 2 (cumulative averaging). Live PDOC (observed 2026-06-11, screen WLCM) offers Salary, Commission, Pension, and CPP/EI verification only; there is no Option 2 / S1 / cumulative-averaging control, so no PDOC vectors were captured. Option 2 is a distinct oracle class `t4127_worked_examples` (T4127 Chapter 5 worked examples plus invariants) with weaker evidence than PDOC. It does not inherit the Option 1 PDOC agreement rate.
 - DateBeforeCoverage cells: engine error path, not a PDOC form.
 - M-003 PDOC midpoint direction: 164 one-cent disagreements counted in the rate (13 jurisdictions); 780 step-2 non-advances named out of the rate; condition unnamed; docs/findings/002-pdoc-midpoint-direction.md; ADR-003 rounding_compat pdoc is NotImplemented.
-- PDOC bonus class `pdoc-bonus-2026`: 20 defined cases. Expected amounts stay PENDING_PDOC until captured through tools/pdoc-oracle; never filled from the engine. Named pending; not in the overall Option 1 PDOC rate.
-- Year projection `year-projection-2026`: oracle class `invariants` (API tests 22–29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md.
+- PDOC bonus class `pdoc-bonus-2026`: 20 cases captured from live PDOC on 2026-09-19 (locator: Total current bonus payable). Own class; not in the overall Option 1 PDOC rate 8838/9002. One-cent field disagreements are listed on this corpus (same neighbourhood as M-003); expected amounts are PDOC, never the engine.
+- Year projection `year-projection-2026`: oracle class `invariants` (API tests 22-29). CPP/EI caps, YMPE/CPP2, BC January/July split, federal tax sum vs T1 within P cents, 53-week / 27-biweekly exemptions. Not a PDOC corpus. docs/year-projection.md.
+
+## PDOC evidence publication
+
+Ruling **(a)**: JSON cache records are published as a release
+archive, not in git. PNG screenshots stay local. Their SHA-256
+values are recorded here so a missing file cannot stay green only
+because the report never looked at it.
+
+| | |
+|--|--|
+| ruling | `records-only` |
+| records in git | no (`data/pdoc-cache/records/` stays local; 9010 forms) |
+| archive | `takehome-conformance-corpus-2026.1.tar.zst` |
+| archive SHA-256 | `00a68d0bef8835f8271039981c22bcaca54ff5f0786c33fd3c5b346b27a0023f` |
+| download | https://github.com/takehome-ca/takehome/releases/download/conformance-corpus-2026.1/takehome-conformance-corpus-2026.1.tar.zst |
+| screenshots published | no (`data/pdoc-screenshots/`, gitignored) |
+| screenshot catalog | [`data/pdoc-cache/screenshot-hashes.json`](data/pdoc-cache/screenshot-hashes.json) |
+| catalog digest (SHA-256 of sorted `key<space>sha256` lines) | `554a54278727bb460e7f2710cde2b6e31b750ea57c4a4ee6735eb2e4d02a71ea` |
+
+After download, a stranger can check the claim:
+
+```
+echo 00a68d0bef8835f8271039981c22bcaca54ff5f0786c33fd3c5b346b27a0023f  takehome-conformance-corpus-2026.1.tar.zst | sha256sum -c
+tar --zstd -xf takehome-conformance-corpus-2026.1.tar.zst && python3 -c "import json,hashlib,pathlib;h={d['key']:d['screenshotSha256'] for d in (json.loads(p.read_text()) for p in pathlib.Path('records').glob('*.json'))};digest=hashlib.sha256(''.join(f'{k} {h[k]}\n' for k in sorted(h)).encode()).hexdigest();assert digest=='554a54278727bb460e7f2710cde2b6e31b750ea57c4a4ee6735eb2e4d02a71ea'"
+```
+
+### M1 screenshot hashes (local PNGs)
+
+| id | sha256 |
+|--|--|
+| `on-weekly-600-cc1` | `6e90c7ca206a1f07632715f82276c2d0134cc6f7c50e142eae6ee52bf717e3e5` |
+| `on-weekly-1000-cc1` | `ecac47e3146e41ff1fbd4a56318a63c8db2389fa50a37d50203c32756dfde806` |
+| `on-weekly-2000-cc1` | `a1b566e315ffe1e519a59648a2e9646a1b2064b8976a1806d4591bd4f4ddef47` |
+| `on-weekly-above-ympe` | `3e6cbfb0f0c62c4cca7c6634ba4b0f3d3a865f951f5a21c46a1956365b9e9c92` |
+| `on-weekly-above-yampe` | `e5396f02628950b636f91700dd592b8890d1b9ce5258ce4f76f8d78bcbaf616f` |
+| `on-weekly-bpaf-phaseout` | `c6b0c671c880d3ad5312fc82a4b724ce6c70b114cf66e517147776781367be31` |
+| `on-weekly-surtax-tier1` | `39a8d38e824922be04b59fc089067bd19291c94ebd539da244ba798e3089efcf` |
+| `on-weekly-surtax-tier2` | `36badeb15aee410cad5d7be1b14a49b83b11d156e07abfa1170cd1b96d8a7b15` |
+| `on-v2-tier0-at-or-below-20k` | `5703bdb1253413de765e87c55b64fe1a3b018d6e5b562bbbccff7c29efae86be` |
+| `on-v2-tier1-20k-36k` | `9fe68bf570ce11783b7c20b1a9f4dd8d993ce8f364d96a00d1aa04bc58be2c48` |
+| `on-v2-tier2-36k-48k` | `d60354ddb5f7fa18fe148345166b53aa890677765e40fc0c4124f4d031371529` |
+| `on-v2-tier3-48k-72k` | `5298a5310dbc198164097bf781eb5a2a6381cf5238cdaa82f85a46383d68e712` |
+| `on-v2-tier4-72k-200k` | `cfa9c8f17f957767de88433d8550405e76389e13b29c745be6085a52b664732c` |
+| `on-v2-tier5-above-200k` | `41f95b80b1a7b7fb3c615863768563a532a9cf47ff137a5c740fd3f5863625c2` |
+| `on-weekly-claim-code-e` | `4638100cbb54d573c8e86721c25fc7d0a0dc51e0e4f247122b04e63b3671df36` |
+| `on-weekly-claim-code-0` | `584685a947f4b9f6c39e341971d01d8449f972e74b2576fd6dfa2fd0ab97d2b2` |
+| `on-weekly-direct-tc-tcp` | `e4237a6dfceca01aad822854fac07dbe09b7b38f04d40c55610cd308b4075920` |
+| `on-monthly-1000-cc1` | `82a6d05b3d3cbf8637a08eb0a0a9c3a1e9f3935deaea491b5cca279ad5ce064e` |
+| `on-biweekly-midyear-k2-max` | `7ffb4f821d664bba20b2c09b05903520505344f10c8dab61bca5f772f155e021` |
+| `on-weekly-l-and-u1` | `af83d873b3c5099adde12dfe9bec2aed0fac85e1f16153e30aff786eb1b25d77` |
 
 ## M1 measured results (complete corpus)
 
@@ -1162,7 +1287,7 @@ All twenty match. See `crates/takehome-core/tests/vectors/pdoc_ontario_2026_01.j
 | Rule-change detection; signed retrying webhooks | yes |
 | 2027 preview rule set, proposed, warning asserted | yes |
 | Conformance re-run, no PDOC regression, new classes named | **this file** |
-| `pdoc-bonus-2026` named pending, not in 8838/9002 | yes |
+| `pdoc-bonus-2026` captured, own class, not in 8838/9002 | yes |
 | `rounding_compat: pdoc` still typed NotImplemented | yes (finding 002) |
 | Tagged `v0.5.0-m4` | after this report is committed |
 | Five-minute classmate on production | **open** (`docs/FIVE-MINUTE-TEST.md`) |

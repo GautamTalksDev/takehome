@@ -48,4 +48,4 @@ await init(wasm);
 
 The request/response contract is the same as the HTTP API / native engine.
 
-Publish (once `npm login` works): `npm publish --access public` from this directory.
+Publish: create a GitHub Release. `.github/workflows/publish.yml` runs `npm publish --provenance` via OIDC. Do not use `NPM_TOKEN` or `scripts/publish-packages.sh` from a laptop.

@@ -1,0 +1,69 @@
+---
+import { readFileSync, existsSync } from 'node:fs';
+import path from 'node:path';
+import Base from '../../layouts/Base.astro';
+import { renderMarkdown } from '../../lib/markdown.js';
+import { DOC_NAV, DOC_PAGES } from '../../lib/doc-nav.js';
+import { REPO } from '../../lib/rules.js';
+
+export function getStaticPaths() {
+  const findings = ['findings/README', 'findings/001-k2-maximum-in-reaching-period', 'findings/002-pdoc-midpoint-direction'];
+  const adrs = [
+    'adr/README',
+    'adr/ADR-001',
+    'adr/ADR-002',
+    'adr/ADR-003',
+    'adr/ADR-004',
+    'adr/ADR-005',
+  ];
+  return [...DOC_PAGES, ...findings, ...adrs].map((slug) => ({
+    params: { slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const candidates = [
+  path.join(REPO, 'docs', `${slug}.md`),
+  path.join(REPO, 'docs', slug, 'README.md'),
+];
+const file = candidates.find((p) => existsSync(p));
+if (!file) {
+  throw new Error(`missing docs page for slug ${slug}`);
+}
+let source = readFileSync(file, 'utf8');
+// Allow figure tags through the markdown renderer by protecting them.
+const figures = [];
+source = source.replace(/<figure>[\s\S]*?<\/figure>/g, (block) => {
+  const i = figures.length;
+  figures.push(block);
+  return `\n\nDOCFIGURE${i}\n\n`;
+});
+let html = renderMarkdown(source);
+for (let i = 0; i < figures.length; i += 1) {
+  html = html.replace(`<p>DOCFIGURE${i}</p>`, figures[i]).replace(`DOCFIGURE${i}`, figures[i]);
+}
+const titleMatch = source.match(/^#\s+(.+)$/m);
+const title = titleMatch ? titleMatch[1] : slug;
+---
+
+<Base title={`${title}: Takehome`} engine={false}>
+  <div class="docs">
+    <nav class="docs-nav" aria-label="Docs">
+      {
+        DOC_NAV.map((group) => (
+          <div class="docs-nav-group">
+            <p class="docs-nav-label">{group.label}</p>
+            <ul>
+              {group.items.map((item) => (
+                <li>
+                  <a href={item.href}>{item.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+    <article class="prose" data-testid="doc-page" set:html={html} />
+  </div>
+</Base>

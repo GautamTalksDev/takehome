@@ -1,0 +1,13 @@
+{
+  "ympe": "74600.00",
+  "yampe": "85000.00",
+  "basic_exemption": "3500.00",
+  "total_rate": "0.0595",
+  "total_max": "4230.45",
+  "base_rate": "0.0495",
+  "base_max": "3519.45",
+  "first_additional_rate": "0.0100",
+  "first_additional_max": "711.00",
+  "second_additional_rate": "0.0400",
+  "second_additional_max": "416.00"
+}

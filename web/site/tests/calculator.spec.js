@@ -1,10 +1,18 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   engineCalculate,
   fillKnownOntarioWeekly,
   M1_ON_WEEKLY_1000,
   waitForEngine,
 } from './helpers.js';
+
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+const CATALOG = JSON.parse(
+  readFileSync(path.join(REPO, 'data/factors.json'), 'utf8'),
+).factors.map((row) => row.symbol);
 
 test('typed salary matches the native engine (spec §13.3 / test 6)', async ({
   page,
@@ -37,7 +45,20 @@ test('show the working lists every T4127 factor', async ({ page }) => {
   await waitForEngine(page);
   await page.getByTestId('working').locator('summary').click();
   const rows = page.getByTestId('factor-row');
-  await expect(rows).toHaveCount(46);
+  await expect(rows).toHaveCount(CATALOG.length);
+  const rendered = await rows.evaluateAll((nodes) =>
+    nodes.map((node) => node.getAttribute('data-factor')),
+  );
+  // Set equality against data/factors.json (order preserved from the catalog).
+  expect([...rendered].sort()).toEqual([...CATALOG].sort());
+  expect(rendered).toEqual(CATALOG);
+  // Mutation: an extra or missing symbol must fail the same equality.
+  expect([...rendered, 'ZZZ_NOT_A_FACTOR'].sort()).not.toEqual(
+    [...CATALOG].sort(),
+  );
+  expect(rendered.filter((k) => k !== 'QPIP').sort()).not.toEqual(
+    [...CATALOG].sort(),
+  );
   await expect(page.getByTestId('factor-A')).toBeVisible();
   await expect(page.getByTestId('factor-T')).toBeVisible();
   await expect(page.getByTestId('factor-QPIP')).toBeVisible();

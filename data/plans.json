@@ -12,29 +12,29 @@
       "id": "developer",
       "name": "Developer",
       "cad_cents": 0,
-      "calculations": 1000,
-      "blurb": "Live keys for a real integration. Test keys stay unmetered."
+      "calculations": 100000,
+      "blurb": "Early access: every live account is on this free tier. 100,000 live calculations per UTC month. Test keys stay unmetered."
     },
     {
       "id": "starter",
       "name": "Starter",
       "cad_cents": 4900,
       "calculations": 25000,
-      "blurb": "A Canadian payroll product in production."
+      "blurb": "Published paid tier for later. A Canadian payroll product in production."
     },
     {
       "id": "growth",
       "name": "Growth",
       "cad_cents": 14900,
       "calculations": 150000,
-      "blurb": "Multi-employer or multi-province volume."
+      "blurb": "Published paid tier for later. Multi-employer or multi-province volume."
     },
     {
       "id": "business",
       "name": "Business",
       "cad_cents": 39900,
       "calculations": 1000000,
-      "blurb": "A million calculations a month, still self-serve."
+      "blurb": "Published paid tier for later. A million calculations a month, still self-serve."
     }
   ]
 }

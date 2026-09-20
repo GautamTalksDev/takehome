@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
-import { PLANS, cadLabel } from '../src/plans.js';
+import { PLANS, cadLabel, livePlan } from '../src/plans.js';
 import { call, createWorld } from './helpers.js';
 
 const SITE = path.resolve(
@@ -23,7 +23,7 @@ test('24. published tiers are CAD integer cents, not floats', () => {
   assert.equal(cadLabel(0), '$0 CAD');
 });
 
-test('24. Stripe checkout for Starter returns a CAD session URL', async () => {
+test('24. live checkout is deferred with billing_unavailable (ADR-006)', async () => {
   const world = createWorld();
   const { status, json } = await call(
     'POST',
@@ -36,13 +36,13 @@ test('24. Stripe checkout for Starter returns a CAD session URL', async () => {
     { authorization: `Bearer ${world.liveKey}` },
     world,
   );
-  assert.equal(status, 200);
-  assert.match(json.url, /^https:\/\/checkout\.stripe\.com\//);
-  assert.equal(world.stripeSessions[0].currency, 'cad');
-  assert.equal(world.stripeSessions[0].price, 'price_starter_cad');
+  assert.equal(status, 501);
+  assert.equal(json.error.code, 'billing_unavailable');
+  assert.equal(world.stripeSessions.length, 0);
+  assert.equal(livePlan('developer').calculations, 100_000);
 });
 
-test('24. checkout never offers contact sales and rejects unknown plans', async () => {
+test('24. checkout never offers contact sales', async () => {
   const world = createWorld();
   const { status, json } = await call(
     'POST',
@@ -51,14 +51,14 @@ test('24. checkout never offers contact sales and rejects unknown plans', async 
     { authorization: `Bearer ${world.liveKey}` },
     world,
   );
-  assert.equal(status, 400);
-  assert.equal(json.error.code, 'unknown_plan');
+  assert.equal(status, 501);
+  assert.equal(json.error.code, 'billing_unavailable');
   assert.doesNotMatch(json.error.message, /contact sales/i);
 });
 
-test('24. webhook upgrades the plan and does not invent overage', async () => {
+test('24. billing webhook is not listening (404)', async () => {
   const world = createWorld();
-  const { status } = await call(
+  const { status, json } = await call(
     'POST',
     '/v1/billing/webhook',
     {
@@ -73,11 +73,12 @@ test('24. webhook upgrades the plan and does not invent overage', async () => {
     {},
     world,
   );
-  assert.equal(status, 200);
-  assert.equal(world.store.getAccount(world.account.id).plan, 'starter');
+  assert.equal(status, 404);
+  assert.equal(json.error.code, 'not_found');
+  assert.equal(world.store.getAccount(world.account.id).plan, 'developer');
 });
 
-test('24. site copy has no contact-sales wedge', () => {
+test('24. site copy has no contact-sales wedge and states free early access', () => {
   const files = [
     'src/pages/pricing.astro',
     'src/pages/signup/index.astro',
@@ -90,4 +91,15 @@ test('24. site copy has no contact-sales wedge', () => {
     assert.doesNotMatch(text, /book a demo/i, rel);
     assert.doesNotMatch(text, /request a demo/i, rel);
   }
+  const pricing = readFileSync(path.join(SITE, 'src/pages/pricing.astro'), 'utf8');
+  assert.match(pricing, /free during early access/i);
+  assert.match(pricing, /billing_unavailable/);
+  assert.match(pricing, /free\.calculations/);
+  const plans = JSON.parse(
+    readFileSync(path.join(SITE, 'src/data/plans.json'), 'utf8'),
+  );
+  assert.equal(
+    plans.live.find((p) => p.id === 'developer').calculations,
+    100_000,
+  );
 });

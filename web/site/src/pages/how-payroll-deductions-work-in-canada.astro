@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="How payroll deductions work in Canada — Takehome">
+<Base title="How payroll deductions work in Canada: Takehome">
   <article class="prose">
     <h1>How payroll deductions work in Canada</h1>
     <p class="lede">
@@ -15,24 +15,24 @@ import Base from '../layouts/Base.astro';
     <h2>The five statutory lines</h2>
     <ol>
       <li>
-        Federal tax — T4127 Chapter 4 Steps 2–3. Annual T1, then [(T1)/P] + L.
+        Federal tax: T4127 Chapter 4 Steps 2-3. Annual T1, then [(T1)/P] + L.
       </li>
       <li>
-        Provincial tax — Chapter 4 Step 4–5, including Ontario’s surtax and
+        Provincial tax: Chapter 4 Step 4-5, including Ontario’s surtax and
         health premium, Alberta’s K5P, BC’s tax reduction, or Outside Canada’s
         zero T2 plus a 48% federal surtax.
       </li>
       <li>
-        CPP (C) — 5.95% of (pensionable − period exemption), remaining room
+        CPP (C): 5.95% of (pensionable − period exemption), remaining room
         against the annual maximum. Employer matches.
       </li>
       <li>
-        CPP2 (C2) — 4% of pensionable earnings between this year’s YMPE and
+        CPP2 (C2): 4% of pensionable earnings between this year’s YMPE and
         YAMPE. Employer matches. Zero until year-to-date pensionable earnings
         pass YMPE.
       </li>
       <li>
-        EI — 1.63% of insurable earnings to the annual maximum. Employer pays
+        EI: 1.63% of insurable earnings to the annual maximum. Employer pays
         1.4×. Quebec uses a different EI rate and QPIP; this engine will not
         calculate that.
       </li>
@@ -49,7 +49,7 @@ import Base from '../layouts/Base.astro';
 
     <h2>Claim codes</h2>
     <p>
-      TD1 claim code 1 is the basic personal amount. Code 0 is no claim —
+      TD1 claim code 1 is the basic personal amount. Code 0 is no claim : 
       typical on a second job. Code E is exemption. Entering a dollar amount
       instead of a claim code is a different wire field (federal_tc /
       provincial_tcp) and is how PDOC’s “total claim amount” box goes wrong

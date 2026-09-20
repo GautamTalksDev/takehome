@@ -27,15 +27,19 @@ fn float_half_up(t2: &str, p: u16) -> String {
 
 #[test]
 fn emit_discriminating_probes() {
+    let queue_path =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../data/grids/pdoc-queue.json");
+    // `data/grids/**` is gitignored — this probe generator is a local tool, not CI.
+    if !queue_path.is_file() {
+        eprintln!(
+            "skip emit_discriminating_probes: missing {}",
+            queue_path.display()
+        );
+        return;
+    }
     let reg = load_embedded_registry().unwrap();
-    let queue: Vec<serde_json::Value> = serde_json::from_str(
-        &std::fs::read_to_string(
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("../../data/grids/pdoc-queue.json"),
-        )
-        .unwrap(),
-    )
-    .unwrap();
+    let queue: Vec<serde_json::Value> =
+        serde_json::from_str(&std::fs::read_to_string(&queue_path).unwrap()).unwrap();
 
     let mut out: Vec<serde_json::Value> = Vec::new();
     for item in &queue {

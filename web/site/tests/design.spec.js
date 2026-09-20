@@ -85,17 +85,27 @@ test('calculator lead is plain language; T4127 depth sits below the answer', asy
   await expect(page.locator('.prose')).toContainText('prorat');
 });
 
-test('pricing is equal cards with a CTA and no sales queue', async ({ page }) => {
+test('pricing is equal cards with a CTA and no sales wedge', async ({ page }) => {
   await page.goto('/pricing/');
-  const cards = page.locator('.plan');
-  await expect(cards).toHaveCount(5);
-  for (const card of await cards.all()) {
+  await expect(page.locator('.plan')).toHaveCount(5);
+  const earlyCards = page.locator('h2:text-is("Early access (now)") + ul.plans .plan');
+  const laterCards = page.locator('h2:text-is("Paid tiers (later)") + p + ul.plans .plan');
+  await expect(earlyCards).toHaveCount(2);
+  await expect(laterCards).toHaveCount(3);
+  for (const card of await earlyCards.all()) {
     await expect(card.locator('.plan-name')).not.toHaveText('');
     await expect(card.locator('.plan-price')).not.toHaveText('');
     await expect(card.locator('.plan-for')).not.toHaveText('');
     await expect(card.getByRole('link', { name: 'Get API keys' })).toBeVisible();
   }
+  for (const card of await laterCards.all()) {
+    await expect(card.locator('.plan-name')).not.toHaveText('');
+    await expect(card.locator('.plan-price')).not.toHaveText('');
+    await expect(card.locator('.plan-for')).not.toHaveText('');
+    await expect(card.getByRole('link', { name: 'Get API keys' })).toHaveCount(0);
+  }
   await expect(page.locator('main')).not.toContainText('contact sales');
+  await expect(page.locator('main')).toContainText('billing_unavailable');
 });
 
 test('docs puts a highlighted first call above the fold with copy and a left nav', async ({

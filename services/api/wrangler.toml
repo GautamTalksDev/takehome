@@ -14,7 +14,7 @@ RATE_LIMIT_WINDOW_MS = "60000"
 SIGNUP_RATE_LIMIT_MAX = "5"
 VERIFY_RATE_LIMIT_MAX = "10"
 PUBLIC_SITE = "https://takehome.gautamkhosla.com"
-MAIL_FROM = "Takehome <noreply@mail.gautamkhosla.com>"
+MAIL_FROM = "Takehome <noreply@gautamkhosla.com>"
 
 [[routes]]
 pattern = "takehome.gautamkhosla.com"
@@ -57,7 +57,7 @@ RATE_LIMIT_WINDOW_MS = "60000"
 SIGNUP_RATE_LIMIT_MAX = "5"
 VERIFY_RATE_LIMIT_MAX = "10"
 PUBLIC_SITE = "https://takehome-staging.gautamkhosla.com"
-MAIL_FROM = "Takehome <noreply@mail.gautamkhosla.com>"
+MAIL_FROM = "Takehome <noreply@gautamkhosla.com>"
 NOINDEX = "1"
 
 [[env.staging.routes]]

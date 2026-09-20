@@ -185,12 +185,15 @@ jobs:
 
       - name: Determinism check
         # Same inputs, same rule set, byte-identical output. Run the suite twice
-        # with a different seed environment and diff the golden vector output.
+        # and compare pass/fail summaries. Strip wall-clock duration — that is
+        # not part of the engine's output and varies under GHA load.
         run: |
           cargo test --workspace -- --nocapture > /tmp/run1.txt 2>&1
           cargo test --workspace -- --nocapture > /tmp/run2.txt 2>&1
           grep -c 'test result: ok' /tmp/run1.txt
-          diff <(grep 'test result' /tmp/run1.txt) <(grep 'test result' /tmp/run2.txt)
+          strip_timing() { sed -E 's/finished in [0-9.]+s//'; }
+          diff <(grep 'test result' /tmp/run1.txt | strip_timing) \
+               <(grep 'test result' /tmp/run2.txt | strip_timing)
 
   wasm-js:
     # Spec §5.4: WASM and native are the same engine. If they disagree, every

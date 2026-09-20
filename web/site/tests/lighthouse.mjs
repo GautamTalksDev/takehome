@@ -1,5 +1,9 @@
 /**
  * Lighthouse performance + accessibility floors (spec §13.3 / test 8).
+ *
+ * Local / pre-push: one run, performance >= 0.99, accessibility >= 0.99.
+ * GitHub Actions: three runs, median(performance) >= 0.95, accessibility >= 0.99
+ * on every sample. Accessibility does not get a softer CI floor.
  */
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -9,6 +13,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 import lighthouse from 'lighthouse';
+import { lighthouseMode, median } from './lighthouse-math.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const THRESHOLDS = JSON.parse(
@@ -17,6 +22,16 @@ const THRESHOLDS = JSON.parse(
 const PORT = 4322;
 const DEBUG_PORT = 9222;
 const ORIGIN = `http://127.0.0.1:${PORT}`;
+const MODE = lighthouseMode();
+const RUNS = MODE === 'ci' ? THRESHOLDS.ci_runs : 1;
+const PERF_FLOOR =
+  MODE === 'ci' ? THRESHOLDS.performance_ci_median : THRESHOLDS.performance;
+const CHROME_FLAGS = [
+  `--remote-debugging-port=${DEBUG_PORT}`,
+  '--no-sandbox',
+  '--disable-gpu',
+  '--disable-dev-shm-usage',
+];
 
 function waitForServer() {
   return new Promise((resolve, reject) => {
@@ -38,6 +53,21 @@ function waitForServer() {
   });
 }
 
+async function oneRun(port) {
+  const result = await lighthouse(`${ORIGIN}${THRESHOLDS.url}`, {
+    port,
+    output: 'json',
+    onlyCategories: ['performance', 'accessibility'],
+    logLevel: 'error',
+  });
+  const report = result.lhr;
+  return {
+    performance: report.categories.performance.score,
+    accessibility: report.categories.accessibility.score,
+    report,
+  };
+}
+
 const preview = spawn(
   path.join(ROOT, 'node_modules/.bin/astro'),
   ['preview', '--host', '127.0.0.1', '--port', String(PORT)],
@@ -49,42 +79,51 @@ try {
   await waitForServer();
   browser = await chromium.launch({
     headless: true,
-    args: [`--remote-debugging-port=${DEBUG_PORT}`, '--no-sandbox', '--disable-gpu'],
+    args: CHROME_FLAGS,
   });
-  let performance = 0;
-  let accessibility = 0;
-  let report;
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    const result = await lighthouse(`${ORIGIN}${THRESHOLDS.url}`, {
-      port: DEBUG_PORT,
-      output: 'json',
-      onlyCategories: ['performance', 'accessibility'],
-      logLevel: 'error',
-    });
-    report = result.lhr;
-    performance = report.categories.performance.score;
-    accessibility = report.categories.accessibility.score;
+
+  const performances = [];
+  const accessibilities = [];
+  let lastReport;
+  for (let attempt = 1; attempt <= RUNS; attempt++) {
+    const sample = await oneRun(DEBUG_PORT);
+    performances.push(sample.performance);
+    accessibilities.push(sample.accessibility);
+    lastReport = sample.report;
     console.log(
-      `lighthouse attempt ${attempt}: performance=${performance} (floor ${THRESHOLDS.performance}) accessibility=${accessibility} (floor ${THRESHOLDS.accessibility})`,
+      `lighthouse ${MODE} run ${attempt}/${RUNS}: performance=${sample.performance} accessibility=${sample.accessibility}`,
     );
-    if (
-      performance >= THRESHOLDS.performance &&
-      accessibility >= THRESHOLDS.accessibility
-    ) {
-      break;
-    }
+    assert.ok(
+      sample.accessibility >= THRESHOLDS.accessibility,
+      `accessibility ${sample.accessibility} < ${THRESHOLDS.accessibility} on run ${attempt}`,
+    );
   }
+
+  const perfScore = MODE === 'ci' ? median(performances) : performances[0];
+  console.log(
+    `lighthouse ${MODE}: performance=${perfScore} (floor ${PERF_FLOOR}; samples=[${performances.join(', ')}]) accessibility all >= ${THRESHOLDS.accessibility}`,
+  );
+
   writeFileSync(
     path.join(ROOT, 'lighthouse-report.json'),
-    JSON.stringify(report, null, 2),
+    JSON.stringify(
+      {
+        mode: MODE,
+        performances,
+        accessibilities,
+        performance_asserted: perfScore,
+        performance_floor: PERF_FLOOR,
+        accessibility_floor: THRESHOLDS.accessibility,
+        last: lastReport,
+      },
+      null,
+      2,
+    ),
   );
+
   assert.ok(
-    performance >= THRESHOLDS.performance,
-    `performance ${performance} < ${THRESHOLDS.performance}`,
-  );
-  assert.ok(
-    accessibility >= THRESHOLDS.accessibility,
-    `accessibility ${accessibility} < ${THRESHOLDS.accessibility}`,
+    perfScore >= PERF_FLOOR,
+    `performance ${perfScore} < ${PERF_FLOOR} (mode=${MODE}, samples=[${performances.join(', ')}])`,
   );
 } finally {
   if (browser) {

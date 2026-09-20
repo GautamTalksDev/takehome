@@ -344,6 +344,7 @@ jobs:
         env:
           TAKEHOME_CLI: ${{ github.workspace }}/target/release/takehome
           ASTRO_TELEMETRY_DISABLED: "1"
+          TAKEHOME_LIGHTHOUSE_MODE: ci
 
   api:
     # Spec §10.2 tests 11–26: Worker JSON API, keys, metering, billing, five-minute path.

@@ -1,8 +1,10 @@
 {
   "url": "/calculators/on/",
-  "performance": 0.8,
+  "performance": 0.99,
+  "performance_ci_median": 0.95,
   "accessibility": 0.99,
+  "ci_runs": 3,
   "recorded_performance": 1,
   "recorded_accessibility": 1,
-  "note": "Lighthouse category scores. recorded_* is what this tree scored locally on a quiet machine. CI shared runners often land performance in the 0.8x range for the WASM calculator page; the floor is 0.8 so the gate still catches real regressions without flaking on GHA load. Accessibility stays at 0.99."
+  "note": "Local/pre-push enforces performance >= 0.99 (one run, fixed Chrome flags). Shared GHA runners take ci_runs samples and enforce median(performance) >= performance_ci_median. Accessibility >= 0.99 on every run everywhere — scoring is deterministic."
 }

@@ -4,6 +4,7 @@
 
 ## [Unreleased]
 
+- Lighthouse gate restored after a 0.8 CI floor briefly landed (gate moved, not the regression fixed). Local/pre-push (`scripts/check-lighthouse-local.sh`, `TAKEHOME_LIGHTHOUSE_MODE=local`) enforces **performance ≥ 0.99** and **accessibility ≥ 0.99**. Shared GHA runners take **three** samples and assert **median(performance) ≥ 0.95**; accessibility stays **≥ 0.99 on every sample**. Evidence for the split: local recorded **1.00 / 1.00**; a cold GHA single run scored **performance 0.84** on `/calculators/on/` (WASM calculator page under runner load). Median-of-three against 0.95 absorbs that variance without turning the check into a no-op.
 - Live smoke script covers batch, year CPP cap `4230.45`, CRA bonus combined `TB = 503.72` (federal-only `T3` slice remains `323.54`), BC Option 1/Option 2 at `2026-08-01`, and the 2027 preview banner above the number.
 - Paid billing deferred for free early access (ADR-006): checkout is `501` / `billing_unavailable`, Stripe webhook is `404`, free live quota is **100,000**/month. Kill-test route C withdrawn.
 - PDOC evidence publication (ruling a): JSON records are the GitHub release archive `takehome-conformance-corpus-2026.1.tar.zst` (not in git; `tracked-ban.sh` refuses `records/`). `CONFORMANCE.md` records the catalog digest `554a5427…d02a71ea`, the archive SHA-256, the download URL, and two lines to verify after download. Publication tests extract the archive and break the catalog on purpose.

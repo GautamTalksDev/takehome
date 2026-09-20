@@ -18,6 +18,16 @@ cargo test --workspace
 cd services/api && npm test
 ```
 
+Before a release or when you change the site calculator shell, also run the
+strict Lighthouse gate (performance **0.99**, accessibility **0.99**):
+
+```bash
+./scripts/check-lighthouse-local.sh
+```
+
+CI on shared runners uses three Lighthouse samples and asserts the median
+performance against **0.95**; accessibility stays **0.99** on every sample.
+
 Fix any failure in the area you touched. Conformance numbers in [`CONFORMANCE.md`](CONFORMANCE.md) regenerate from `tools/conformance`; do not hand-edit agreement rates.
 
 ## Tests first

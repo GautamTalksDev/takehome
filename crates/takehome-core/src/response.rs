@@ -320,7 +320,11 @@ mod tests {
             .spawn()
             .and_then(|mut child| {
                 use std::io::Write;
-                child.stdin.as_mut().unwrap().write_all(listing.as_bytes())?;
+                child
+                    .stdin
+                    .as_mut()
+                    .unwrap()
+                    .write_all(listing.as_bytes())?;
                 child.wait_with_output()
             })
             .unwrap();

@@ -292,6 +292,13 @@ test('50. a quota 402 reaches ALERTS and ALERT_EMAIL end to end', async () => {
   );
   assert.equal(mail.length, 1);
   assert.match(mail[0].subject, /quota_402/);
+  assert.match(mail[0].text, /"path":"\/v1\/deductions"/);
+  assert.match(mail[0].text, /"status":402/);
+  assert.match(mail[0].text, /"ip":/);
+  assert.equal(mail[0].text.includes(UNIQUE_GROSS), false);
+  assert.equal(mail[0].text.includes('gross_pay'), false);
+  assert.equal(mail[0].text.includes(world.liveKey), false);
+  assert.equal(mail[0].text.includes(world.testKey), false);
   const blob = JSON.stringify({ alerts, mail });
   assert.equal(blob.includes('gross_pay'), false);
   assert.equal(blob.includes(UNIQUE_GROSS), false);

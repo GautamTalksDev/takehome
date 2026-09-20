@@ -345,8 +345,7 @@ queue until the mapping is reconciled.
 **Spot-check performed 2026-09-12:** three cases (ON weekly claim1, AB P=10
 M-003, BC biweekly claim0). Federal and provincial tax lines matched JSON ↔
 rendered text. Full results DOM still often incomplete (CPP/EI/net lines
-missing: the Angular hazard that motivated JSON capture). `npm run
-spot-check-json-dom` in `tools/pdoc-oracle`.
+missing: the Angular hazard that motivated JSON capture). `npm run spot-check-json-dom` in `tools/pdoc-oracle`.
 
 ## 12. Grid version on every run
 

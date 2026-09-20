@@ -55,7 +55,8 @@ Production and staging send verification and alert mail through Resend.
 | Item | Where | Notes |
 |--|--|--|
 | `RESEND_API_KEY` | Worker secret (`wrangler secret put RESEND_API_KEY`) | Never in git or `wrangler.toml`. Required when `MAILBOX` is absent. |
-| `MAIL_FROM` | `wrangler.toml` `[vars]` / `[env.staging.vars]` | `Takehome <noreply@mail.gautamkhosla.com>`. Domain must be verified in Resend (SPF/DKIM). |
+| `MAIL_FROM` | `wrangler.toml` `[vars]` / `[env.staging.vars]` | `Takehome <noreply@gautamkhosla.com>`. Domain must be verified in Resend (SPF/DKIM). |
+| `MAIL_REPLY_TO` | `wrangler.toml` `[vars]` | Human-readable reply address on verification mail (not a noreply). |
 | `ALERT_EMAIL` | Worker secret | Operator inbox for quota 402 and other A09 alerts. Same Resend path as signup. |
 
 `sendMail` in `services/api/src/mail.js`: if `env.MAILBOX` is set (tests / `npm run local`), push in-memory and return. Else POST to `https://api.resend.com/emails`. If neither MAILBOX nor `RESEND_API_KEY` is set, signup returns **503** `mail` (fail closed). Alert mail failures are logged as `alert_mail_failed` and do not change the HTTP response.

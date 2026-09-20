@@ -17,7 +17,7 @@
     "test:lighthouse:local": "TAKEHOME_LIGHTHOUSE_MODE=local node tests/lighthouse.mjs",
     "test:lighthouse:unit": "node --test tests/lighthouse-math.test.js",
     "test:graph": "node tests/site-graph.mjs && node tests/factors-consistency.mjs",
-    "test:csp-html": "node --test tests/no-inline-csp.test.js",
+    "test:csp-html": "node --test tests/no-inline-csp.test.js tests/no-glued-tokens.test.js",
     "test": "npm run build && npm run test:csp-html && npm run test:graph && npm run test:lighthouse:unit && npm run test:e2e && npm run test:budget && npm run test:lighthouse"
   },
   "dependencies": {

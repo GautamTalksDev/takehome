@@ -2,6 +2,7 @@ import changelog from './assets/changelog.json' with { type: 'json' };
 import conformance from './assets/conformance.json' with { type: 'json' };
 import { errorResponse, fromEngineJson, json, classifyEngineError } from './errors.js';
 import { MailTransportError, sendMail } from './mail.js';
+import { verificationEmailBodies } from './verify-mail.js';
 import { projectYear } from './year.js';
 import { DOCS } from './schema.js';
 import { latestRuleSetVersion, liveIdentity } from './identity.js';
@@ -923,19 +924,25 @@ async function signup(request, env, engine) {
     return json(200, { message });
   }
   const token = mintVerifyToken();
+  const expires = expiresAt(env, 24);
   await Promise.resolve(
     store.insertEmailToken({
       hash: hashKey(token),
       account_id: account.id,
-      expires_at: expiresAt(env, 24),
+      expires_at: expires,
     }),
   );
   const verifyUrl = `${siteUrl(env)}/signup/verify/?token=${token}`;
+  const { text, html } = verificationEmailBodies({
+    verifyUrl,
+    expiresAt: expires,
+  });
   try {
     await sendMail(env, {
       to: email,
       subject: 'Verify your Takehome email',
-      text: `Verify and receive API keys: ${verifyUrl}`,
+      text,
+      html,
       token,
       verifyUrl,
     });

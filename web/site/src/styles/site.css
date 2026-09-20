@@ -589,6 +589,21 @@ figcaption {
   z-index: 2;
 }
 
+.verify-curl,
+.verify-keys .code-block pre {
+  margin: 0;
+  padding-right: 5.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.verify-keys .code-block pre {
+  word-break: break-all;
+}
+
 @media (max-width: 44rem) {
   .docs {
     grid-template-columns: 1fr;

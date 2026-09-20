@@ -1,13 +1,36 @@
 import { apiOrigin, displayOrigin } from './api-origin.js';
 
-const firstCallJson =
-  '{"as_of":"2026-01-15","province":"ON","pay_period":52,"gross_pay":"1000.00","federal_claim_code":1,"provincial_claim_code":1}';
+const firstCallBody = [
+  '{',
+  '  "as_of": "2026-01-15",',
+  '  "province": "ON",',
+  '  "pay_period": 52,',
+  '  "gross_pay": "1000.00",',
+  '  "federal_claim_code": 1,',
+  '  "provincial_claim_code": 1',
+  '}',
+].join('\n');
+
 const status = document.getElementById('verify-status');
-const keys = document.getElementById('verify-keys');
+const keysPanel = document.getElementById('verify-keys-panel');
+const testKeyEl = document.getElementById('verify-test-key');
+const liveKeyEl = document.getElementById('verify-live-key');
 const hint = document.getElementById('verify-hint');
+const curlWrap = document.getElementById('verify-curl-wrap');
 const curl = document.getElementById('verify-curl');
 
-if (status && keys && hint && curl) {
+function firstCallCurl(testKey) {
+  const origin = displayOrigin();
+  return [
+    `curl -sS -X POST \\`,
+    `  ${origin}/v1/deductions \\`,
+    `  -H 'content-type: application/json' \\`,
+    `  -H 'authorization: Bearer ${testKey}' \\`,
+    `  -d '${firstCallBody}'`,
+  ].join('\n');
+}
+
+if (status && keysPanel && testKeyEl && liveKeyEl && hint && curlWrap && curl) {
   const token = new URLSearchParams(location.search).get('token');
   if (!token) {
     status.textContent =
@@ -21,15 +44,12 @@ if (status && keys && hint && curl) {
           return;
         }
         status.textContent = body.message;
-        keys.hidden = false;
-        keys.textContent = `test: ${body.test_key}\nlive: ${body.live_key}`;
+        testKeyEl.textContent = body.test_key;
+        liveKeyEl.textContent = body.live_key;
+        keysPanel.hidden = false;
         hint.hidden = false;
-        curl.hidden = false;
-        curl.textContent =
-          `curl -sS -X POST ${displayOrigin()}/v1/deductions \\\n` +
-          `  -H 'content-type: application/json' \\\n` +
-          `  -H 'authorization: Bearer ${body.test_key}' \\\n` +
-          `  -d '${firstCallJson}'`;
+        curl.textContent = firstCallCurl(body.test_key);
+        curlWrap.hidden = false;
       })
       .catch(() => {
         status.textContent = 'Could not reach the API. Try the link again.';

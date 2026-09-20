@@ -20,12 +20,19 @@ function hasMailbox(env) {
 /**
  * Deliver one message. Rejects with MailTransportError when production
  * has no transport. Never throws on CR/LF injection — those are dropped.
+ * Optional message.html and message.replyTo map to Resend fields.
  */
 export async function sendMail(env, message) {
   const to = String(message.to ?? '');
   const subject = String(message.subject ?? '');
   const text = String(message.text ?? '');
-  if (/[\r\n\0]/.test(to) || /[\r\n\0]/.test(subject)) {
+  const html = message.html === undefined ? undefined : String(message.html);
+  const replyTo = message.replyTo === undefined ? undefined : String(message.replyTo);
+  if (
+    /[\r\n\0]/.test(to) ||
+    /[\r\n\0]/.test(subject) ||
+    (replyTo !== undefined && /[\r\n\0]/.test(replyTo))
+  ) {
     return;
   }
   if (hasMailbox(env)) {
@@ -42,6 +49,19 @@ export async function sendMail(env, message) {
   if (!from) {
     throw new MailTransportError('MAIL_FROM is required when using Resend.');
   }
+  const body = {
+    from,
+    to: [to],
+    subject,
+    text,
+  };
+  if (html !== undefined && html !== '') {
+    body.html = html;
+  }
+  const reply = (replyTo ?? String(env.MAIL_REPLY_TO ?? '')).trim();
+  if (reply) {
+    body.reply_to = reply;
+  }
   const fetchFn = typeof env.fetch === 'function' ? env.fetch.bind(env) : fetch;
   const response = await fetchFn(RESEND_URL, {
     method: 'POST',
@@ -49,12 +69,7 @@ export async function sendMail(env, message) {
       authorization: `Bearer ${apiKey}`,
       'content-type': 'application/json',
     },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      subject,
-      text,
-    }),
+    body: JSON.stringify(body),
   });
   if (!response.ok) {
     const detail = await response.text().catch(() => '');

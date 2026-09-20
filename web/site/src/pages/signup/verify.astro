@@ -11,17 +11,37 @@ import { FIRST_CALL_NET_PAY } from '../../lib/first-call.js';
       key. First call is yours.
     </p>
     <p id="verify-status" role="status">Checking the link…</p>
-    <pre id="verify-keys" hidden aria-label="API keys"></pre>
+
+    <div id="verify-keys-panel" class="verify-keys" hidden>
+      <p id="verify-plan-note">
+        The <code>np_test_</code> key is unmetered. The <code>np_live_</code> key
+        counts against the free early-access quota of 100,000 live calculations
+        per UTC month.
+      </p>
+      <div class="code-block">
+        <button type="button" class="copy" data-copy="verify-test-key">Copy test key</button>
+        <pre id="verify-test-key" aria-label="Test API key"></pre>
+      </div>
+      <div class="code-block">
+        <button type="button" class="copy" data-copy="verify-live-key">Copy live key</button>
+        <pre id="verify-live-key" aria-label="Live API key"></pre>
+      </div>
+    </div>
+
     <p id="verify-hint" hidden>
-      First call. <code>employee.net_pay</code> must be
+      First call. <code>employee.net_pay</code> must be{' '}
       <code>{FIRST_CALL_NET_PAY}</code>. Paste this into a terminal.
     </p>
-    <pre id="verify-curl" hidden aria-label="First-call curl"></pre>
+    <div id="verify-curl-wrap" class="code-block" hidden>
+      <button type="button" class="copy" data-copy="verify-curl">Copy</button>
+      <pre id="verify-curl" class="verify-curl" aria-label="First-call curl"></pre>
+    </div>
     <p>
       <a href="/docs/">Docs</a>
-      ·
+      {' · '}
       <a href="/pricing/">Pricing</a>
     </p>
   </article>
   <script is:inline type="module" src="/scripts/verify.js"></script>
+  <script is:inline type="module" src="/scripts/docs-copy.js"></script>
 </Base>

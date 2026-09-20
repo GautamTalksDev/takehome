@@ -58,9 +58,9 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="first-call">
         <h2>First call</h2>
         <p>
-          <a href="/signup/">Get a key</a>: email, verify, copy the
-          <code>np_test_</code> key. No sales call. Then run this. Ontario weekly
-          <code>$1000.00</code> on <code>2026-01-15</code>, claim code 1.
+          <a href="/signup/">Get a key</a>: email, verify, copy the{' '}
+          <code>np_test_</code> key. No sales call. Then run this. Ontario weekly{' '}
+          <code>$1000.00</code> on <code>2026-01-15</code>, claim code 1.{' '}
           <code>employee.net_pay</code> is <code>{FIRST_CALL_NET_PAY}</code>.
         </p>
         <div class="code-block">
@@ -73,9 +73,9 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="request">
         <h2>Request</h2>
         <p>
-          <code>POST /v1/deductions</code> with
-          <code>content-type: application/json</code> and
-          <code>authorization: Bearer</code>. Replace
+          <code>POST /v1/deductions</code> with{' '}
+          <code>content-type: application/json</code> and{' '}
+          <code>authorization: Bearer</code>. Replace{' '}
           <code>np_test_YOUR_KEY</code> with the test key from verify.
         </p>
       </section>
@@ -116,7 +116,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
           1000 employees; that counts as 1000 calculations, not 1. One invalid
           row returns <code>{'{error}'}</code> for that index and does not abort the
           rest. If the remaining quota cannot cover the whole batch, the call is
-          402 and usage is unchanged. Prices are on
+          402 and usage is unchanged. Prices are on{' '}
           <a href="/pricing/">pricing</a>.
         </p>
       </section>
@@ -124,18 +124,18 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="webhooks">
         <h2>Webhooks</h2>
         <p>
-          <code>POST /v1/webhooks</code> registers an HTTPS URL. The
+          <code>POST /v1/webhooks</code> registers an HTTPS URL. The{' '}
           <code>whsec_</code> signing secret is in that create response
-          exactly once; <code>GET</code> will not return it. Deliveries send
-          <code>rule_set.changed</code> with header
-          <code>takehome-signature: t=&lt;unix&gt;,v1=&lt;hex&gt;</code>.
+          exactly once; <code>GET</code> will not return it. Deliveries send{' '}
+          <code>rule_set.changed</code> with header{' '}
+          <code>takehome-signature: t=&lt;unix&gt;,v1=&lt;hex&gt;</code>.{' '}
           <code>v1</code> is HMAC-SHA256 over the timestamp and body together
           (<code>t</code> + <code>.</code> + raw JSON), never the body alone.
         </p>
         <p>
           Receivers must reject a signature whose <code>t</code> is more than
           5 minutes off their clock (300 seconds either side). That is the
-          replay window. Accepting an old <code>t</code> with a valid
+          replay window. Accepting an old <code>t</code> with a valid{' '}
           <code>v1</code> lets an attacker replay a captured delivery.
         </p>
       </section>
@@ -143,7 +143,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="public">
         <h2>Public endpoints</h2>
         <p>
-          Public listings (<code>/v1/rules</code>, <code>/v1/jurisdictions</code>,
+          Public listings (<code>/v1/rules</code>, <code>/v1/jurisdictions</code>,{' '}
           <code>/openapi.json</code>) do not need a key.
         </p>
       </section>
@@ -151,7 +151,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
       <section id="embed">
         <h2>Embed</h2>
         <p>
-          Job boards can skip the API: one
+          Job boards can skip the API: one{' '}
           <a href="/embed/"><code>embed.js</code></a> tag runs the same WASM engine
           in the listing page. No cookie, no salary posted back. Pin the
           versioned path and the SRI hash so a host page cannot be swapped onto
@@ -159,7 +159,7 @@ const responseHtml = await highlight(FIRST_CALL_RESPONSE, 'json');
         </p>
         <pre><code>{embedSnippet()}</code></pre>
         <p>
-          Integrity <code>{embedSri()}</code> with
+          Integrity <code>{embedSri()}</code> with{' '}
           <code>crossorigin="anonymous"</code>.
         </p>
       </section>

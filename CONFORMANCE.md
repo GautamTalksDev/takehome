@@ -155,7 +155,7 @@ cache hits from overlapping forms).
 | | |
 |--|--|
 | grid_version | `2026.1` |
-| engine_build_sha256 | `b8a89f98fa2fcf25715aa6171bdf0b2d2b00ad2fe595b1187c119bb7cd9c77bd` |
+| engine_build_sha256 | `e17142d884f50fe9279235f767486a7a80d9351cdf2ce346a2708fe892b8690d` |
 | rule_set_versions | `2026-01-01`, `2026-07-01`, `2027-01-01` |
 | rule_set_sha256 | `cf000bd165fe7b7d6f5244ff2111a9afe54ce5931e5574c6688784457f62b897` |
 | PDOC identity | `2026-06-11 (M1); form:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (grid queue)` |

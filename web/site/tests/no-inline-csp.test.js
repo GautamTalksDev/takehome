@@ -60,3 +60,30 @@ test('emitted HTML has no inline script bodies or on* handlers', () => {
       .join('\n')}`,
   );
 });
+
+test('Sources sections do not embed serialized citation objects', () => {
+  assert.ok(statSync(DIST).isDirectory(), `missing ${DIST}; run npm run build`);
+  const files = walkHtml(DIST).filter((file) =>
+    /Sources/.test(readFileSync(file, 'utf8')),
+  );
+  assert.ok(files.length > 0, 'expected calculator pages with Sources');
+  const bad = [];
+  for (const file of files) {
+    const html = readFileSync(file, 'utf8');
+    const start = html.search(/<h2[^>]*>Sources<\/h2>/i);
+    if (start < 0) continue;
+    const slice = html.slice(start, start + 800);
+    if (
+      slice.includes('{') ||
+      slice.includes('"what":') ||
+      slice.includes('factor-index')
+    ) {
+      bad.push(path.relative(DIST, file));
+    }
+  }
+  assert.equal(
+    bad.length,
+    0,
+    `Sources still dumps citation JSON:\n${bad.map((row) => `  ${row}`).join('\n')}`,
+  );
+});

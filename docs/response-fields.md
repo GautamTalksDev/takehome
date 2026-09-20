@@ -67,7 +67,7 @@ Bookkeepers and auditors use `breakdown` to reconcile a stub to the published fo
 - `P` and `S1` document pay period and Option 2 ratio when applicable.
 - `C`, `C2`, `EI`, `F5` tie to CPP, CPP2, and EI chapters.
 
-`employee.total_tax` follows PDOC-style separate rounding. `breakdown.T` follows T4127 Step 6 combined rounding. They can differ by a cent; both are intentional. See CONFORMANCE notes on PDOC mapping.
+`employee.total_tax` follows PDOC-style separate rounding. `breakdown.T` follows T4127 Step 6 combined rounding: `round((T1+T2)/P)+L`. They can differ by a cent; both are intentional. Compare a PDOC screen total to `employee.total_tax`; keep `breakdown.T` as the T4127 figure. See CONFORMANCE notes on PDOC mapping.
 
 Full symbol glossary: [glossary.md](./glossary.md).
 

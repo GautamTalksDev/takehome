@@ -1,7 +1,7 @@
 ---
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { citationIndex } from '../lib/citations.js';
+import { shortWhat } from '../lib/citations.js';
 import { CLAIM_CODES, PAY_PERIODS, PROVINCES } from '../lib/provinces.js';
 import { REPO } from '../lib/rules.js';
 
@@ -26,7 +26,6 @@ const {
   resultMode = 'net',
 } = Astro.props;
 const factorDefs = factors.factors;
-const factorLookup = citationIndex(factorDefs);
 const h1 = heading ?? `${name} take-home pay`;
 const intro =
   lede ??
@@ -242,7 +241,18 @@ const hasAboveNumber = Astro.slots.has('above-number');
                   </th>
                   <td data-role="value"></td>
                   <td>
-                    {row.definition} ({row.t4127_reference})
+                    {
+                      row.symbol === 'T' ? (
+                        <>
+                          {shortWhat(row.definition)} ({row.t4127_reference}).{' '}
+                          <a href="/docs/response-fields/">Why it can differ from total_tax</a>
+                        </>
+                      ) : (
+                        <>
+                          {shortWhat(row.definition)} ({row.t4127_reference})
+                        </>
+                      )
+                    }
                   </td>
                 </tr>
               ))}
@@ -251,7 +261,6 @@ const hasAboveNumber = Astro.slots.has('above-number');
         </details>
         <section>
           <h2>Sources</h2>
-          <pre id="factor-index" class="hidden">{JSON.stringify(factorLookup)}</pre>
           <ul data-testid="citations"></ul>
         </section>
       </>

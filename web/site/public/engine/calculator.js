@@ -1,4 +1,5 @@
 import init, { calculate, listRuleSetVersions } from './takehome_wasm.js';
+import FACTOR_CITATIONS from '/scripts/factor-citations.js';
 
 const OPTIONAL_MONEY = [
   'bonus',
@@ -119,20 +120,15 @@ function renderBreakdown(breakdown) {
 }
 
 function factorIndex() {
-  const node = document.getElementById('factor-index');
-  if (!node || !node.textContent) {
-    return {};
-  }
-  try {
-    return JSON.parse(node.textContent);
-  } catch {
-    return {};
-  }
+  return FACTOR_CITATIONS;
 }
 
 function citationHref(sourceUrl, hash) {
   const base = String(sourceUrl || '').split('#')[0];
-  return hash ? `${base}#${hash}` : base;
+  if (!hash) {
+    return base;
+  }
+  return `${base}#${hash}`;
 }
 
 function renderCitations(citations) {

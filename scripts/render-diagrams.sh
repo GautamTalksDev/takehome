@@ -13,13 +13,16 @@ if ! command -v npx >/dev/null 2>&1; then
 fi
 
 # Pin mermaid-cli so SVG output does not drift silently across CI images.
+# GitHub-hosted runners (Ubuntu 24.04+) disallow unprivileged user namespaces;
+# Chromium needs --no-sandbox there (same pattern as web/site/tests/lighthouse.mjs).
 MMDC=(npx --yes @mermaid-js/mermaid-cli@11.4.2)
+PUPPETEER_CFG="$ROOT/scripts/mermaid-puppeteer.json"
 
 for mmd in "$SRC"/*.mmd; do
   base="$(basename "$mmd" .mmd)"
   svg="$OUT/${base}.svg"
   echo "render $base" >&2
-  "${MMDC[@]}" -i "$mmd" -o "$svg" -b transparent
+  "${MMDC[@]}" -p "$PUPPETEER_CFG" -i "$mmd" -o "$svg" -b transparent
 done
 
 node "$ROOT/scripts/check-diagram-captions.mjs"

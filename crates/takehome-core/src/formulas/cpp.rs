@@ -378,8 +378,8 @@ mod tests {
     }
 
     /// 41. PM = 6, D = 0, PI large enough that the cap binds: assert C, not the
-    /// cap. 4230.45 × 6/12 is a Ratio (2115.225); C is that remaining after
-    /// round_contribution_to_cent.
+    ///     cap. 4230.45 × 6/12 is a Ratio (2115.225); C is that remaining after
+    ///     round_contribution_to_cent.
     #[test]
     fn pm6_cap_binds_asserts_c_not_the_cap() {
         let params = canada_cpp();
@@ -484,8 +484,7 @@ mod tests {
         assert_eq!(money("34.67").cmp_ratio(&cap), Ordering::Greater);
         assert!(
             cap.to_string().contains("34.66") && cap.to_string() != "34.66",
-            "416 × 1/12 must retain sub-cent scale, got {}",
-            cap.to_string()
+            "416 × 1/12 must retain sub-cent scale, got {cap}"
         );
 
         let remaining = remaining_room(params.second_additional_max, 1, money("34.66")).unwrap();

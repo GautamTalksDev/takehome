@@ -10,6 +10,7 @@ const SITE = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../../web/site',
 );
+const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
 test('24. published tiers are CAD integer cents, not floats', () => {
   assert.equal(PLANS.currency, 'CAD');
@@ -96,7 +97,7 @@ test('24. site copy has no contact-sales wedge and states free early access', ()
   assert.match(pricing, /billing_unavailable/);
   assert.match(pricing, /free\.calculations/);
   const plans = JSON.parse(
-    readFileSync(path.join(SITE, 'src/data/plans.json'), 'utf8'),
+    readFileSync(path.join(REPO, 'data/plans.json'), 'utf8'),
   );
   assert.equal(
     plans.live.find((p) => p.id === 'developer').calculations,

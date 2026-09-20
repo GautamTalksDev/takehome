@@ -1,6 +1,9 @@
 //! Emit `engine_build_sha256` for Response provenance (M1 step 12).
 //!
 //! Hashes the engine source tree under `src/` (deterministic, sorted paths).
+//! Paths in the digest are relative to `src/` so the digest does not change
+//! when the repo is checked out under a different absolute prefix (WSL home
+//! vs GitHub Actions `/home/runner/work/...`).
 
 use std::env;
 use std::fs;
@@ -24,22 +27,35 @@ fn hash_tree(root: &Path) -> Result<String, String> {
     let mut files = Vec::new();
     collect_rs_files(root, &mut files)?;
     files.sort();
-    // Prefer system sha256sum for a stable hex digest without extra crates.
-    let mut cmd = Command::new("sha256sum");
+    // Content hashes with paths relative to `root` (never absolute).
+    let mut listing = String::new();
     for f in &files {
-        cmd.arg(f);
+        let out = Command::new("sha256sum")
+            .arg(f)
+            .output()
+            .map_err(|e| e.to_string())?;
+        if !out.status.success() {
+            return Err(format!(
+                "sha256sum failed: {}",
+                String::from_utf8_lossy(&out.stderr)
+            ));
+        }
+        let hex = String::from_utf8_lossy(&out.stdout)
+            .split_whitespace()
+            .next()
+            .ok_or_else(|| "empty sha256sum".to_string())?
+            .to_string();
+        let rel = f
+            .strip_prefix(root)
+            .map_err(|e| e.to_string())?
+            .to_string_lossy()
+            .replace('\\', "/");
+        listing.push_str(&hex);
+        listing.push_str("  ");
+        listing.push_str(&rel);
+        listing.push('\n');
     }
-    let out = cmd.output().map_err(|e| e.to_string())?;
-    if !out.status.success() {
-        return Err(format!(
-            "sha256sum failed: {}",
-            String::from_utf8_lossy(&out.stderr)
-        ));
-    }
-    // Aggregate: hash the concatenation of "hex  path\n" lines (sorted).
-    let listing = String::from_utf8_lossy(&out.stdout);
-    let hasher_input = listing.into_owned().into_bytes();
-    // Final digest of the listing itself for a single tree id.
+    let hasher_input = listing.into_bytes();
     let mut child = Command::new("sha256sum")
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
@@ -61,7 +77,6 @@ fn hash_tree(root: &Path) -> Result<String, String> {
         .next()
         .ok_or_else(|| "empty sha256sum".to_string())?
         .to_string();
-    let _ = hasher_input;
     Ok(hex)
 }
 

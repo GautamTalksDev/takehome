@@ -498,10 +498,10 @@ mod tests {
         #![proptest_config(ProptestConfig::with_cases(10_000))]
         #[test]
         fn tb_never_negative(
-            t1w in 0u64..=5_000_00,
-            t2w in 0u64..=5_000_00,
-            t1o in 0u64..=5_000_00,
-            t2o in 0u64..=5_000_00,
+            t1w in 0u64..=500_000,
+            t2w in 0u64..=500_000,
+            t1o in 0u64..=500_000,
+            t2o in 0u64..=500_000,
         ) {
             fn from_cents(cents: u64) -> Money {
                 Money::parse(&format!("{}.{:02}", cents / 100, cents % 100)).unwrap()

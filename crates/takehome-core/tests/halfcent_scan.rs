@@ -1,4 +1,8 @@
 //! Find exact half-cent T2/P forms where IEEE float residue ≠ decimal half-up.
+//!
+//! Intentionally uses `f64` to prove IEEE half-up diverges from decimal. The
+//! float-ban script does not scan `tests/`; clippy must allow the arithmetic.
+#![allow(clippy::float_arithmetic)]
 use rust_decimal::Decimal;
 use std::str::FromStr;
 use takehome_core::decimal::Money;
@@ -39,10 +43,10 @@ fn emit_discriminating_probes() {
         if prov == "AB" || prov == "OutsideCanada" {
             continue;
         }
-        let p = item["pay_period"].as_u64().unwrap() as u16;
+        let p = u16::try_from(item["pay_period"].as_u64().unwrap()).unwrap();
         let gross = item["gross_pay"].as_str().unwrap();
-        let fc = item["federal_claim_code"].as_u64().unwrap() as u8;
-        let pc = item["provincial_claim_code"].as_u64().unwrap() as u8;
+        let fc = u8::try_from(item["federal_claim_code"].as_u64().unwrap()).unwrap();
+        let pc = u8::try_from(item["provincial_claim_code"].as_u64().unwrap()).unwrap();
         let req: Request = serde_json::from_value(serde_json::json!({
             "as_of": "2026-07-01",
             "province": prov,

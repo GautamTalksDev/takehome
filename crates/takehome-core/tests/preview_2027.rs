@@ -51,7 +51,7 @@ fn listing_ships_2027_preview_as_proposed() {
 }
 
 /// 49. A 2027 as_of returns the preview and a proposed warning that names
-/// 2026-04-28. A 2026 as_of does not carry that warning.
+///     2026-04-28. A 2026 as_of does not carry that warning.
 #[test]
 fn as_of_2027_carries_proposed_warning_naming_announcement_date() {
     let y2027 = body("2027-01-15");
@@ -77,8 +77,8 @@ fn as_of_2027_carries_proposed_warning_naming_announcement_date() {
 }
 
 /// 50. Ontario weekly $1000 CPP is 55.50 under 2026 rates and 53.63 under
-/// 2027 rates (0.0575 × 932.70, half-up). If these are equal, a 0.0495/0.0595
-/// ratio is hard-coded in a formula — which is why the rule data is data.
+///     2027 rates (0.0575 × 932.70, half-up). If these are equal, a 0.0495/0.0595
+///     ratio is hard-coded in a formula — which is why the rule data is data.
 #[test]
 fn ontario_weekly_1000_cpp_follows_2027_rule_data() {
     let y2026 = body("2026-07-15");

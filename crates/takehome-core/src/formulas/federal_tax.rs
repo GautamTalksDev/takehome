@@ -660,7 +660,7 @@ mod tests {
             "largest possible annual jump $1.00 / 52 must be under two cents, got {bound}"
         );
         let mut max_abs = Money::ZERO;
-        for (_code, jurisdiction) in &set.jurisdictions {
+        for jurisdiction in set.jurisdictions.values() {
             let brackets = jurisdiction
                 .brackets
                 .get(crate::rules::schema::CalculationOption::Option1);

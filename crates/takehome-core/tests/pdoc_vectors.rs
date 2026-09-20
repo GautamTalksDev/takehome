@@ -207,7 +207,7 @@ fn bonus_vector_path() -> PathBuf {
 }
 
 /// 37. Twenty PDOC bonus cases as their own class. Pending until the harness
-/// fills `expected` from PDOC — never from the engine.
+///     fills `expected` from PDOC — never from the engine.
 #[test]
 fn twenty_pdoc_bonus_vectors_are_their_own_class() {
     let raw = std::fs::read_to_string(bonus_vector_path()).expect("read bonus vector file");

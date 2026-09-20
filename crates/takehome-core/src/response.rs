@@ -272,6 +272,69 @@ mod tests {
         assert_eq!(ENGINE_BUILD_SHA256, r.engine_build_sha256.as_str());
         let _ = zero_rate();
     }
+
+    /// 35b. engine_build_sha256 must be path-independent: hashing `src/**/*.rs` with
+    /// paths relative to `src/` (not `CARGO_MANIFEST_DIR` absolute paths). Absolute
+    /// paths made WSL vs GitHub Actions produce different WASM hashes for the same
+    /// tree.
+    #[test]
+    fn engine_build_sha_is_independent_of_checkout_directory() {
+        use std::path::{Path, PathBuf};
+        use std::process::Command;
+
+        fn collect_rs(dir: &Path, out: &mut Vec<PathBuf>) {
+            for entry in std::fs::read_dir(dir).unwrap() {
+                let path = entry.unwrap().path();
+                if path.is_dir() {
+                    collect_rs(&path, out);
+                } else if path.extension().and_then(|s| s.to_str()) == Some("rs") {
+                    out.push(path);
+                }
+            }
+        }
+
+        let src = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src");
+        let mut files = Vec::new();
+        collect_rs(&src, &mut files);
+        files.sort();
+
+        let mut listing = String::new();
+        for f in &files {
+            let out = Command::new("sha256sum").arg(f).output().unwrap();
+            assert!(out.status.success(), "sha256sum {}", f.display());
+            let hex = String::from_utf8_lossy(&out.stdout)
+                .split_whitespace()
+                .next()
+                .unwrap()
+                .to_string();
+            let rel = f.strip_prefix(&src).unwrap();
+            let rel = rel.to_string_lossy().replace('\\', "/");
+            listing.push_str(&hex);
+            listing.push_str("  ");
+            listing.push_str(&rel);
+            listing.push('\n');
+        }
+        let out = Command::new("sha256sum")
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .and_then(|mut child| {
+                use std::io::Write;
+                child.stdin.as_mut().unwrap().write_all(listing.as_bytes())?;
+                child.wait_with_output()
+            })
+            .unwrap();
+        assert!(out.status.success());
+        let want = String::from_utf8_lossy(&out.stdout)
+            .split_whitespace()
+            .next()
+            .unwrap()
+            .to_string();
+        assert_eq!(
+            ENGINE_BUILD_SHA256, want,
+            "build.rs must hash relative paths under src/; absolute paths break CI"
+        );
+    }
 }
 
 /// Top-level §9.3 response.

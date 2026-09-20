@@ -78,7 +78,7 @@ mod tests {
     }
 
     /// 38. S1 is a pair (total periods / current period number), not a float.
-    /// Weekly period 1 is 52/1, period 2 is 52/2. Assert it stays exact.
+    ///     Weekly period 1 is 52/1, period 2 is 52/2. Assert it stays exact.
     #[test]
     fn s1_is_an_exact_pair_not_a_float() {
         let weekly = p(52);
@@ -244,7 +244,7 @@ mod tests {
     }
 
     /// 43. S1 resets to period 1 when switching options mid-year or when an
-    /// employee starts mid-year (omit / zero `pay_periods_elapsed`).
+    ///     employee starts mid-year (omit / zero `pay_periods_elapsed`).
     #[test]
     fn s1_resets_to_period_1_on_midyear_start_or_option_switch() {
         let weekly = p(52);

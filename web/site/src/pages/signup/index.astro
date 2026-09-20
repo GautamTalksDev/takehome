@@ -2,14 +2,14 @@
 import Base from '../../layouts/Base.astro';
 ---
 
-<Base title="Sign up: Takehome">
+<Base title="Sign up: Takehome" engine={false}>
   <article class="prose">
     <h1>Sign up</h1>
     <p class="lede">
       Email, verify, keys, first call. No sales call. No onboarding. No demo
       request.
     </p>
-    <form id="signup-form">
+    <form id="signup-form" method="post" action="#">
       <label>
         <span>Email</span>
         <input type="email" name="email" required autocomplete="email" />
@@ -27,43 +27,5 @@ import Base from '../../layouts/Base.astro';
       <a href="/pricing/">pricing</a>.
     </p>
   </article>
-  <script>
-    function apiOrigin() {
-      const fromDoc = document.documentElement.getAttribute('data-api');
-      if (fromDoc) return fromDoc;
-      const host = location.hostname;
-      if (host === '127.0.0.1' || host === 'localhost') {
-        return 'http://127.0.0.1:8787';
-      }
-      return 'https://takehome.gautamkhosla.com';
-    }
-    const form = document.getElementById('signup-form');
-    const status = document.getElementById('signup-status');
-    const wrap = document.getElementById('signup-verify-wrap');
-    const link = document.getElementById('signup-verify');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      status.textContent = 'Sending…';
-      wrap.hidden = true;
-      const email = new FormData(form).get('email');
-      try {
-        const response = await fetch(apiOrigin() + '/v1/signup', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const body = await response.json();
-        status.textContent =
-          body.message ?? body.error?.message ?? 'Check your email.';
-        if (body.verify_url) {
-          status.textContent =
-            'Open the verification link. Keys are on the next page.';
-          link.href = body.verify_url;
-          wrap.hidden = false;
-        }
-      } catch {
-        status.textContent = 'Could not reach the API. Try again.';
-      }
-    });
-  </script>
+  <script is:inline type="module" src="/scripts/signup.js"></script>
 </Base>

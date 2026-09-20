@@ -21,6 +21,7 @@ const TYPES = {
   '.xml': 'application/xml',
   '.txt': 'text/plain; charset=utf-8',
   '.map': 'application/json',
+  '.ico': 'image/x-icon',
 };
 
 function contentType(file) {

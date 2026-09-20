@@ -32,7 +32,9 @@ No `f32`, `f64`, or other IEEE-754 binary floats anywhere in `takehome-core`, in
 
 ## Naming ban
 
-The retired product name `netpay` must not appear in new code or docs outside allowlisted historical files. `./scripts/name-ban.sh` lists permitted paths (CHANGELOG, old ADR wording, findings, rename fixtures).
+The retired pre-rename product name must not appear in new code or docs outside
+allowlisted historical files. `./scripts/name-ban.sh` lists permitted paths
+(CHANGELOG, old ADR wording, findings, rename fixtures).
 
 ## Documentation house style
 

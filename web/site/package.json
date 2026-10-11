@@ -21,7 +21,7 @@
     "test": "npm run build && npm run test:csp-html && npm run test:graph && npm run test:lighthouse:unit && npm run test:e2e && npm run test:budget && npm run test:lighthouse"
   },
   "dependencies": {
-    "astro": "7.3.3"
+    "astro": "7.3.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

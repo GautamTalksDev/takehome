@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
-    "lighthouse": "13.5.0"
+    "lighthouse": "13.6.0"
   }
 }
